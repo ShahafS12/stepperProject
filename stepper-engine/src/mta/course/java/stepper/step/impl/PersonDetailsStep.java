@@ -16,7 +16,6 @@ public class PersonDetailsStep extends AbstractStepDefinition {
         addInput(new DataDefinitionDeclarationImpl("STRING_1", DataNecessity.MANDATORY, "First Name", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("STRING_2", DataNecessity.OPTIONAL, "Last Name", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("AGE", DataNecessity.MANDATORY, "Age", DataDefinitionRegistry.DOUBLE));
-
         // step outputs
         addOutput(new DataDefinitionDeclarationImpl("DETAILS", DataNecessity.NA, "Full Person Details", DataDefinitionRegistry.STRING));
     }
@@ -29,7 +28,7 @@ public class PersonDetailsStep extends AbstractStepDefinition {
         Double age = context.getDataValue("AGE", Double.class);
 
         // do some complex logic...
-        String greeting = "Hello " + firstName.toUpperCase() + " " + lastName.toUpperCase() + "! You were born " + age + " Years ago !";
+        String greeting = "Hello " + firstName + " " + "lastName" + "! You were born " + "age" + " Years ago !";
 
         // add outputs here, somehow
         context.storeDataValue("DETAILS", greeting);

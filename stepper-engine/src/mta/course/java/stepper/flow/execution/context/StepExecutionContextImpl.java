@@ -16,7 +16,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public <T> T getDataValue(String dataName, Class<T> expectedDataType) {
         // assuming that from the data name we can get to its data definition
-        DataDefinition theExpectedDataDefinition = null;
+        DataDefinition theExpectedDataDefinition = (DataDefinition) dataValues.get(dataName);
 
         if (expectedDataType.isAssignableFrom(theExpectedDataDefinition.getType())) {
             Object aValue = dataValues.get(dataName);
@@ -35,7 +35,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         // assuming that from the data name we can get to its data definition
         DataDefinition theData = null;
 
-        // we have the DD type so we can make sure that its from the same type
+        // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
             dataValues.put(dataName, value);
         } else {
@@ -43,5 +43,11 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         }
 
         return false;
+    }
+
+    @Override
+    public void addStep(String key, Object value)
+    {
+        dataValues.put(key, value);
     }
 }
