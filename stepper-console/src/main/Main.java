@@ -1,5 +1,6 @@
 package main;
 
+import menu.Menu;
 import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import org.xml.sax.SAXException;
 
@@ -14,6 +15,7 @@ public class Main
 {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException
     {
-        menu.Menu.showMenu();
+        Menu menu = new Menu();
+        menu.showMenu();
     }
 }

@@ -23,10 +23,10 @@ public class FLowExecutor {
             List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
             List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
             for (DataDefinitionDeclaration input : inputs) {
-                context.addStep(input.getName(), input.dataDefinition());
+                context.addStep(input.getName(), input.dataDefinition().getType());
             }
             for (DataDefinitionDeclaration output : outputs) {
-                context.addStep(output.getName(), output.dataDefinition());
+                context.addStep(output.getName(), output.dataDefinition().getType());
             }
         }
         // populate context with all free inputs (mandatory & optional) that were given from the user
