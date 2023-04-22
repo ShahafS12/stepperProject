@@ -1,8 +1,8 @@
-package flowprinter;
+package menu.caseimpl;
 
 import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 
-public class flowprinter
+public class ShowFlows
 {
     public void printFlow(FlowDefinitionImpl flow)
     {
