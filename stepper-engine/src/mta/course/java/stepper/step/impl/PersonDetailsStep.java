@@ -31,6 +31,7 @@ public class PersonDetailsStep extends AbstractStepDefinition {
         String greeting = "Hello " + firstName + " " + lastName + "! You were born " + age + " Years ago !";
 
         // add outputs here, somehow
+        System.out.println(greeting);
         context.storeDataValue("DETAILS", greeting);
 
         // through the context, as part of writing the step's logic I should be able to:

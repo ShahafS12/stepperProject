@@ -19,4 +19,13 @@ public enum StepDefinitionRegistry {
     public StepDefinition getStepDefinition() {
         return stepDefinition;
     }
+
+    public static StepDefinitionRegistry fromString(String name) {
+        for (StepDefinitionRegistry registry : values()) {
+            if (registry.name().equalsIgnoreCase(name)) {
+                return registry;
+            }
+        }
+        return null;
+    }
 }

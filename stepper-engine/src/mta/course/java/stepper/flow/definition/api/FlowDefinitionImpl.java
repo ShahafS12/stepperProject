@@ -19,8 +19,14 @@ public class FlowDefinitionImpl implements FlowDefinition {
         steps = new ArrayList<>();
     }
 
+    @Override
     public void addFlowOutput(String outputName) {
         flowOutputs.add(outputName);
+    }
+
+    @Override
+    public void addFlowStep(StepUsageDeclaration stepUsageDeclaration) {
+        steps.add(stepUsageDeclaration);
     }
 
     @Override

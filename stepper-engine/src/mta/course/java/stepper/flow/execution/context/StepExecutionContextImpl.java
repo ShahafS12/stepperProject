@@ -13,6 +13,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     public StepExecutionContextImpl() {
         dataValues = new HashMap<>();
         dataDefinitions = new HashMap<>();
+
     }
 
     @Override
@@ -35,7 +36,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public boolean storeDataValue(String dataName, Object value) {
         // assuming that from the data name we can get to its data definition
-        DataDefinition theData = null;
+        DataDefinition theData = (DataDefinition) dataDefinitions.get(dataName);
 
         // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {

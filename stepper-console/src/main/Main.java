@@ -16,6 +16,7 @@ public class Main
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException
     {
         Menu menu = new Menu();
-        menu.showMenu();
+        while (true)
+            menu.showMenu();
     }
 }
