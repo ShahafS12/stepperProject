@@ -25,6 +25,7 @@ public enum StepDefinitionRegistry {
     }
 
     public static StepDefinitionRegistry fromString(String name) {
+        name = name.replaceAll(" ", "_");
         for (StepDefinitionRegistry registry : values()) {
             if (registry.name().equalsIgnoreCase(name)) {
                 return registry;

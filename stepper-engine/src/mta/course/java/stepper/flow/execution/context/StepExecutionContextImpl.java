@@ -2,18 +2,42 @@ package mta.course.java.stepper.flow.execution.context;
 
 import mta.course.java.stepper.dd.api.DataDefinition;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StepExecutionContextImpl implements StepExecutionContext {
 
     private final Map<String, Object> dataValues;
     private  final Map<String,DataDefinition> dataDefinitions;
+    private ArrayList<String> logs;
+    private ArrayList<String> summaryLines;
 
     public StepExecutionContextImpl() {
         dataValues = new HashMap<>();
         dataDefinitions = new HashMap<>();
+        logs = new ArrayList<>();
+        summaryLines = new ArrayList<>();
+    }
 
+    @Override
+    public void addLogLine(String log) {
+        logs.add(log);
+    }
+
+    @Override
+    public void addSummaryLine(String summaryLine) {
+        summaryLines.add(summaryLine);
+    }
+
+    @Override
+    public ArrayList<String> getLogs() {
+        return logs;
+    }
+    @Override
+    public ArrayList<String> getSummaryLines() {
+        return summaryLines;
     }
 
     @Override

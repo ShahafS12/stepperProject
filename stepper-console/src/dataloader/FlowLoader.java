@@ -77,7 +77,6 @@ public class FlowLoader
                 flow.getFlowSteps().add(new StepUsageDeclarationImpl(toAdd.getStepDefinition()));
             }
 
-            // TODO: check if steps loaded successfully
             flows.add(flow);
         }
     }
