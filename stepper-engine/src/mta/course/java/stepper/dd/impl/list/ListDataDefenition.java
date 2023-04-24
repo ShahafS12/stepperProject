@@ -11,4 +11,8 @@ public class ListDataDefenition extends AbstractDataDefinition
     public ListDataDefenition()  {
         super("List", false, ArrayList.class);
     }
+    public ArrayList<RelationData> getValue(){
+        //TODO: implement
+        return null;
+    }
 }

@@ -1,5 +1,6 @@
 package menu.caseimpl;
 
+import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import org.xml.sax.SAXException;
 
@@ -12,7 +13,7 @@ import static dataloader.FlowLoader.loadFlowFromXmlFile;
 
 public class LoadXMLFile
 {
-    public void loadXMLFile() throws IOException, ParserConfigurationException, SAXException
+    public List<FlowDefinition> loadXMLFile() throws IOException, ParserConfigurationException, SAXException
     {
         // Prompt the user for the XML file path
         System.out.println("Enter the full path to the XML file:");
@@ -20,6 +21,6 @@ public class LoadXMLFile
         String filePath = scanner.nextLine();
 
         // Load the flow from the XML file
-        List<FlowDefinitionImpl> flows =  loadFlowFromXmlFile(filePath);
+        return   loadFlowFromXmlFile(filePath);
     }
 }

@@ -8,15 +8,18 @@ import java.util.Map;
 public class StepExecutionContextImpl implements StepExecutionContext {
 
     private final Map<String, Object> dataValues;
+    private  final Map<String,DataDefinition> dataDefinitions;
 
     public StepExecutionContextImpl() {
         dataValues = new HashMap<>();
+        dataDefinitions = new HashMap<>();
+
     }
 
     @Override
     public <T> T getDataValue(String dataName, Class<T> expectedDataType) {
         // assuming that from the data name we can get to its data definition
-        DataDefinition theExpectedDataDefinition = (DataDefinition) dataValues.get(dataName);
+        DataDefinition theExpectedDataDefinition = (DataDefinition) dataDefinitions.get(dataName);
 
         if (expectedDataType.isAssignableFrom(theExpectedDataDefinition.getType())) {
             Object aValue = dataValues.get(dataName);
@@ -33,7 +36,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public boolean storeDataValue(String dataName, Object value) {
         // assuming that from the data name we can get to its data definition
-        DataDefinition theData = null;
+        DataDefinition theData = (DataDefinition) dataDefinitions.get(dataName);
 
         // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
@@ -46,8 +49,9 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
     @Override
-    public void addStep(String key, Object value)
+    public void addStep(String key, Object value,DataDefinition dataDefinition)
     {
         dataValues.put(key, value);
+        dataDefinitions.put(key,dataDefinition);
     }
 }

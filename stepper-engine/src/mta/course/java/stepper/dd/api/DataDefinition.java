@@ -4,4 +4,5 @@ public interface DataDefinition {
     String getName();
     boolean isUserFriendly();
     Class<?> getType();
+    abstract <T> T getValue();
 }
