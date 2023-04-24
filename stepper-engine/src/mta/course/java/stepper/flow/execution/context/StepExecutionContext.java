@@ -6,7 +6,9 @@ public interface StepExecutionContext {
 
     void addStep(String key, Object value);
 
-    // some more utility methods:
-    // allow step to store log lines
-    // allow steps to declare their summary line
+    /*
+     some more utility methods:
+     allow step to store log lines
+     allow steps to declare their summary line
+    */
 }

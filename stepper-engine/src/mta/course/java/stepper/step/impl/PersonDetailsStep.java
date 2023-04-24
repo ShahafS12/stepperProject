@@ -28,7 +28,7 @@ public class PersonDetailsStep extends AbstractStepDefinition {
         Double age = context.getDataValue("AGE", Double.class);
 
         // do some complex logic...
-        String greeting = "Hello " + firstName + " " + "lastName" + "! You were born " + "age" + " Years ago !";
+        String greeting = "Hello " + firstName + " " + "lastName" + "! You were born " + age + " Years ago !";
 
         // add outputs here, somehow
         context.storeDataValue("DETAILS", greeting);
