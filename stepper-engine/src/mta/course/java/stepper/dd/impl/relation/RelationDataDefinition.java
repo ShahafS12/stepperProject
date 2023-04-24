@@ -6,4 +6,11 @@ public class RelationDataDefinition extends AbstractDataDefinition {
     public RelationDataDefinition() {
         super("Relation", false, RelationData.class);
     }
+
+    @Override
+    public RelationData getValue()
+    {
+        //TODO: implement
+        return null;
+    }
 }

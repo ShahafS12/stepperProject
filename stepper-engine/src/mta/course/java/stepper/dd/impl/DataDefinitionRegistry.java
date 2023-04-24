@@ -33,4 +33,8 @@ public enum DataDefinitionRegistry implements DataDefinition{
     public Class<?> getType() {
         return dataDefinition.getType();
     }
+
+    public <T> T getValue() {
+        return dataDefinition.getValue();
+    }
 }
