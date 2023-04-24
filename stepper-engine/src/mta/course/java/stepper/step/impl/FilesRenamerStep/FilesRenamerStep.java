@@ -1,6 +1,7 @@
 package mta.course.java.stepper.step.impl.FilesRenamerStep;
 
 import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
+import mta.course.java.stepper.dd.impl.relation.RelationData;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.AbstractStepDefinition;
 import mta.course.java.stepper.step.api.DataDefinitionDeclarationImpl;
@@ -22,27 +23,53 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
     public StepResult invoke(StepExecutionContext context) {
         ArrayList<File> filesRename = context.getDataValue("FILES_TO_RENAME", ArrayList.class);
-        String Prefix = context.getDataValue("PREFIX", String.class);
-        String Suffix = context.getDataValue("SUFFIX", String.class);
+        String prefix = context.getDataValue("PREFIX", String.class);
+        String suffix = context.getDataValue("SUFFIX", String.class);
+
+        ArrayList<String> renameColumns = new ArrayList<String>();
+        renameColumns.add("No.");
+        renameColumns.add("Original File Name");
+        renameColumns.add("Changed File Name");
+        RelationData renameTable = new RelationData(renameColumns);
 
         if (filesRename.isEmpty()){
-            String emptyList = "The list of files is empty"; //TODO: Summary list
+            String emptyListSummary = "The list of files is empty";
+            context.addSummaryLine(emptyListSummary);
             return StepResult.SUCCESS;
         }
         ArrayList<String> failedFileArray = new ArrayList<>();
+        String changeFileLog = "About to start rename " + filesRename.size() + " files. Adding prefix: "+ prefix + "; adding suffix: " +suffix;
+        context.addLogLine(changeFileLog);
         for (File file:filesRename){
-            String newName = Prefix + file.getName() + Suffix;
+            String newName;
+            // Checking if optional as requested
+            if (prefix == null && suffix != null) {
+                newName =  file.getName() + suffix;
+            } else if (prefix != null && suffix == null) {
+                newName =  prefix + file.getName();
+            } else if (prefix == null && suffix == null) {
+                newName =  file.getName();
+            } else {
+                newName = prefix + file.getName() + suffix;
+            }
             File newFile = new File(file.getParent(), newName);
             if(file.renameTo(newFile)){
-
+                // TODO: adding the data to the table.
             } else { // failed renaming the file
                 String failedFile= file.getName();
                 failedFileArray.add(failedFile);
+                String failedFileLog = "Problem renaming file: " + file.getName();
+                context.addLogLine(failedFileLog);
             }
         }
 
+        // One or more of the files failed!
         if (failedFileArray.size() >= 1 ){
-
+            String failedFilesNames = "The name of the failed files are: ";
+            for (String file : failedFileArray){
+                failedFilesNames += file + " ";
+            }
+            context.addSummaryLine(failedFilesNames);
             return StepResult.WARNING;
         }
 
