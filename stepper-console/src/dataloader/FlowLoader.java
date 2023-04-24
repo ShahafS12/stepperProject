@@ -42,9 +42,7 @@ public class FlowLoader
         Set<String> flowNames = new HashSet<>();
         NodeList flowList = doc.getElementsByTagName("ST-Flow");
         checkForDupFlowNames(flowNames, flowList);
-        
         NodeList stepList = doc.getElementsByTagName("step");
-        checkInvalidStepRef(doc, stepList);
 
         // Validate the flow
         if (!validateFlow(doc)) {
@@ -78,20 +76,6 @@ public class FlowLoader
             }
 
             flows.add(flow);
-        }
-    }
-
-    private static void checkInvalidStepRef(Document doc, NodeList stepList)
-    {
-        for (int i = 0; i < stepList.getLength(); i++) {
-            Element step = (Element) stepList.item(i);
-            String nextStep = step.getAttribute("nextStep");
-            if (!nextStep.isEmpty()) {
-                Element next = doc.getElementById(nextStep);
-                if (next == null) {
-                    throw new IllegalArgumentException("Invalid step reference: " + nextStep);
-                }
-            }
         }
     }
 
