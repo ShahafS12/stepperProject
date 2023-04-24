@@ -1,4 +1,4 @@
-package mta.course.java.stepper.step.impl.filesDeleterStep;
+package mta.course.java.stepper.step.impl.FilesDeleterStep;
 
 import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
@@ -7,11 +7,9 @@ import mta.course.java.stepper.step.api.DataDefinitionDeclarationImpl;
 import mta.course.java.stepper.step.api.DataNecessity;
 import mta.course.java.stepper.step.api.StepResult;
 
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class FilesDeleterStep extends AbstractStepDefinition {
     public FilesDeleterStep() {
@@ -25,7 +23,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context)
     {
         // fetch inputs here, somehow
-        ArrayList<File> filesList = context.getDataValue("FILES_LIST", List.class);
+        ArrayList<File> filesList = context.getDataValue("FILES_LIST", ArrayList.class);
         ArrayList<File> notDeletedList = new ArrayList<File>();
         int deletedSuccess = 0;
         // do some complex logic...
