@@ -2,11 +2,19 @@ package mta.course.java.stepper.flow.execution.context;
 
 import mta.course.java.stepper.dd.api.DataDefinition;
 
+import java.util.ArrayList;
+
 public interface StepExecutionContext {
     <T> T getDataValue(String dataName, Class<T> expectedDataType);
     boolean storeDataValue(String dataName, Object value);
 
     void addStep(String key, Object value, DataDefinition dataDefinition);
+
+    void addLogLine(String logLine);
+
+    void addSummaryLine(String summaryLine);
+    ArrayList<String> getLogs();
+    ArrayList<String> getSummaryLines();
 
     /*
      some more utility methods:
