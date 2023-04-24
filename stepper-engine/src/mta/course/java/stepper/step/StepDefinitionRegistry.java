@@ -3,10 +3,14 @@ package mta.course.java.stepper.step;
 import mta.course.java.stepper.step.api.StepDefinition;
 import mta.course.java.stepper.step.impl.HelloWorldStep;
 import mta.course.java.stepper.step.impl.PersonDetailsStep;
+import mta.course.java.stepper.step.impl.SpendSomeTimeStep.SpendSomeTimeStep;
+import mta.course.java.stepper.step.impl.CollectFilesInFolderStep.CollectFilesInFolderStep;
 
 public enum StepDefinitionRegistry {
     HELLO_WORLD(new HelloWorldStep()),
-    PERSON_DETAILS(new PersonDetailsStep())
+    PERSON_DETAILS(new PersonDetailsStep()),
+    COLLECT_FILES_IN_FOLDER(new CollectFilesInFolderStep()),
+    SPEND_SOME_TIME(new SpendSomeTimeStep())
     ;
 
     private final StepDefinition stepDefinition;
