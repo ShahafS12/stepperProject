@@ -10,34 +10,34 @@ import java.util.Map;
 public class StepExecutionContextImpl implements StepExecutionContext {
 
     private final Map<String, Object> dataValues;
-    private  final Map<String,DataDefinition> dataDefinitions;
-    private ArrayList<String> logs;
-    private ArrayList<String> summaryLines;
+    private final Map<String,DataDefinition> dataDefinitions;
+    private final Map<String, ArrayList<String>> logs;
+    private final Map<String, String> summaryLines;
 
     public StepExecutionContextImpl() {
         dataValues = new HashMap<>();
         dataDefinitions = new HashMap<>();
-        logs = new ArrayList<>();
-        summaryLines = new ArrayList<>();
+        logs = new HashMap<>();
+        summaryLines = new HashMap<>();
     }
 
     @Override
-    public void addLogLine(String log) {
-        logs.add(log);
+    public void addLogLine(String key, String log) {
+        ArrayList<String> list = logs.get(key);
+        list.add(log);
     }
 
     @Override
-    public void addSummaryLine(String summaryLine) {
-        summaryLines.add(summaryLine);
+    public void addSummaryLine(String key, String summaryLine) { summaryLines.put(key, summaryLine);    }
+
+    @Override
+    public ArrayList<String> getLogs(String key) {
+        return logs.get(key);
     }
 
     @Override
-    public ArrayList<String> getLogs() {
-        return logs;
-    }
-    @Override
-    public ArrayList<String> getSummaryLines() {
-        return summaryLines;
+    public String getSummaryLine(String key) {
+        return summaryLines.get(key);
     }
 
     @Override

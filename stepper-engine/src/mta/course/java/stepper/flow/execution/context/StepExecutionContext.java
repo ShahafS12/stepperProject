@@ -10,11 +10,11 @@ public interface StepExecutionContext {
 
     void addStep(String key, Object value, DataDefinition dataDefinition);
 
-    void addLogLine(String logLine);
+    public void addSummaryLine(String key, String summaryLine);
 
-    void addSummaryLine(String summaryLine);
-    ArrayList<String> getLogs();
-    ArrayList<String> getSummaryLines();
+    public void addLogLine(String key, String log);
+    public ArrayList<String> getLogs(String key) ;
+    public String getSummaryLine(String key);
 
     /*
      some more utility methods:

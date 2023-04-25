@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class FileDumperStep extends AbstractStepDefinition {
     public FileDumperStep () {
-        super("FileDumperStep", true);
+        super("FileDumper", true);
         addInput(new DataDefinitionDeclarationImpl("CONTENT", DataNecessity.MANDATORY, "Content", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("FILE_NAME", DataNecessity.MANDATORY, "Target file path", DataDefinitionRegistry.STRING));
 
@@ -26,25 +26,27 @@ public class FileDumperStep extends AbstractStepDefinition {
         String fileName = context.getDataValue("FILE_NAME", String.class);
 
         String beforeWriting = "About to create file named "+ fileName;
-        context.addLogLine(beforeWriting);
+        context.addLogLine("FileDumper", beforeWriting);
 
         try {
             FileWriter writer = new FileWriter(fileName);
             writer.write(content);
             writer.close();
             String afterWritingSummary = "Finish writing successfully";
-            context.addSummaryLine(afterWritingSummary);
+            context.addSummaryLine("FileDumper",afterWritingSummary);
         }
         catch (IOException e){
-            String failedWriting = "Failed writing the file: " + fileName; // TODO: Why failed!
-            context.addLogLine(failedWriting);
-            context.addSummaryLine(failedWriting);
+            String failedWriting = "Failed writing the file: " + fileName; // TODO: Why failed! Dont understand the instrunctions
+            context.addLogLine("FileDumper", failedWriting);
+            context.addSummaryLine("FileDumper", failedWriting);
             return StepResult.FAILURE;
         }
 
+        context.storeDataValue("RESULT", content); // TODO: dont really understand what should be in result
+
         if (content == "") {
             String emptyFile = "The content was empty, created empty file!";
-            context.addLogLine(emptyFile);
+            context.addLogLine("FileDumper",emptyFile);
             return StepResult.WARNING;
         }
 

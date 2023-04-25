@@ -34,12 +34,13 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
         if (filesRename.isEmpty()){
             String emptyListSummary = "The list of files is empty";
-            context.addSummaryLine(emptyListSummary);
+            context.addSummaryLine("FilesRenamerStep", emptyListSummary);
             return StepResult.SUCCESS;
         }
         ArrayList<String> failedFileArray = new ArrayList<>();
         String changeFileLog = "About to start rename " + filesRename.size() + " files. Adding prefix: "+ prefix + "; adding suffix: " +suffix;
-        context.addLogLine(changeFileLog);
+        context.addLogLine("FilesRenamerStep",changeFileLog );
+        int counter =1;
         for (File file:filesRename){
             String newName;
             // Checking if optional as requested
@@ -54,14 +55,21 @@ public class FilesRenamerStep extends AbstractStepDefinition {
             }
             File newFile = new File(file.getParent(), newName);
             if(file.renameTo(newFile)){
-                // TODO: adding the data to the table.
+                ArrayList<String> tmp = new ArrayList<String>();
+                tmp.add(String.valueOf(counter));
+                tmp.add(file.getName());
+                tmp.add(newFile.getName());
+                renameTable.addRow(tmp);
+                counter++;
             } else { // failed renaming the file
                 String failedFile= file.getName();
                 failedFileArray.add(failedFile);
                 String failedFileLog = "Problem renaming file: " + file.getName();
-                context.addLogLine(failedFileLog);
+                context.addLogLine("FilesRenamerStep",failedFileLog );
             }
         }
+
+        context.storeDataValue("RENAME_RESULT", renameTable);
 
         // One or more of the files failed!
         if (failedFileArray.size() >= 1 ){
@@ -69,7 +77,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
             for (String file : failedFileArray){
                 failedFilesNames += file + " ";
             }
-            context.addSummaryLine(failedFilesNames);
+            context.addSummaryLine("FilesRenamerStep", failedFilesNames);
             return StepResult.WARNING;
         }
 
