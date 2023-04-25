@@ -4,8 +4,8 @@ import mta.course.java.stepper.dd.api.AbstractDataDefinition;
 
 import java.util.Scanner;
 
-public class DoubleDataDefinition extends AbstractDataDefinition {
-    public DoubleDataDefinition() {
+public class NumberDataDefinition extends AbstractDataDefinition {
+    public NumberDataDefinition() {
         super("Double", true, Double.class);
     }
     public Double getValue() {

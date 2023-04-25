@@ -13,7 +13,7 @@ import java.io.FilenameFilter;
 public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public CollectFilesInFolderStep()
     {
-        super("CollectFilesInFolderStep", true);
+        super("CollectFilesInFolder", true);
         addInput(new DataDefinitionDeclarationImpl("FOLDER_NAME", DataNecessity.MANDATORY, "Folder name to scan", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("FILTER", DataNecessity.OPTIONAL, "Filter only these files", DataDefinitionRegistry.STRING));
 
@@ -28,7 +28,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
         // do some complex logic...
         String beforeReading = "Reading folder " + folderName + " content with filter " + filter;
-
+        context.addLogLine("CollectFilesInFolder", beforeReading);
         // add outputs here, somehow
 
         FilenameFilter fileFilter = new FilenameFilter() {
@@ -42,11 +42,15 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         String failedFolder;
         if (!folder.exists()){
             failedFolder = "The provided path: "+ folderName +" is not exists";
-            return StepResult.FAILURE; // TODO: how to add in summary line the explanation??
+            context.addLogLine("CollectFilesInFolder", failedFolder);
+            context.addSummaryLine("CollectFilesInFolder", failedFolder);
+            return StepResult.FAILURE;
 
         } else if (!folder.isDirectory()) {
             failedFolder = "The provided path: "+ folderName + " is not a directory";
-            return StepResult.FAILURE; // TODO: how to add in summary line the explanation??
+            context.addLogLine("CollectFilesInFolder", failedFolder);
+            context.addSummaryLine("CollectFilesInFolder", failedFolder);
+            return StepResult.FAILURE;
         }
 
         File[] files = folder.listFiles(fileFilter); // output 1 - FilesList
@@ -60,11 +64,14 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         // 2. add summary line
 
         String afterReading = "Found " + totalFilesFound + " files in folder matching the filter";
+        context.addLogLine("CollectFilesInFolder", afterReading);
 
         if (totalFilesFound == 0){
+            context.addSummaryLine("CollectFilesInFolder", "The folder had no files");
             return StepResult.WARNING;
         }
 
+        context.addSummaryLine("CollectFilesInFolder", afterReading);
         return StepResult.SUCCESS;
     }
 
