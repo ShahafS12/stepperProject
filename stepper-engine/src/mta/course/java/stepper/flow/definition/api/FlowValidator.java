@@ -3,6 +3,7 @@ package mta.course.java.stepper.flow.definition.api;
 import org.w3c.dom.NodeList;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FlowValidator
@@ -17,14 +18,19 @@ public class FlowValidator
     public static void validate(){
 
     }
-    private boolean duplicateStepNames(){
+    private boolean nonExistingStep(){
+        List<StepUsageDeclaration> steps = flowDefinition.getFlowSteps();
+        for (StepUsageDeclaration step : steps) {
+            if (step == null) {
+                return true;
+            }
+        }//might not work because of the way we are adding steps from the xml
         return false;
     }
     private boolean duplicateOutputNames(){
-        return false;
-    }
-    private boolean stepNameExists(){
-        return false;
+        List<String> outputs = flowDefinition.getFlowFormalOutputs();
+        Set<String> set = new HashSet<>(outputs);
+        return set.size() < outputs.size();
     }
     private boolean hasNonUserFriendlyMandatoryInputs(){
         return false;
