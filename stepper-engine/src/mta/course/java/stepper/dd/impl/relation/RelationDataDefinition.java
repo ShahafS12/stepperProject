@@ -8,7 +8,7 @@ public class RelationDataDefinition extends AbstractDataDefinition {
     }
 
     @Override
-    public RelationData getValue()
+    public RelationData getValue(String name)
     {
         //TODO: implement
         return null;

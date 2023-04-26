@@ -27,5 +27,5 @@ public abstract class AbstractDataDefinition implements DataDefinition {
         return type;
     }
 
-    public abstract <T> T getValue();
+    public abstract <T> T getValue(String name);
 }

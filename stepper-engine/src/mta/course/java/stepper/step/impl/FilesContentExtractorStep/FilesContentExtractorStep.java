@@ -18,14 +18,14 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
     public FilesContentExtractorStep(){
         super("FilesContentExtractor", true);
         addInput(new DataDefinitionDeclarationImpl("FILES_LIST", DataNecessity.MANDATORY, "Files to extract", DataDefinitionRegistry.LIST));
-        addInput(new DataDefinitionDeclarationImpl("LINE", DataNecessity.MANDATORY, "Line number to extract", DataDefinitionRegistry.DOUBLE)); // TODO: CHANGE TO NUMBER
+        addInput(new DataDefinitionDeclarationImpl("LINE", DataNecessity.MANDATORY, "Line number to extract", DataDefinitionRegistry.Number));
 
-        addOutput(new DataDefinitionDeclarationImpl("DATA", DataNecessity.NA, "Data extraction", DataDefinitionRegistry.RELATION));
+        addOutput(new DataDefinitionDeclarationImpl("SOURCE", DataNecessity.NA, "Data extraction", DataDefinitionRegistry.RELATION));
     }
 
     public StepResult invoke(StepExecutionContext context){
         ArrayList<File> filesList = context.getDataValue("FILES_LIST", ArrayList.class);
-        int line = context.getDataValue("LINE", int.class);
+        int line = (int) context.getDataValue("LINE", Number.class);
 
         ArrayList<String> renameColumns = new ArrayList<String>();
         renameColumns.add("No.");
@@ -68,7 +68,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
             return StepResult.SUCCESS;
         }
 
-        context.storeDataValue("DATA", filesTable);
+        context.storeDataValue("SOURCE", filesTable);
 
         String summaryLine = "Successfully finish extractor line " + line + " from all files provided";
         context.addSummaryLine("FilesContentExtractor", summaryLine);
