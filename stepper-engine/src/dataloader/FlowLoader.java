@@ -7,14 +7,19 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.nio.file.InvalidPathException;
 import java.util.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import dataloader.generated.STStepper;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclarationImpl;
 import mta.course.java.stepper.step.StepDefinitionRegistry;
+import mta.course.java.stepper.stepper.StepperDefinitionImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -32,6 +37,17 @@ public class FlowLoader
         Path path = Paths.get(filePath);
         if (!Files.exists(path) || !Files.isRegularFile(path) || !filePath.endsWith(".xml")) {
             throw new IllegalArgumentException("Invalid XML file path");
+        }
+
+        try {
+            String packageName = "dataloader.generated";
+            JAXBContext jaxbContext = JAXBContext.newInstance(packageName);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            STStepper stepperDefinition = (STStepper) jaxbUnmarshaller.unmarshal(new File(filePath));
+            System.out.println(stepperDefinition.getSTFlows());
+
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
         }
 
         // Parse the XML file

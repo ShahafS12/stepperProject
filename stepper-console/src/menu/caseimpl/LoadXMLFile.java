@@ -1,7 +1,6 @@
 package menu.caseimpl;
 
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
-import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

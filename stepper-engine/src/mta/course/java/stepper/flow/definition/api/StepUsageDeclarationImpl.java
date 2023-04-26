@@ -1,5 +1,7 @@
 package mta.course.java.stepper.flow.definition.api;
 
+import dataloader.generated.STStepInFlow;
+import mta.course.java.stepper.step.StepDefinitionRegistry;
 import mta.course.java.stepper.step.api.StepDefinition;
 
 public class StepUsageDeclarationImpl implements StepUsageDeclaration {
@@ -19,6 +21,14 @@ public class StepUsageDeclarationImpl implements StepUsageDeclaration {
         this.stepDefinition = stepDefinition;
         this.skipIfFail = skipIfFail;
         this.stepName = stepName;
+    }
+
+    public StepUsageDeclarationImpl(STStepInFlow stStepInFlow)
+    {
+        this.skipIfFail = stStepInFlow.isContinueIfFailing();
+        this.stepName = stStepInFlow.getName();
+        StepDefinitionRegistry stepDefinitionRegistry = StepDefinitionRegistry.fromString(stStepInFlow.getName());
+        stepDefinition = stepDefinitionRegistry.getStepDefinition();
     }
 
     @Override

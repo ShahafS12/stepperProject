@@ -1,5 +1,7 @@
 package mta.course.java.stepper.flow.definition.api;
 
+import dataloader.generated.STFlow;
+import dataloader.generated.STStepsInFlow;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 
 import java.util.ArrayList;
@@ -17,6 +19,19 @@ public class FlowDefinitionImpl implements FlowDefinition {
         this.description = description;
         flowOutputs = new ArrayList<>();
         steps = new ArrayList<>();
+    }
+
+    public FlowDefinitionImpl(STFlow stFlow)
+    {
+        this.name = stFlow.getName();
+        this.description = stFlow.getSTFlowDescription();
+        flowOutputs = new ArrayList<>();
+        steps = new ArrayList<>();
+        STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
+        for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
+        {
+            steps.add(new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i)));
+        }
     }
 
     @Override
