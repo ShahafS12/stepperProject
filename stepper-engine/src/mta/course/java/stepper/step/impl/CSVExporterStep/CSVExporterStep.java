@@ -20,7 +20,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
-        RelationData sourceTable = context.getDataValue("CSVExporter", RelationData.class);
+        RelationData sourceTable = context.getDataValue("SOURCE", RelationData.class);
 
         String beforeLog = "About to process " + sourceTable.getNumRows() + " line of data";
         context.addLogLine("CSVExporter", beforeLog);
@@ -35,7 +35,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
         for (int i=0; i<numRows; i++){
             ArrayList<String> singleRowList = rows.get(i).getData();
             String singleRowDataString = String.join(",", singleRowList);
-            result = String.join("\n", singleRowDataString);
+            result = result + "\n" + singleRowDataString;
         }
 
         context.storeDataValue("RESULT", result);

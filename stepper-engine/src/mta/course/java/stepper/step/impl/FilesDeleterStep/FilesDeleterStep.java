@@ -24,6 +24,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     {
         // fetch inputs here, somehow
         ArrayList<File> filesList = context.getDataValue("FILES_LIST", ArrayList.class);
+
         ArrayList<File> notDeletedList = new ArrayList<File>();
         int deletedSuccess = 0;
         // do some complex logic...

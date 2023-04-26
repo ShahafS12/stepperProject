@@ -17,12 +17,21 @@ public class Main {
         FlowDefinition flow2 = new FlowDefinitionImpl("Flow 2", "show two person details");
         flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.HELLO_WORLD.getStepDefinition()));
         flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PERSON_DETAILS.getStepDefinition(), "Person 1 Details"));
-        flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PERSON_DETAILS.getStepDefinition(), "Person 2 Details"));
+        //flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PERSON_DETAILS.getStepDefinition(), "Person 2 Details"));
         flow2.getFlowFormalOutputs().add("DETAILS");
         flow2.validateFlowStructure();
 
+        FlowDefinition flow3 = new FlowDefinitionImpl("Flow 3", "Checking steps");
+        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.COLLECT_FILES_IN_FOLDER.getStepDefinition()));
+        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.FILES_CONTENT_EXTRACTOR.getStepDefinition()));
+        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PROPERTIES_EXPORTER.getStepDefinition()));
+
         FLowExecutor fLowExecutor = new FLowExecutor();
 
+        FlowExecution flow3Execution1 = new FlowExecution("2", flow3);
+        fLowExecutor.executeFlow(flow3Execution1);
+
+        /*
         FlowExecution flow2Execution1 = new FlowExecution("1", flow2);
         // collect all user inputs and store them on the flow execution object
         fLowExecutor.executeFlow(flow2Execution1);
@@ -30,6 +39,6 @@ public class Main {
         FlowExecution flow2Execution2 = new FlowExecution("2", flow2);
         // collect all user inputs and store them on the flow execution object
         fLowExecutor.executeFlow(flow2Execution1);
-
+        */
     }
 }

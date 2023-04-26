@@ -12,7 +12,8 @@ public class FileDataDefenition extends AbstractDataDefinition
         super("List", false, File.class);
     }
     @Override
-    public File getValue(){
+    public File getValue(String name){
+        System.out.println("please enter " + name);
         Scanner scanner = new Scanner(System.in);
         String path = scanner.nextLine();
         File file = new File(path);

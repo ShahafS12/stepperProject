@@ -9,19 +9,20 @@ import mta.course.java.stepper.step.api.StepResult;
 
 public class SpendSomeTimeStep extends AbstractStepDefinition {
     public SpendSomeTimeStep() {
-        super("SpendSomeTime", true);
-        addInput(new DataDefinitionDeclarationImpl("TIME_TO_SPEND", DataNecessity.MANDATORY, "Total sleeping time(sec)", DataDefinitionRegistry.DOUBLE)); //TODO: change Double to Number
+        super("spend some time", true);
+        addInput(new DataDefinitionDeclarationImpl("TIME_TO_SPEND", DataNecessity.MANDATORY, "Total sleeping time(sec)", DataDefinitionRegistry.Number));
     }
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
         int secondToSpend = (int) context.getDataValue("TIME_TO_SPEND", Number.class);
         if (secondToSpend <= 0){
-            String negativeTimeToSpend = "Cannot sleep non positive number of time (" + secondToSpend + ")"; // TODO: Add to summarylines
+            String negativeTimeToSpend = "Cannot sleep non positive number of time (" + secondToSpend + ")";
             context.addLogLine("SpendSomeTime", negativeTimeToSpend);
             context.addSummaryLine("SpendSomeTime", negativeTimeToSpend);
             return StepResult.FAILURE;
         }
+
         String BeforeSleeping = "About to sleep for " + secondToSpend + " seconds...";
         context.addLogLine("SpendSomeTime", BeforeSleeping);
 

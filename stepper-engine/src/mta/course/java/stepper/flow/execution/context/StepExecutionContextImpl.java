@@ -23,6 +23,9 @@ public class StepExecutionContextImpl implements StepExecutionContext {
 
     @Override
     public void addLogLine(String key, String log) {
+        if (logs.get(key) == null) {
+            logs.put(key, new ArrayList<String>());
+        }
         ArrayList<String> list = logs.get(key);
         list.add(log);
     }
@@ -65,6 +68,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
             dataValues.put(dataName, value);
+            return true;
         } else {
             // error handling of some sort...
         }

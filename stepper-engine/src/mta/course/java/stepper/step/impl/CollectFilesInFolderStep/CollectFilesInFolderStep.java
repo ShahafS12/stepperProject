@@ -9,6 +9,9 @@ import mta.course.java.stepper.step.api.StepResult;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public CollectFilesInFolderStep()
@@ -24,21 +27,23 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
     {
         // fetch inputs here, somehow
         String folderName = context.getDataValue("FOLDER_NAME", String.class);
-        String filter = context.getDataValue("FILTER", String.class); // SHOULD BE OPTIONAL **CHECK IT OUT**
+        String filter = context.getDataValue("FILTER", String.class); //TODO: SHOULD BE OPTIONAL **CHECK IT OUT**
 
         // do some complex logic...
         String beforeReading = "Reading folder " + folderName + " content with filter " + filter;
         context.addLogLine("CollectFilesInFolder", beforeReading);
         // add outputs here, somehow
 
+
+        File folder = new File (folderName);
+
         FilenameFilter fileFilter = new FilenameFilter() {
             @Override
-            public boolean accept(File file, String s) {
-                return name().endsWith(filter);
+            public boolean accept(File folder, String fileName) {
+                return fileName.endsWith(filter);
             }
         };
 
-        File folder = new File(folderName);
         String failedFolder;
         if (!folder.exists()){
             failedFolder = "The provided path: "+ folderName +" is not exists";
@@ -56,7 +61,10 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         File[] files = folder.listFiles(fileFilter); // output 1 - FilesList
         int totalFilesFound = files.length; // output 2 - Files Len
 
-        context.storeDataValue("FILES_LIST", files);
+        List<File> filesList = Arrays.asList(files);
+        ArrayList<File> filesArrayList = new ArrayList<>(filesList);
+
+        context.storeDataValue("FILES_LIST", filesArrayList);
         context.storeDataValue("TOTAL_FOUND", totalFilesFound);
 
         // through the context, as part of writing the step's logic I should be able to:

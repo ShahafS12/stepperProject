@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class FilesRenamerStep extends AbstractStepDefinition {
     public FilesRenamerStep() {
-        super("FilesRenamerStep", false);
+        super("FilesRenamer", false);
         addInput(new DataDefinitionDeclarationImpl("FILES_TO_RENAME", DataNecessity.MANDATORY, "Files to rename", DataDefinitionRegistry.LIST));
         addInput(new DataDefinitionDeclarationImpl("PREFIX", DataNecessity.OPTIONAL, "Add this prefix", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("SUFFIX", DataNecessity.OPTIONAL, "Addend this suffix", DataDefinitionRegistry.STRING));

@@ -1,8 +1,14 @@
 package mta.course.java.stepper.step;
 
 import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.step.impl.CSVExporterStep.CSVExporterStep;
+import mta.course.java.stepper.step.impl.FileDumperStep.FileDumperStep;
+import mta.course.java.stepper.step.impl.FilesContentExtractorStep.FilesContentExtractorStep;
+import mta.course.java.stepper.step.impl.FilesDeleterStep.FilesDeleterStep;
+import mta.course.java.stepper.step.impl.FilesRenamerStep.FilesRenamerStep;
 import mta.course.java.stepper.step.impl.HelloWorldStep;
 import mta.course.java.stepper.step.impl.PersonDetailsStep;
+import mta.course.java.stepper.step.impl.PropertiesExporterStep.PropertiesExporterStep;
 import mta.course.java.stepper.step.impl.SpendSomeTimeStep.SpendSomeTimeStep;
 import mta.course.java.stepper.step.impl.CollectFilesInFolderStep.CollectFilesInFolderStep;
 
@@ -10,7 +16,13 @@ public enum StepDefinitionRegistry {
     HELLO_WORLD(new HelloWorldStep()),
     PERSON_DETAILS(new PersonDetailsStep()),
     COLLECT_FILES_IN_FOLDER(new CollectFilesInFolderStep()),
-    SPEND_SOME_TIME(new SpendSomeTimeStep())
+    SPEND_SOME_TIME(new SpendSomeTimeStep()),
+    CSV_EXPORTER(new CSVExporterStep()),
+    FILE_DUMPER(new FileDumperStep()),
+    FILES_CONTENT_EXTRACTOR(new FilesContentExtractorStep()),
+    FILES_DELETER(new FilesDeleterStep()),
+    FILES_RENAMER(new FilesRenamerStep()),
+    PROPERTIES_EXPORTER(new PropertiesExporterStep()),
     ;
 
     private final StepDefinition stepDefinition;

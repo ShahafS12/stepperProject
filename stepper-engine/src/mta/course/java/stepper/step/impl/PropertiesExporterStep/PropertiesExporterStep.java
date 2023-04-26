@@ -33,17 +33,17 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
             ArrayList<String> singleRowList = rows.get(i).getData();
             int counterColumns = 0;
             for (String str:singleRowList){
-                tmp = "row-" + i + "." + columns.get(counterColumns) + "=" + str;
-                result = String.join(",", tmp);
+                tmp = "row-" + (i+1) + "." + columns.get(counterColumns) + "=" + str;
+                result = result + "\n" + tmp;
                 counterColumns++;
             }
-            result = String.join("\n", result);
+            //result = "\n" + result;
         }
 
         String afterLog = "Extracted total of " + result;
         context.addLogLine("PropertiesExporter", afterLog);
 
-        context.storeDataValue("PropertiesExporter", result);
+        context.storeDataValue("RESULT", result);
 
         if(sourceTable.isEmpty()){
             String summaryLine = "The table was empty!";
