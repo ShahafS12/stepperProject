@@ -3,6 +3,8 @@ package menu;
 import exit.ExitProgram;
 import menu.caseimpl.LoadXMLFile;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.stepper.StepperDefinition;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,7 +40,7 @@ public class Menu
         {
             case 1:
                 LoadXMLFile loadXMLFile = new LoadXMLFile();
-                List<FlowDefinition> flowDefinitions =  loadXMLFile.loadXMLFile();
+                StepperDefinition stepper =  loadXMLFile.loadXMLFile();
                 break;
             case 2:
                 // Show flow statistics
