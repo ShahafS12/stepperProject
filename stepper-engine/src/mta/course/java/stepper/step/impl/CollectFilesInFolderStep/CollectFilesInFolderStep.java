@@ -16,7 +16,7 @@ import java.util.List;
 public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public CollectFilesInFolderStep()
     {
-        super("CollectFilesInFolder", true);
+        super("Collect Files In Folder", true);
         addInput(new DataDefinitionDeclarationImpl("FOLDER_NAME", DataNecessity.MANDATORY, "Folder name to scan", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("FILTER", DataNecessity.OPTIONAL, "Filter only these files", DataDefinitionRegistry.STRING));
 
@@ -26,8 +26,8 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context)
     {
         // fetch inputs here, somehow
-        String folderName = context.getDataValue("FOLDER_NAME", String.class);
-        String filter = context.getDataValue("FILTER", String.class); //TODO: SHOULD BE OPTIONAL **CHECK IT OUT**
+        String folderName = context.getDataValue(context.getAlias("FOLDER_NAME"), String.class);
+        String filter = context.getDataValue(context.getAlias("FILTER"), String.class);
 
         // do some complex logic...
         String beforeReading = "Reading folder " + folderName + " content with filter " + filter;
@@ -37,12 +37,6 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
         File folder = new File (folderName);
 
-        FilenameFilter fileFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File folder, String fileName) {
-                return fileName.endsWith(filter);
-            }
-        };
 
         String failedFolder;
         if (!folder.exists()){
@@ -58,14 +52,28 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
             return StepResult.FAILURE;
         }
 
-        File[] files = folder.listFiles(fileFilter); // output 1 - FilesList
+        File[] files;
+
+        if (!filter.equals("")){ // OPTIONAL
+            FilenameFilter fileFilter = new FilenameFilter() {
+                @Override
+                public boolean accept(File folder, String fileName) {
+                    return fileName.endsWith(filter);
+                }
+            };
+            files = folder.listFiles(fileFilter); // output 1 - FilesList
+        }
+        else {
+            files = folder.listFiles();
+        }
+
         int totalFilesFound = files.length; // output 2 - Files Len
 
         List<File> filesList = Arrays.asList(files);
         ArrayList<File> filesArrayList = new ArrayList<>(filesList);
 
-        context.storeDataValue("FILES_LIST", filesArrayList);
-        context.storeDataValue("TOTAL_FOUND", totalFilesFound);
+        context.storeDataValue(context.getAlias("FILES_LIST"), filesArrayList);
+        context.storeDataValue(context.getAlias("TOTAL_FOUND"), totalFilesFound);
 
         // through the context, as part of writing the step's logic I should be able to:
         // 1. add log lines

@@ -14,6 +14,8 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     private final Map<String, ArrayList<String>> logs;
     private final Map<String, String> summaryLines;
     private final Map<String, String> FlowLevelAliases;
+    private final Map<String, String> CustomMapping;
+
 
     public StepExecutionContextImpl() {
         dataValues = new HashMap<>();
@@ -21,6 +23,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         logs = new HashMap<>();
         summaryLines = new HashMap<>();
         FlowLevelAliases = new HashMap<>();
+        CustomMapping = new HashMap<>();
     }
 
     @Override
@@ -67,6 +70,8 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         // assuming that from the data name we can get to its data definition
         DataDefinition theData = (DataDefinition) dataDefinitions.get(dataName);
 
+        dataName = getCustomMapping(dataName);
+        
         // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
             dataValues.put(dataName, value);
@@ -79,15 +84,31 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
     @Override
-    public void addStep(String key, Object value,DataDefinition dataDefinition, String alias)
+    public void addStep(String key, Object value,DataDefinition dataDefinition, String alias, String customMapping)
     {
         dataValues.put(key, value);
         dataDefinitions.put(key,dataDefinition);
-        FlowLevelAliases.put(key,alias);
+        if (alias != null)
+            FlowLevelAliases.put(key,alias);
+        else
+            FlowLevelAliases.put(key,key);
+        if (customMapping != null)
+            CustomMapping.put(key,customMapping);
+        else
+            CustomMapping.put(key,key);
     }
+
     @Override
     public String getAlias(String key)
     {
         return FlowLevelAliases.get(key);
     }
+
+    @Override
+    public String getCustomMapping(String key)
+    {
+        return CustomMapping.get(key);
+    }
+
+
 }

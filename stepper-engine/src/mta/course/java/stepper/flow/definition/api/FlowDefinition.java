@@ -15,4 +15,6 @@ public interface FlowDefinition {
     void addFlowOutput(String outputName);
     void addFlowStep(StepUsageDeclaration stepUsageDeclaration);
     String getFlowLevelAlias(String sourceDataName);
+
+    String getFlowLevelCustomMapping(String name);
 }

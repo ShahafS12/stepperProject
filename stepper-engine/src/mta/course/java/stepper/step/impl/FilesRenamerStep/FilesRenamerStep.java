@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class FilesRenamerStep extends AbstractStepDefinition {
     public FilesRenamerStep() {
-        super("FilesRenamer", false);
+        super("Files Renamer", false);
         addInput(new DataDefinitionDeclarationImpl("FILES_TO_RENAME", DataNecessity.MANDATORY, "Files to rename", DataDefinitionRegistry.LIST));
         addInput(new DataDefinitionDeclarationImpl("PREFIX", DataNecessity.OPTIONAL, "Add this prefix", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("SUFFIX", DataNecessity.OPTIONAL, "Addend this suffix", DataDefinitionRegistry.STRING));
@@ -22,9 +22,9 @@ public class FilesRenamerStep extends AbstractStepDefinition {
     }
 
     public StepResult invoke(StepExecutionContext context) {
-        ArrayList<File> filesRename = context.getDataValue("FILES_TO_RENAME", ArrayList.class);
-        String prefix = context.getDataValue("PREFIX", String.class);
-        String suffix = context.getDataValue("SUFFIX", String.class);
+        ArrayList<File> filesRename = context.getDataValue(context.getAlias("FILES_TO_RENAME"), ArrayList.class);
+        String prefix = context.getDataValue(context.getAlias("PREFIX"), String.class);
+        String suffix = context.getDataValue(context.getAlias("SUFFIX"), String.class);
 
         ArrayList<String> renameColumns = new ArrayList<String>();
         renameColumns.add("No.");
@@ -44,11 +44,11 @@ public class FilesRenamerStep extends AbstractStepDefinition {
         for (File file:filesRename){
             String newName;
             // Checking if optional as requested
-            if (prefix == null && suffix != null) {
+            if (prefix.equals("") && (!suffix.equals(""))) {
                 newName =  file.getName() + suffix;
-            } else if (prefix != null && suffix == null) {
+            } else if ((!prefix.equals("")) && suffix.equals("")) {
                 newName =  prefix + file.getName();
-            } else if (prefix == null && suffix == null) {
+            } else if (prefix.equals("") && suffix.equals("")) {
                 newName =  file.getName();
             } else {
                 newName = prefix + file.getName() + suffix;
@@ -69,7 +69,8 @@ public class FilesRenamerStep extends AbstractStepDefinition {
             }
         }
 
-        context.storeDataValue("RENAME_RESULT", renameTable);
+
+        context.storeDataValue(context.getAlias("RENAME_RESULT"), renameTable);
 
         // One or more of the files failed!
         if (failedFileArray.size() >= 1 ){

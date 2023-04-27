@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class FileDumperStep extends AbstractStepDefinition {
     public FileDumperStep () {
-        super("FileDumper", true);
+        super("File Dumper", true);
         addInput(new DataDefinitionDeclarationImpl("CONTENT", DataNecessity.MANDATORY, "Content", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("FILE_NAME", DataNecessity.MANDATORY, "Target file path", DataDefinitionRegistry.STRING));
 
@@ -22,8 +22,9 @@ public class FileDumperStep extends AbstractStepDefinition {
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
-        String content = context.getDataValue("CONTENT", String.class);
-        String fileName = context.getDataValue("FILE_NAME", String.class);
+
+        String content = context.getDataValue(context.getAlias("CONTENT"), String.class);
+        String fileName = context.getDataValue(context.getAlias("FILE_NAME"), String.class);
 
         String beforeWriting = "About to create file named "+ fileName;
         context.addLogLine("FileDumper", beforeWriting);
@@ -42,7 +43,7 @@ public class FileDumperStep extends AbstractStepDefinition {
             return StepResult.FAILURE;
         }
 
-        context.storeDataValue("RESULT", content); // TODO: dont really understand what should be in result
+        context.storeDataValue(context.getAlias("RESULT"), content); // TODO: dont really understand what should be in result
 
         if (content == "") {
             String emptyFile = "The content was empty, created empty file!";

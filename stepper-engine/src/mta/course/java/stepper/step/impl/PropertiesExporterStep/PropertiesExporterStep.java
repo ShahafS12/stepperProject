@@ -12,14 +12,14 @@ import java.util.ArrayList;
 
 public class PropertiesExporterStep extends AbstractStepDefinition {
     public PropertiesExporterStep() {
-        super("PropertiesExporter", true);
+        super("Properties Exporter", true);
         addInput(new DataDefinitionDeclarationImpl("SOURCE", DataNecessity.MANDATORY, "Source data", DataDefinitionRegistry.RELATION));
 
         addOutput(new DataDefinitionDeclarationImpl("RESULT", DataNecessity.NA, "Properties export result", DataDefinitionRegistry.STRING));
     }
 
     public StepResult invoke(StepExecutionContext context) {
-        RelationData sourceTable = context.getDataValue("SOURCE", RelationData.class);
+        RelationData sourceTable = context.getDataValue(context.getAlias("SOURCE"), RelationData.class);
 
         String beforeLog = "About to process " + sourceTable.getNumRows() + " lines of data";
         context.addLogLine("PropertiesExporter", beforeLog);
@@ -43,7 +43,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         String afterLog = "Extracted total of " + result;
         context.addLogLine("PropertiesExporter", afterLog);
 
-        context.storeDataValue("RESULT", result);
+        context.storeDataValue(context.getAlias("RESULT"), result);
 
         if(sourceTable.isEmpty()){
             String summaryLine = "The table was empty!";

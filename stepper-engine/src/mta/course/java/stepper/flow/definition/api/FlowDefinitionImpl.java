@@ -1,9 +1,6 @@
 package mta.course.java.stepper.flow.definition.api;
 
-import dataloader.generated.STFlow;
-import dataloader.generated.STFlowLevelAlias;
-import dataloader.generated.STFlowLevelAliasing;
-import dataloader.generated.STStepsInFlow;
+import dataloader.generated.*;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 
 import java.util.*;
@@ -14,8 +11,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final String description;
     private final List<String> flowOutputs;
     private final List<StepUsageDeclaration> steps;
-
-    private final Map<String,String>  flowLevelAlias;
+    private final Map<String,String> flowLevelAlias;
+    private final Map<String, String> customMapping;
 
     public FlowDefinitionImpl(String name, String description) {
         this.name = name;
@@ -23,6 +20,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
+        customMapping = new HashMap<>();
     }
 
     public FlowDefinitionImpl(STFlow stFlow)
@@ -33,6 +31,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowOutputs = Arrays.asList(output);
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
+        customMapping = new HashMap<>();
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
         {
@@ -43,6 +42,13 @@ public class FlowDefinitionImpl implements FlowDefinition {
             List<STFlowLevelAlias> stFlowLevelAliasList = stFlowLevelAliasing.getSTFlowLevelAlias();
             for (STFlowLevelAlias stFlowLevelAlias : stFlowLevelAliasList) {
                 flowLevelAlias.put(stFlowLevelAlias.getSourceDataName(), stFlowLevelAlias.getAlias());
+            }
+        }
+        STCustomMappings stCustomMappings = stFlow.getSTCustomMappings();
+        if(stCustomMappings!=null) {
+            List<STCustomMapping> stCustomMappingList = stCustomMappings.getSTCustomMapping();
+            for (STCustomMapping stCustomMapping : stCustomMappingList) {
+                customMapping.put(stCustomMapping.getSourceData(), stCustomMapping.getTargetData());
             }
         }
     }
@@ -91,5 +97,11 @@ public class FlowDefinitionImpl implements FlowDefinition {
     public String getFlowLevelAlias(String sourceDataName)
     {
         return flowLevelAlias.get(sourceDataName);
+    }
+
+    @Override
+    public String getFlowLevelCustomMapping(String name)
+    {
+        return customMapping.get(name);
     }
 }

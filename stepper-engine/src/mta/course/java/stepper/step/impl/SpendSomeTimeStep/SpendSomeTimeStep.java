@@ -15,7 +15,8 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
-        int secondToSpend = (int) context.getDataValue("TIME_TO_SPEND", Number.class);
+
+        int secondToSpend = (int) context.getDataValue(context.getAlias("TIME_TO_SPEND"), Number.class);
         if (secondToSpend <= 0){
             String negativeTimeToSpend = "Cannot sleep non positive number of time (" + secondToSpend + ")";
             context.addLogLine("SpendSomeTime", negativeTimeToSpend);

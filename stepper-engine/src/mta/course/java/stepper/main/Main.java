@@ -22,9 +22,8 @@ public class Main {
         flow2.validateFlowStructure();
 
         FlowDefinition flow3 = new FlowDefinitionImpl("Flow 3", "Checking steps");
-        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.COLLECT_FILES_IN_FOLDER.getStepDefinition()));
-        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.FILES_CONTENT_EXTRACTOR.getStepDefinition()));
-        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PROPERTIES_EXPORTER.getStepDefinition()));
+        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.SPEND_SOME_TIME.getStepDefinition()));
+
 
         FLowExecutor fLowExecutor = new FLowExecutor();
 
