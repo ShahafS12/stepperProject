@@ -13,12 +13,14 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     private final Map<String,DataDefinition> dataDefinitions;
     private final Map<String, ArrayList<String>> logs;
     private final Map<String, String> summaryLines;
+    private final Map<String, String> FlowLevelAliases;
 
     public StepExecutionContextImpl() {
         dataValues = new HashMap<>();
         dataDefinitions = new HashMap<>();
         logs = new HashMap<>();
         summaryLines = new HashMap<>();
+        FlowLevelAliases = new HashMap<>();
     }
 
     @Override
@@ -77,9 +79,15 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
     @Override
-    public void addStep(String key, Object value,DataDefinition dataDefinition)
+    public void addStep(String key, Object value,DataDefinition dataDefinition, String alias)
     {
         dataValues.put(key, value);
         dataDefinitions.put(key,dataDefinition);
+        FlowLevelAliases.put(key,alias);
+    }
+    @Override
+    public String getAlias(String key)
+    {
+        return FlowLevelAliases.get(key);
     }
 }

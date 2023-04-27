@@ -14,4 +14,5 @@ public interface FlowDefinition {
     List<DataDefinitionDeclaration> getFlowFreeInputs();
     void addFlowOutput(String outputName);
     void addFlowStep(StepUsageDeclaration stepUsageDeclaration);
+    String getFlowLevelAlias(String sourceDataName);
 }

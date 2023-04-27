@@ -10,4 +10,5 @@ public interface StepperDefinition
     List<String> getFlowFormalInputs(String flowName);
     List<String> getFlowFormalOutputs(String flowName);
     void addFlow(FlowDefinition flowName);
+    FlowDefinition getFlowDefinition(String flowName);
 }
