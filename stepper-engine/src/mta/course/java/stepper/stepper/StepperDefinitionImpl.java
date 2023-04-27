@@ -51,4 +51,17 @@ public class StepperDefinitionImpl implements StepperDefinition
         return null;
     }
 
+    @Override
+    public FlowDefinition getFlowDefinition(String flowName)
+    {
+        for(FlowDefinition flow : flows)
+        {
+            if(flow.getName().equals(flowName))
+            {
+                return flow;
+            }
+        }
+        return null;
+    }
+
 }
