@@ -6,10 +6,7 @@ import dataloader.generated.STFlowLevelAliasing;
 import dataloader.generated.STStepsInFlow;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FlowDefinitionImpl implements FlowDefinition {
 
@@ -18,7 +15,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final List<String> flowOutputs;
     private final List<StepUsageDeclaration> steps;
 
-    private final Map<Map<String,String>,String>  flowLevelAlias;
+    private final Map<String,String>  flowLevelAlias;
 
     public FlowDefinitionImpl(String name, String description) {
         this.name = name;
@@ -32,7 +29,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
     {
         this.name = stFlow.getName();
         this.description = stFlow.getSTFlowDescription();
-        flowOutputs = new ArrayList<>();
+        String[] output = stFlow.getSTFlowOutput().split(",");
+        flowOutputs = Arrays.asList(output);
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
@@ -41,12 +39,11 @@ public class FlowDefinitionImpl implements FlowDefinition {
             steps.add(new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i)));
         }
         STFlowLevelAliasing stFlowLevelAliasing = stFlow.getSTFlowLevelAliasing();
-        List<STFlowLevelAlias> stFlowLevelAliasList = stFlowLevelAliasing.getSTFlowLevelAlias();
-        for(STFlowLevelAlias stFlowLevelAlias : stFlowLevelAliasList)
-        {
-            Map<String,String> map = new HashMap<>();
-            map.put(stFlowLevelAlias.getStep(),stFlowLevelAlias.getSourceDataName());
-            flowLevelAlias.put(map,stFlowLevelAlias.getAlias());
+        if(stFlowLevelAliasing!=null) {
+            List<STFlowLevelAlias> stFlowLevelAliasList = stFlowLevelAliasing.getSTFlowLevelAlias();
+            for (STFlowLevelAlias stFlowLevelAlias : stFlowLevelAliasList) {
+                flowLevelAlias.put(stFlowLevelAlias.getSourceDataName(), stFlowLevelAlias.getAlias());
+            }
         }
     }
 
@@ -89,5 +86,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
     @Override
     public List<String> getFlowFormalOutputs() {
         return flowOutputs;
+    }
+    @Override
+    public String getFlowLevelAlias(String sourceDataName)
+    {
+        return flowLevelAlias.get(sourceDataName);
     }
 }
