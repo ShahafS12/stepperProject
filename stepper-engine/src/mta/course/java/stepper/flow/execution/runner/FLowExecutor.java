@@ -26,10 +26,20 @@ public class FLowExecutor {
             List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
             List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
             for (DataDefinitionDeclaration input : inputs) {
-                context.addStep(input.getName(), input.dataDefinition().getValue(input.userString()), input.dataDefinition(),flowExecution.getFlowDefinition().getFlowLevelAlias(input.getName()));
+                context.addStep(input.getName(),
+                        input.dataDefinition().getValue(input.userString()),
+                        input.dataDefinition(),
+                        flowExecution.getFlowDefinition().getFlowLevelAlias(input.getName()),
+                        flowExecution.getFlowDefinition().getFlowLevelCustomMapping(input.getName())
+                        );
             }
             for (DataDefinitionDeclaration output : outputs) {
-                context.addStep(output.getName(), output.dataDefinition().getType(), output.dataDefinition(),flowExecution.getFlowDefinition().getFlowLevelAlias(output.getName()));
+                context.addStep(output.getName(),
+                        output.dataDefinition().getType(),
+                        output.dataDefinition(),
+                        flowExecution.getFlowDefinition().getFlowLevelAlias(output.getName()),
+                        flowExecution.getFlowDefinition().getFlowLevelCustomMapping(output.getName())
+                );
             }
         }
         // populate context with all free inputs (mandatory & optional) that were given from the user

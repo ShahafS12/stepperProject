@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class CSVExporterStep extends AbstractStepDefinition {
     public CSVExporterStep() {
-        super("CSVExporter", true);
+        super("CSV Exporter", true);
         addInput(new DataDefinitionDeclarationImpl("SOURCE", DataNecessity.MANDATORY, "Source data", DataDefinitionRegistry.RELATION));
 
         addOutput(new DataDefinitionDeclarationImpl("RESULT", DataNecessity.NA, "CSV export result", DataDefinitionRegistry.STRING));
@@ -20,7 +20,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
 
     @Override
     public StepResult invoke(StepExecutionContext context) {
-        RelationData sourceTable = context.getDataValue("SOURCE", RelationData.class);
+        RelationData sourceTable = context.getDataValue(context.getAlias("SOURCE"), RelationData.class);
 
         String beforeLog = "About to process " + sourceTable.getNumRows() + " line of data";
         context.addLogLine("CSVExporter", beforeLog);
@@ -38,7 +38,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
             result = result + "\n" + singleRowDataString;
         }
 
-        context.storeDataValue("RESULT", result);
+        context.storeDataValue(context.getAlias("RESULT"), result);
 
         if(sourceTable.isEmpty()){ // TODO: the content will have 1 line of columns?! check it! its written in the explanation word
             String emptyTable = "The table is EMPTY!";

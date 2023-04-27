@@ -8,7 +8,7 @@ public interface StepExecutionContext {
     <T> T getDataValue(String dataName, Class<T> expectedDataType);
     boolean storeDataValue(String dataName, Object value);
 
-    void addStep(String key, Object value, DataDefinition dataDefinition, String alias);
+    void addStep(String key, Object value, DataDefinition dataDefinition, String alias, String customMapping);
 
     public void addSummaryLine(String key, String summaryLine);
 
@@ -16,6 +16,8 @@ public interface StepExecutionContext {
     public ArrayList<String> getLogs(String key) ;
     public String getSummaryLine(String key);
     public String getAlias(String key);
+    public String getCustomMapping(String key);
+
 
     /*
      some more utility methods:
