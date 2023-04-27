@@ -8,6 +8,8 @@ import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.StepDefinition;
 import mta.course.java.stepper.step.api.StepResult;
 
+import java.sql.SQLOutput;
+import java.time.Duration;
 import java.util.List;
 
 public class FLowExecutor {
@@ -15,6 +17,7 @@ public class FLowExecutor {
     public void executeFlow(FlowExecution flowExecution) {
 
         System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
+        flowExecution.addingExectionCounter();
 
         StepExecutionContext context = new StepExecutionContextImpl(); // actual object goes here...
         List<StepUsageDeclaration> steps = flowExecution.getFlowDefinition().getFlowSteps();
@@ -41,7 +44,8 @@ public class FLowExecutor {
             // check if should continue etc..
         }
 
-
+        Duration totalTimeFlow = flowExecution.timeTakenForFlow();
         System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+        System.out.println("Total Time: " + totalTimeFlow);
     }
 }
