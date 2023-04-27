@@ -27,7 +27,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
     {
         // fetch inputs here, somehow
         String folderName = context.getDataValue("FOLDER_NAME", String.class);
-        String filter = context.getDataValue("FILTER", String.class); //TODO: SHOULD BE OPTIONAL **CHECK IT OUT**
+        String filter = context.getDataValue("FILTER", String.class);
 
         // do some complex logic...
         String beforeReading = "Reading folder " + folderName + " content with filter " + filter;
@@ -37,12 +37,6 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
         File folder = new File (folderName);
 
-        FilenameFilter fileFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File folder, String fileName) {
-                return fileName.endsWith(filter);
-            }
-        };
 
         String failedFolder;
         if (!folder.exists()){
@@ -58,7 +52,21 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
             return StepResult.FAILURE;
         }
 
-        File[] files = folder.listFiles(fileFilter); // output 1 - FilesList
+        File[] files;
+
+        if (!filter.equals("")){ // OPTIONAL
+            FilenameFilter fileFilter = new FilenameFilter() {
+                @Override
+                public boolean accept(File folder, String fileName) {
+                    return fileName.endsWith(filter);
+                }
+            };
+            files = folder.listFiles(fileFilter); // output 1 - FilesList
+        }
+        else {
+            files = folder.listFiles();
+        }
+
         int totalFilesFound = files.length; // output 2 - Files Len
 
         List<File> filesList = Arrays.asList(files);

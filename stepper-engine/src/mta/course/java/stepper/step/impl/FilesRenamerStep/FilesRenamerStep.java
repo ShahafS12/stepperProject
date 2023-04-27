@@ -44,11 +44,11 @@ public class FilesRenamerStep extends AbstractStepDefinition {
         for (File file:filesRename){
             String newName;
             // Checking if optional as requested
-            if (prefix == null && suffix != null) {
+            if (prefix.equals("") && (!suffix.equals(""))) {
                 newName =  file.getName() + suffix;
-            } else if (prefix != null && suffix == null) {
+            } else if ((!prefix.equals("")) && suffix.equals("")) {
                 newName =  prefix + file.getName();
-            } else if (prefix == null && suffix == null) {
+            } else if (prefix.equals("") && suffix.equals("")) {
                 newName =  file.getName();
             } else {
                 newName = prefix + file.getName() + suffix;
