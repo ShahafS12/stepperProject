@@ -26,19 +26,19 @@ public class FLowExecutor {
             List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
             List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
             for (DataDefinitionDeclaration input : inputs) {
-                context.addStep(input.getName(),
+                context.addStep(step.getFinalStepName() + "." + input.getName(),
                         input.dataDefinition().getValue(input.userString()),
                         input.dataDefinition(),
                         flowExecution.getFlowDefinition().getFlowLevelAlias(input.getName()),
-                        flowExecution.getFlowDefinition().getFlowLevelCustomMapping(input.getName())
+                        flowExecution.getFlowDefinition().getFlowLevelCustomMapping(step.getFinalStepName() + "." + input.getName())
                         );
             }
             for (DataDefinitionDeclaration output : outputs) {
-                context.addStep(output.getName(),
+                context.addStep(step.getFinalStepName() + "." + output.getName(),
                         output.dataDefinition().getType(),
                         output.dataDefinition(),
                         flowExecution.getFlowDefinition().getFlowLevelAlias(output.getName()),
-                        flowExecution.getFlowDefinition().getFlowLevelCustomMapping(output.getName())
+                        flowExecution.getFlowDefinition().getFlowLevelCustomMapping(step.getFinalStepName() + "." + output.getName())
                 );
             }
         }

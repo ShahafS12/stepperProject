@@ -48,7 +48,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
         if(stCustomMappings!=null) {
             List<STCustomMapping> stCustomMappingList = stCustomMappings.getSTCustomMapping();
             for (STCustomMapping stCustomMapping : stCustomMappingList) {
-                customMapping.put(stCustomMapping.getSourceData(), stCustomMapping.getTargetData());
+                customMapping.put(stCustomMapping.getSourceStep()+"."+ stCustomMapping.getSourceData(),
+                        stCustomMapping.getTargetStep()+"."+ stCustomMapping.getTargetData());
             }
         }
     }

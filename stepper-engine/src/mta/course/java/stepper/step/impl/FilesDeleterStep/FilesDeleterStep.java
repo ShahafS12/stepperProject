@@ -41,7 +41,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         }
 
 
-        context.storeDataValue(context.getAlias("DELETED_LIST"), notDeletedList);
+        context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST"), notDeletedList);
 
         // add outputs here, somehow
         HashMap<String, Number> deletionStat = new HashMap<String, Number>();
@@ -51,14 +51,14 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             String summaryLineStep = "Deleted all the files that were asked!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias("DELETED_LIST"), deletionStat);
+            context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST"), deletionStat);
 
             return StepResult.SUCCESS;
         } else if (deletedSuccess == 0) {
             String summaryLineStep = "Didn't delete any file that were asked!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias("DELETED_LIST"), deletionStat);
+            context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST"), deletionStat);
 
             return StepResult.FAILURE;
         } else {
@@ -67,7 +67,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             String summaryLineStep = "Deleted "+ deletedSuccess+ " files and failed with "+notDeletedList.size()+" files!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias("DELETED_LIST"), deletionStat);
+            context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST"), deletionStat);
 
             return StepResult.WARNING;
         }
