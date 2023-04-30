@@ -71,7 +71,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         DataDefinition theData = (DataDefinition) dataDefinitions.get(dataName);
 
         dataName = getCustomMapping(dataName);
-        
+
         // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
             dataValues.put(dataName, value);
