@@ -49,6 +49,9 @@ public class StepUsageDeclarationImpl implements StepUsageDeclaration {
     }
 
     @Override
+    public String getStepName() {return stepName;};
+
+    @Override
     public StepDefinition getStepDefinition() {
         return stepDefinition;
     }

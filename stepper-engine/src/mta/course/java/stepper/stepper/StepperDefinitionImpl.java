@@ -11,9 +11,9 @@ import java.util.List;
 
 public class StepperDefinitionImpl implements StepperDefinition
 {
-    private List<FlowDefinition> flows;
+    private ArrayList<FlowDefinition> flows;
 
-    public StepperDefinitionImpl(List<FlowDefinition> flows)
+    public StepperDefinitionImpl(ArrayList<FlowDefinition> flows)
     {
         this.flows = flows;
     }
@@ -34,9 +34,13 @@ public class StepperDefinitionImpl implements StepperDefinition
     }
 
     @Override
-    public List<String> getFlowNames()
+    public ArrayList<String> getFlowNames()
     {
-        return null;
+        ArrayList<String> flowNames = new ArrayList<String>();
+        for (int i=0; i< flows.size(); i++){
+            flowNames.add(flows.get(i).getName());
+        }
+        return flowNames;
     }
 
     @Override

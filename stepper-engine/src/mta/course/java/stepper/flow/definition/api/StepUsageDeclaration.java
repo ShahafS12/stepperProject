@@ -6,4 +6,5 @@ public interface StepUsageDeclaration {
     String getFinalStepName();
     StepDefinition getStepDefinition();
     boolean skipIfFail();
+    String getStepName();
 }

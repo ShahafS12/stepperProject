@@ -11,7 +11,7 @@ public class FlowExecution {
     private final String uniqueId;
     private final FlowDefinition flowDefinition;
     private Instant start, end;
-    private Duration totalTime;
+    private long totalTime;
     private FlowExecutionResult flowExecutionResult;
     private Map<String,Object> freeInputs;
     private int countHowManyTimesExecution;
@@ -42,10 +42,10 @@ public class FlowExecution {
 
     public void endTime(){
         end = Instant.now();
-        totalTime = Duration.between(start, end);
+        totalTime =  Duration.between(start, end).toMillis() ;
     }
 
-    public Duration timeTakenForFlow (){
+    public long timeTakenForFlow (){
         endTime();
         return totalTime;}
 }
