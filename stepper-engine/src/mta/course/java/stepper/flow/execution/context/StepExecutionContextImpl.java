@@ -86,16 +86,26 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public void addStep(String key, Object value,DataDefinition dataDefinition, String alias, String customMapping)
     {
-        dataValues.put(key, value);
-        dataDefinitions.put(key,dataDefinition);
-        if (alias != null)
-            FlowLevelAliases.put(key,alias);
-        else
-            FlowLevelAliases.put(key,key);
-        if (customMapping != null)
+
+        if (alias != null){
+            dataValues.put(alias, value);
+            dataDefinitions.put(alias,dataDefinition);
+            FlowLevelAliases.put(key, alias);
+        }
+        else {
+            dataValues.put(key, value);
+            dataDefinitions.put(key,dataDefinition);
+            FlowLevelAliases.put(key, key);
+        }
+        if (customMapping != null && alias != null)
+            CustomMapping.put(alias,customMapping);
+        else if (customMapping != null)
             CustomMapping.put(key,customMapping);
-        else
+        else if (alias!=null){
+            CustomMapping.put(alias,alias);
+        } else {
             CustomMapping.put(key,key);
+        }
     }
 
     @Override
@@ -107,7 +117,11 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public String getCustomMapping(String key)
     {
-        return CustomMapping.get(key);
+        String result = CustomMapping.get(key);
+        if (result != null)
+            return result;
+        else
+            return key;
     }
 
 

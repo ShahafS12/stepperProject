@@ -29,7 +29,7 @@ public class FLowExecutor {
                 context.addStep(step.getFinalStepName() + "." + input.getName(),
                         input.dataDefinition().getValue(input.userString()),
                         input.dataDefinition(),
-                        flowExecution.getFlowDefinition().getFlowLevelAlias(input.getName()),
+                        flowExecution.getFlowDefinition().getFlowLevelAlias(step.getFinalStepName() + "." + input.getName()),
                         flowExecution.getFlowDefinition().getFlowLevelCustomMapping(step.getFinalStepName() + "." + input.getName())
                         );
             }
@@ -37,7 +37,7 @@ public class FLowExecutor {
                 context.addStep(step.getFinalStepName() + "." + output.getName(),
                         output.dataDefinition().getType(),
                         output.dataDefinition(),
-                        flowExecution.getFlowDefinition().getFlowLevelAlias(output.getName()),
+                        flowExecution.getFlowDefinition().getFlowLevelAlias(step.getFinalStepName() + "." + output.getName()),
                         flowExecution.getFlowDefinition().getFlowLevelCustomMapping(step.getFinalStepName() + "." + output.getName())
                 );
             }

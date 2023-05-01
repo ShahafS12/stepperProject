@@ -41,7 +41,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
         if(stFlowLevelAliasing!=null) {
             List<STFlowLevelAlias> stFlowLevelAliasList = stFlowLevelAliasing.getSTFlowLevelAlias();
             for (STFlowLevelAlias stFlowLevelAlias : stFlowLevelAliasList) {
-                flowLevelAlias.put(stFlowLevelAlias.getSourceDataName(), stFlowLevelAlias.getAlias());
+                flowLevelAlias.put(stFlowLevelAlias.getStep()+"."+stFlowLevelAlias.getSourceDataName(),
+                        stFlowLevelAlias.getStep()+"."+stFlowLevelAlias.getAlias());
             }
         }
         STCustomMappings stCustomMappings = stFlow.getSTCustomMappings();
@@ -103,6 +104,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
     @Override
     public String getFlowLevelCustomMapping(String name)
     {
-        return customMapping.get(name);
+        String nameAfterAlias = flowLevelAlias.get(name);
+        if (nameAfterAlias !=null)
+            return customMapping.get(nameAfterAlias);
+        else
+            return customMapping.get(name);
     }
 }
