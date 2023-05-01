@@ -2,10 +2,7 @@ package mta.course.java.stepper.flow.execution.context;
 
 import mta.course.java.stepper.dd.api.DataDefinition;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StepExecutionContextImpl implements StepExecutionContext {
 
@@ -15,6 +12,8 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     private final Map<String, String> summaryLines;
     private final Map<String, String> FlowLevelAliases;
     private final Map<String, String> CustomMapping;
+    private final Map<AutoMapping,Object> AutoMappingMap;
+    private final Map<String, Queue<stepAliasing>> stepAliases;
 
 
     public StepExecutionContextImpl() {
@@ -24,6 +23,8 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         summaryLines = new HashMap<>();
         FlowLevelAliases = new HashMap<>();
         CustomMapping = new HashMap<>();
+        AutoMappingMap = new HashMap<>();
+        stepAliases = new HashMap<>();
     }
 
     @Override
@@ -55,6 +56,18 @@ public class StepExecutionContextImpl implements StepExecutionContext {
 
         if (expectedDataType.isAssignableFrom(theExpectedDataDefinition.getType())) {
             Object aValue = dataValues.get(dataName);
+            if (aValue == null) {//if value is null, try to get it from auto mapping
+                String[] split = dataName.split("\\.");//to get actual output name for auto mapping
+                aValue = AutoMappingMap.get(new AutoMapping(expectedDataType,split[1]));
+                if(aValue == null) {
+                    System.out.println("Didnt find value for " + dataName + " in AutoMapping");
+                    return null;
+                }
+                else{
+                    System.out.println("Found value for " + dataName + " in AutoMapping");
+                    return expectedDataType.cast(aValue);
+                }
+            }
             // what happens if it does not exist ?
 
             return expectedDataType.cast(aValue);
@@ -70,11 +83,13 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         // assuming that from the data name we can get to its data definition
         DataDefinition theData = (DataDefinition) dataDefinitions.get(dataName);
 
-        dataName = getCustomMapping(dataName);
+        String customMapping = getCustomMapping(dataName);
+        String[] split = dataName.split("\\.");//to get actual output name for auto mapping
 
         // we have the DD type, so we can make sure that its from the same type
         if (theData.getType().isAssignableFrom(value.getClass())) {
-            dataValues.put(dataName, value);
+            dataValues.put(customMapping, value);
+            AutoMappingMap.put(new AutoMapping(theData.getType(),split[1]),value);
             return true;
         } else {
             // error handling of some sort...
@@ -109,9 +124,38 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
     @Override
+    public void addStepAlias(String key, String stepAlias, boolean skipIfFail)
+    {//TODO: check why skipIfFail was wrong + how to actually use it
+        if(stepAliases.containsKey(key))
+            stepAliases.get(key).add(new stepAliasing(stepAlias,skipIfFail));
+        else {
+            Queue<stepAliasing> queue = new LinkedList<>();
+            queue.add(new stepAliasing(stepAlias,skipIfFail));
+            stepAliases.put(key,queue);
+        }
+    }
+
+    @Override
     public String getAlias(String key)
     {
-        return FlowLevelAliases.get(key);
+        if(FlowLevelAliases.containsKey(key))
+            return FlowLevelAliases.get(key);
+        else {
+            Queue<stepAliasing> queue = stepAliases.get(key);
+            return queue.poll().getStepAlias();
+        }
+    }
+
+    @Override
+    public String getStepAlias(String key)
+    {
+        if(stepAliases.containsKey(key))
+            return stepAliases.get(key).poll().getStepAlias();
+        else {
+            System.out.println("No alias for " + key);
+            return null;
+            //TODO: throw exception
+        }
     }
 
     @Override

@@ -11,12 +11,13 @@ public interface StepExecutionContext {
     void addStep(String key, Object value,DataDefinition dataDefinition, String alias, String customMapping);
 
     public void addSummaryLine(String key, String summaryLine);
-
+    public void addStepAlias(String key, String stepAlias, boolean skipIfFail);
     public void addLogLine(String key, String log);
     public ArrayList<String> getLogs(String key) ;
     public String getSummaryLine(String key);
     public String getAlias(String key);
     public String getCustomMapping(String key);
+    public String getStepAlias(String key);
 
 
     /*

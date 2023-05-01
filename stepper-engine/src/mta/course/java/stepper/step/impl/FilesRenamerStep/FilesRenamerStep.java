@@ -22,9 +22,10 @@ public class FilesRenamerStep extends AbstractStepDefinition {
     }
 
     public StepResult invoke(StepExecutionContext context) {
-        ArrayList<File> filesRename = context.getDataValue(context.getAlias(this.name()+"."+"FILES_TO_RENAME"), ArrayList.class);
-        String prefix = context.getDataValue(context.getAlias(this.name()+"."+"PREFIX"), String.class);
-        String suffix = context.getDataValue(context.getAlias(this.name()+"."+"SUFFIX"), String.class);
+        String finalStepName = context.getStepAlias(this.name());
+        ArrayList<File> filesRename = context.getDataValue(context.getAlias(finalStepName+"."+"FILES_TO_RENAME"), ArrayList.class);
+        String prefix = context.getDataValue(context.getAlias(finalStepName+"."+"PREFIX"), String.class);
+        String suffix = context.getDataValue(context.getAlias(finalStepName+"."+"SUFFIX"), String.class);
 
         ArrayList<String> renameColumns = new ArrayList<String>();
         renameColumns.add("No.");
@@ -70,7 +71,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
         }
 
 
-        context.storeDataValue(context.getAlias(this.name()+"."+"RENAME_RESULT"), renameTable);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"RENAME_RESULT"), renameTable);
 
         // One or more of the files failed!
         if (failedFileArray.size() >= 1 ){

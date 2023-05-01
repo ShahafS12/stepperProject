@@ -23,7 +23,8 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context)
     {
         // fetch inputs here, somehow
-        ArrayList<File> filesList = context.getDataValue(context.getAlias("FILES_LIST"), ArrayList.class);
+        String finalStepName = context.getStepAlias(this.name());
+        ArrayList<File> filesList = context.getDataValue(context.getAlias(finalStepName+"."+"FILES_LIST"), ArrayList.class);//TODO check if it's ok
 
         ArrayList<File> notDeletedList = new ArrayList<File>();
         int deletedSuccess = 0;
@@ -41,7 +42,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         }
 
 
-        context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST"), notDeletedList);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"DELETED_LIST"), notDeletedList);
 
         // add outputs here, somehow
         HashMap<String, Number> deletionStat = new HashMap<String, Number>();
@@ -51,7 +52,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             String summaryLineStep = "Deleted all the files that were asked!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST"), deletionStat);
+            context.storeDataValue(context.getAlias(finalStepName+"."+"DELETED_LIST"), deletionStat);
 
             return StepResult.SUCCESS;
         } else if (deletedSuccess == 0) {
