@@ -25,12 +25,14 @@ public class FLowExecutor {
             StepDefinition stepDefinition = step.getStepDefinition();
             List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
             List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
+            context.addStepAlias(step.getStepName(), step.getFinalStepName(),step.skipIfFail());
             for (DataDefinitionDeclaration input : inputs) {
                 context.addStep(step.getFinalStepName() + "." + input.getName(),
                         input.dataDefinition().getValue(input.userString()),
                         input.dataDefinition(),
                         flowExecution.getFlowDefinition().getFlowLevelAlias(step.getFinalStepName() + "." + input.getName()),
                         flowExecution.getFlowDefinition().getFlowLevelCustomMapping(step.getFinalStepName() + "." + input.getName())
+
                         );
             }
             for (DataDefinitionDeclaration output : outputs) {

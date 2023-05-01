@@ -26,8 +26,9 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context)
     {
         // fetch inputs here, somehow
-        String folderName = context.getDataValue(context.getAlias(this.name()+"."+"FOLDER_NAME"), String.class);
-        String filter = context.getDataValue(context.getAlias(this.name()+"."+"FILTER"), String.class);
+        String finalStepName = context.getStepAlias(this.name());
+        String folderName = context.getDataValue(context.getAlias(finalStepName+"."+"FOLDER_NAME"), String.class);
+        String filter = context.getDataValue(context.getAlias(finalStepName+"."+"FILTER"), String.class);
 
         // do some complex logic...
         String beforeReading = "Reading folder " + folderName + " content with filter " + filter;
@@ -72,8 +73,8 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         List<File> filesList = Arrays.asList(files);
         ArrayList<File> filesArrayList = new ArrayList<>(filesList);
 
-        context.storeDataValue(context.getAlias(this.name()+"."+"FILES_LIST"), filesArrayList);
-        context.storeDataValue(context.getAlias(this.name()+"."+"TOTAL_FOUND"), totalFilesFound);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"FILES_LIST"), filesArrayList);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"TOTAL_FOUND"), totalFilesFound);
 
         // through the context, as part of writing the step's logic I should be able to:
         // 1. add log lines
