@@ -14,6 +14,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     private final Map<String, String> CustomMapping;
     private final Map<AutoMapping,Object> AutoMappingMap;
     private final Map<String, Queue<stepAliasing>> stepAliases;
+    private final Map<String,String> flowFreeInputs;
 
 
     public StepExecutionContextImpl() {
@@ -25,6 +26,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         CustomMapping = new HashMap<>();
         AutoMappingMap = new HashMap<>();
         stepAliases = new HashMap<>();
+        flowFreeInputs = new HashMap<>();
     }
 
     @Override

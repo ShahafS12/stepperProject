@@ -82,7 +82,16 @@ public class FlowDefinitionImpl implements FlowDefinition {
 
     @Override
     public List<DataDefinitionDeclaration> getFlowFreeInputs() {
-        return new ArrayList<>();
+        for(StepUsageDeclaration step :steps)
+        {
+            for(DataDefinitionDeclaration dataDefinitionDeclaration : step.getStepDefinition().inputs())
+            {
+                if(!flowOutputs.contains(dataDefinitionDeclaration.getName()))
+                    flowFreeInputs.add(dataDefinitionDeclaration.getName());
+            }
+        }
+        return null;//TODO: implement
+
     }
 
     @Override
