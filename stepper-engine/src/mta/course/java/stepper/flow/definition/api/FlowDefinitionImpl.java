@@ -10,22 +10,28 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final String name;
     private final String description;
     private final List<String> flowOutputs;
+    private final List<String> flowFreeInputs;//TODO create a function that will return the free inputs
     private final List<StepUsageDeclaration> steps;
     private final Map<String,String> flowLevelAlias;
     private final Map<String, String> customMapping;
+    private  boolean readonly;
 
-    public FlowDefinitionImpl(String name, String description) {
+    public FlowDefinitionImpl(String name, String description) {//TODO delete this after we are sure we don't need it
         this.name = name;
         this.description = description;
         flowOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
+        flowFreeInputs = new ArrayList<>();
+        readonly = true;
     }
 
     public FlowDefinitionImpl(STFlow stFlow)
     {
+        readonly = true;
         this.name = stFlow.getName();
+        flowFreeInputs = new ArrayList<>();
         this.description = stFlow.getSTFlowDescription();
         String[] output = stFlow.getSTFlowOutput().split(",");
         flowOutputs = Arrays.asList(output);
@@ -35,7 +41,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
         {
-            steps.add(new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i)));
+            StepUsageDeclaration stepUsageDeclaration = new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i));
+            steps.add(stepUsageDeclaration);//TODO make sure changes didnt fuck anything up
+            if(!stepUsageDeclaration.getStepDefinition().isReadonly())//if we found a step that is not readonly, the flow is not readonly
+                readonly = false;
         }
         STFlowLevelAliasing stFlowLevelAliasing = stFlow.getSTFlowLevelAliasing();
         if(stFlowLevelAliasing!=null) {
@@ -73,7 +82,16 @@ public class FlowDefinitionImpl implements FlowDefinition {
 
     @Override
     public List<DataDefinitionDeclaration> getFlowFreeInputs() {
-        return new ArrayList<>();
+        for(StepUsageDeclaration step :steps)
+        {
+            for(DataDefinitionDeclaration dataDefinitionDeclaration : step.getStepDefinition().inputs())
+            {
+                if(!flowOutputs.contains(dataDefinitionDeclaration.getName()))
+                    flowFreeInputs.add(dataDefinitionDeclaration.getName());
+            }
+        }
+        return null;//TODO: implement
+
     }
 
     @Override

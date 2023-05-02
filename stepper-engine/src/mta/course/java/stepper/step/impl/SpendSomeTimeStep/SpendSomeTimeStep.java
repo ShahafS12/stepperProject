@@ -9,7 +9,7 @@ import mta.course.java.stepper.step.api.StepResult;
 
 public class SpendSomeTimeStep extends AbstractStepDefinition {
     public SpendSomeTimeStep() {
-        super("spend some time", true);
+        super("Spend Some Time", true);
         addInput(new DataDefinitionDeclarationImpl("TIME_TO_SPEND", DataNecessity.MANDATORY, "Total sleeping time(sec)", DataDefinitionRegistry.Number));
     }
 
