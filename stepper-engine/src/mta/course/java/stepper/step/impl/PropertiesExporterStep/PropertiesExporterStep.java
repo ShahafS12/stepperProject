@@ -35,7 +35,10 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
             int counterColumns = 0;
             for (String str:singleRowList){
                 tmp = "row-" + (i+1) + "." + columns.get(counterColumns) + "=" + str;
-                result = result + "\n" + tmp;
+                if (result == null)
+                    result = tmp;
+                else
+                    result = result + "\n" + tmp;
                 counterColumns++;
             }
             //result = "\n" + result;
