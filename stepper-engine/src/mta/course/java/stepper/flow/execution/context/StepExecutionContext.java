@@ -18,6 +18,7 @@ public interface StepExecutionContext {
     public String getAlias(String key);
     public String getCustomMapping(String key);
     public String getStepAlias(String key);
+    Object dataValueReturn (String key);
 
 
     /*

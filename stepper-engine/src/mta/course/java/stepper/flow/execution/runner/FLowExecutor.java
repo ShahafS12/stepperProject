@@ -65,10 +65,12 @@ public class FLowExecutor {
             // check if should continue etc..
         }
 
+
+
         double totalTimeFlow = flowExecution.timeTakenForFlow();
         System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
         System.out.println("Total Time: " + totalTimeFlow + " ms");
-        FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId(),flowResult,totalTimeFlow);
+        FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId(),flowResult,totalTimeFlow, flowExecution.getFlowDefinition(), context);
         return result;
     }
 }

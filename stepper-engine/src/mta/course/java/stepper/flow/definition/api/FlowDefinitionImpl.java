@@ -2,7 +2,9 @@ package mta.course.java.stepper.flow.definition.api;
 
 import dataloader.generated.*;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.StepDefinition;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 public class FlowDefinitionImpl implements FlowDefinition {
@@ -10,16 +12,23 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final String name;
     private final String description;
     private final List<String> flowOutputs;
-    private final List<String> flowFreeInputs;//TODO create a function that will return the free inputs
+    private final List<String> flowFreeInputs;
+    private final List<DataDefinitionDeclaration> flowFreeInputsDataDefenition;
+    private final List<String> flowFreeOutputs;
+    private final List<DataDefinitionDeclaration> flowFreeOutputsDataDefenition;
+
     private final List<StepUsageDeclaration> steps;
     private final Map<String,String> flowLevelAlias;
     private final Map<String, String> customMapping;
-    private  boolean readonly;
+    private boolean readonly;
 
     public FlowDefinitionImpl(String name, String description) {//TODO delete this after we are sure we don't need it
         this.name = name;
         this.description = description;
+        flowFreeInputsDataDefenition = new ArrayList<>();
+        flowFreeOutputsDataDefenition = new ArrayList<>();
         flowOutputs = new ArrayList<>();
+        flowFreeOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
@@ -32,9 +41,12 @@ public class FlowDefinitionImpl implements FlowDefinition {
         readonly = true;
         this.name = stFlow.getName();
         flowFreeInputs = new ArrayList<>();
+        flowFreeInputsDataDefenition = new ArrayList<>();
+        flowFreeOutputsDataDefenition = new ArrayList<>();
         this.description = stFlow.getSTFlowDescription();
         String[] output = stFlow.getSTFlowOutput().split(",");
         flowOutputs = Arrays.asList(output);
+        flowFreeOutputs = new ArrayList<>();
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
@@ -76,23 +88,84 @@ public class FlowDefinitionImpl implements FlowDefinition {
 
     @Override
     public void validateFlowStructure() {
-        // do some validation logic...
-        //TODO: implement
+        List<String> flowOutputsMayBeDeleted = new ArrayList<>();
+        for (int i=0; i<steps.size(); i++){
+            List<DataDefinitionDeclaration> inputStep =steps.get(i).getStepDefinition().inputs();
+            for (DataDefinitionDeclaration dataInput:inputStep){
+                    String key = steps.get(i).getFinalStepName() + "." + dataInput.getName();
+                    if (flowLevelAlias.get(key) != null)
+                        key = flowLevelAlias.get(key);
+
+                    if (flowFreeOutputs.contains(key)) // that means he found him
+                        flowFreeOutputs.remove(key);
+                    else {
+                        boolean flagStr = false;
+                        for (String str:flowFreeOutputs){
+                            String [] tmp = str.split("\\.");
+                            if (tmp[1].equals(dataInput.getName()) && isDataDefEquals(tmp[0], tmp[1], dataInput.dataDefinition().getName())){
+                                //flowFreeOutputs.remove(str);
+                                flowOutputsMayBeDeleted.add(str);
+                                flagStr = true;
+                            }
+                        }
+                        if(!flagStr)
+                            flowFreeInputs.add(key);
+                    }
+
+
+            }
+            List<DataDefinitionDeclaration> outputStep = steps.get(i).getStepDefinition().outputs();
+            for (DataDefinitionDeclaration dataOutput:outputStep){
+                String key = steps.get(i).getFinalStepName() + "." + dataOutput.getName();
+                if (flowLevelAlias.get(key) != null)
+                    key = flowLevelAlias.get(key);
+                if (customMapping.get(key) != null){
+                    flowFreeOutputs.add(customMapping.get(key));
+                }
+                else
+                    flowFreeOutputs.add(key);
+            }
+        }
+        for (String str:flowOutputsMayBeDeleted){
+            if (flowFreeOutputs.contains(str))
+                flowFreeOutputs.remove(str);
+        }
+        convertInputDataFromArrayStringToDD(flowFreeInputs);
+        convertOutpusDataFromArrayStringToDD(flowFreeOutputs);
     }
 
     @Override
-    public List<DataDefinitionDeclaration> getFlowFreeInputs() {
-        for(StepUsageDeclaration step :steps)
-        {
-            for(DataDefinitionDeclaration dataDefinitionDeclaration : step.getStepDefinition().inputs())
-            {
-                if(!flowOutputs.contains(dataDefinitionDeclaration.getName()))
-                    flowFreeInputs.add(dataDefinitionDeclaration.getName());
+    public boolean isDataDefEquals(String stepName, String outputName,String dataDefName){
+        for (StepUsageDeclaration step:steps){
+            if (step.getFinalStepName().equals(stepName)){
+                List<DataDefinitionDeclaration> outputsOfThisStep = step.getStepDefinition().outputs();
+                for (DataDefinitionDeclaration output:outputsOfThisStep){
+                    String nameAfterAliasing = output.getName();
+                    String checkAliasing = stepName+"."+output.getName();
+                    if (flowLevelAlias.get(checkAliasing) != null){
+                        checkAliasing = flowLevelAlias.get(checkAliasing);
+                        String [] tmp = checkAliasing.split("\\.");
+                        nameAfterAliasing = tmp[1];
+                    }
+                    if (nameAfterAliasing.equals(outputName) && output.dataDefinition().getName().equals(dataDefName))
+                       return true;
+                }
             }
         }
-        return null;//TODO: implement
-
+        return false;
     }
+
+    @Override
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+
+    @Override
+    public List<DataDefinitionDeclaration> getFlowFreeInputs() {
+        return flowFreeInputsDataDefenition;
+    }
+
 
     @Override
     public String getName() {
@@ -117,6 +190,93 @@ public class FlowDefinitionImpl implements FlowDefinition {
     public String getFlowLevelAlias(String sourceDataName)
     {
         return flowLevelAlias.get(sourceDataName);
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readonly;
+    }
+
+    @Override
+    public void convertInputDataFromArrayStringToDD(List<String> inputs) {
+        for (String input:inputs){
+            String [] tmp = input.split("\\.");
+            for (StepUsageDeclaration step:steps){
+                if (step.getFinalStepName().equals(tmp[0])){
+                    for(DataDefinitionDeclaration inputDataDef:step.getStepDefinition().inputs()){
+                        String inputNameAlias = step.getFinalStepName()+"."+inputDataDef.getName();
+                        if (flowLevelAlias.get(inputNameAlias)!=null) {
+                            inputNameAlias = flowLevelAlias.get(inputNameAlias);
+                        }
+                        if(input.equals(inputNameAlias)){
+                            flowFreeInputsDataDefenition.add(inputDataDef);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void convertOutpusDataFromArrayStringToDD(List<String> outputs) {
+        for (String output:outputs){
+            String [] tmp = output.split("\\.");
+            for (StepUsageDeclaration step:steps){
+                if (step.getFinalStepName().equals(tmp[0])){
+                    for(DataDefinitionDeclaration outputDataDef:step.getStepDefinition().outputs()){
+                        String outputNameAlias = step.getFinalStepName()+"."+outputDataDef.getName();
+                        if (flowLevelAlias.get(outputNameAlias)!=null) {
+                            outputNameAlias = flowLevelAlias.get(outputNameAlias);
+                        }
+                        if(output.equals(outputNameAlias)){
+                            flowFreeOutputsDataDefenition.add(outputDataDef);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<String> getFlowFreeInputsString() {
+        return flowFreeInputs;
+    }
+
+    @Override
+    public List<DataDefinitionDeclaration> getFlowFreeOutputs() {
+        return flowFreeOutputsDataDefenition;
+    }
+
+    @Override
+    public List<String> getFlowFreeOutputsString() {
+        return flowFreeOutputs;
+    }
+
+    @Override
+    public void printFreeInputs() {
+        System.out.println("----INPUTS----");
+        for(int i=0; i<flowFreeInputs.size(); i++){
+            String[] freeInput = flowFreeInputs.get(i).split("\\.");
+            System.out.println(freeInput[1]);
+            System.out.println(flowFreeInputsDataDefenition.get(i).dataDefinition().getName());
+            System.out.println(freeInput[0]);
+            System.out.println(flowFreeInputsDataDefenition.get(i).necessity());
+            System.out.println();
+        }
+    }
+
+    @Override
+    public void printFreeOutputs() {
+        System.out.println("----OUTPUTS----");
+        for(int i=0; i<flowFreeOutputs.size(); i++){
+            String[] freeOutput = flowFreeOutputs.get(i).split("\\.");
+            System.out.println(freeOutput[1]);
+            System.out.println(flowFreeOutputsDataDefenition.get(i).dataDefinition().getName());
+            System.out.println(freeOutput[0]);
+            System.out.println();
+        }
     }
 
     @Override

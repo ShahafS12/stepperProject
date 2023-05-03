@@ -6,7 +6,7 @@ import mta.course.java.stepper.step.api.StepDefinition;
 
 public class StepUsageDeclarationImpl implements StepUsageDeclaration {
     private final StepDefinition stepDefinition;
-    private final boolean skipIfFail;
+    private boolean skipIfFail;
     private final String stepName;
     private final String stepAlias;
 
@@ -33,7 +33,13 @@ public class StepUsageDeclarationImpl implements StepUsageDeclaration {
 
     public StepUsageDeclarationImpl(STStepInFlow stStepInFlow)
     {
-        this.skipIfFail = stStepInFlow.isContinueIfFailing()==null;
+
+        Object contuinueIfFailing = stStepInFlow.isContinueIfFailing();
+        if (contuinueIfFailing != null && contuinueIfFailing.equals(Boolean.FALSE))
+            skipIfFail = false;
+        else
+            skipIfFail = true;
+
         this.stepName = stStepInFlow.getName();
         StepDefinitionRegistry stepDefinitionRegistry = StepDefinitionRegistry.fromString(stStepInFlow.getName());
         stepDefinition = stepDefinitionRegistry.getStepDefinition();
@@ -60,4 +66,11 @@ public class StepUsageDeclarationImpl implements StepUsageDeclaration {
     public boolean skipIfFail() {
         return skipIfFail;
     }
+
+    @Override
+    public void setSkipIfFail(boolean skipIf) {
+        skipIfFail = skipIf;
+    }
+
+
 }

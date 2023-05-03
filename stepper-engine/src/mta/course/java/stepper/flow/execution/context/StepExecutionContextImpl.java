@@ -1,6 +1,8 @@
 package mta.course.java.stepper.flow.execution.context;
 
 import mta.course.java.stepper.dd.api.DataDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 
 import java.util.*;
 
@@ -158,6 +160,11 @@ public class StepExecutionContextImpl implements StepExecutionContext {
             return null;
             //TODO: throw exception
         }
+    }
+
+    @Override
+    public Object dataValueReturn(String key) {
+        return dataValues.get(key);
     }
 
     @Override

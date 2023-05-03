@@ -61,7 +61,7 @@ public class Menu
                 case 2:
                     // Show flows
                     System.out.println("Choose a flow: ");
-                    System.out.println("0: return to main menu ");
+                    System.out.println("0: return to main menu "); //TODO: 0 return to Main Menu
                     for (int i = 0; i < flowNames.size(); i++) {
                         System.out.println(i + 1 + ": " + flowNames.get(i));
                     }
@@ -71,13 +71,21 @@ public class Menu
                     System.out.println(flow.getName());
                     System.out.println(flow.getDescription());
                     System.out.println(flow.getFlowFormalOutputs());
-                    System.out.println(); // TODO: If flow is read-only?
+                    System.out.println("The flow read-only: "+flow.isReadOnly());
                     List<StepUsageDeclaration> steps = flow.getFlowSteps();
                     for (int i = 0; i < steps.size(); i++) {
-                        System.out.println(steps.get(i).getStepName());
+                        StepUsageDeclaration step = steps.get(i);
+                        if (step.getStepName() != step.getFinalStepName())
+                            System.out.println(step.getStepName() + "," + step.getFinalStepName());
+                        else
+                            System.out.println(step.getStepName());
+                        System.out.println("Is readOnly: "+step.getStepDefinition().isReadonly());
+                        System.out.println();
                     }
-                    System.out.println();
-                    // TODO: keep doing
+                    flow.validateFlowStructure(); // TODO: validate needs to be somewhere else
+                    flow.printFreeInputs();
+                    flow.printFreeOutputs();
+
                     break;
                 case 3:
                     // Execute flow
