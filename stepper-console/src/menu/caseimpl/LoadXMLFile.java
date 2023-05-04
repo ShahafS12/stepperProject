@@ -15,12 +15,17 @@ public class LoadXMLFile
 {
     public StepperDefinition loadXMLFile() throws IOException, ParserConfigurationException, SAXException
     {
-        // Prompt the user for the XML file path
-        System.out.println("Enter the full path to the XML file:");
-        Scanner scanner = new Scanner(System.in);
-        String filePath = scanner.nextLine();
+        try {
+            // Prompt the user for the XML file path
+            System.out.println("Enter the full path to the XML file:");
+            Scanner scanner = new Scanner(System.in);
+            String filePath = scanner.nextLine();
 
-        // Load the flow from the XML file
-        return   loadFlowFromXmlFile(filePath);
+            // Load the flow from the XML file
+            return loadFlowFromXmlFile(filePath);
+        }
+        catch (RuntimeException e){
+            throw new RuntimeException("Error initializing stepper definition", e);
+        }
     }
 }

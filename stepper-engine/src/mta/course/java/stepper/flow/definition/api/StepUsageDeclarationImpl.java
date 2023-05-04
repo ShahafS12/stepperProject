@@ -3,6 +3,7 @@ package mta.course.java.stepper.flow.definition.api;
 import dataloader.generated.STStepInFlow;
 import mta.course.java.stepper.step.StepDefinitionRegistry;
 import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.step.impl.HelloWorldStep;
 
 public class StepUsageDeclarationImpl implements StepUsageDeclaration {
     private final StepDefinition stepDefinition;
@@ -42,16 +43,25 @@ public class StepUsageDeclarationImpl implements StepUsageDeclaration {
 
         this.stepName = stStepInFlow.getName();
         StepDefinitionRegistry stepDefinitionRegistry = StepDefinitionRegistry.fromString(stStepInFlow.getName());
-        stepDefinition = stepDefinitionRegistry.getStepDefinition();
-        if(stStepInFlow.getAlias() == null)
-            stepAlias = stepName;
-        else
-        stepAlias = stStepInFlow.getAlias();
+        if(stepDefinitionRegistry == null) {
+            stepDefinition = new HelloWorldStep();
+            stepAlias = null;
+        }
+        else {
+            stepDefinition = stepDefinitionRegistry.getStepDefinition();
+            if (stStepInFlow.getAlias() == null)
+                stepAlias = stepName;
+            else
+                stepAlias = stStepInFlow.getAlias();
+        }
     }
 
     @Override
     public String getFinalStepName() {
-        return stepAlias;
+        if(stepAlias == null)
+            return stepName;
+        else
+            return stepAlias;
     }
 
     @Override

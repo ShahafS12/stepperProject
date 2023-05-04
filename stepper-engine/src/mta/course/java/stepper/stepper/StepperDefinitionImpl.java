@@ -21,11 +21,16 @@ public class StepperDefinitionImpl implements StepperDefinition
         flows = new ArrayList<>();
     }
     public StepperDefinitionImpl(STStepper stepper){
-        flows = new ArrayList<>();
-        STFlows stFlows = stepper.getSTFlows();
-        List<STFlow> stFlowList = stFlows.getSTFlow();
-        for (int i = 0; i < stFlowList.size(); i++) {
-            flows.add(new FlowDefinitionImpl(stFlowList.get(i)));
+        try {
+            flows = new ArrayList<>();
+            STFlows stFlows = stepper.getSTFlows();
+            List<STFlow> stFlowList = stFlows.getSTFlow();
+            for (int i = 0; i < stFlowList.size(); i++) {
+                flows.add(new FlowDefinitionImpl(stFlowList.get(i)));
+            }
+        }
+        catch (RuntimeException e){
+            throw new RuntimeException("Error initializing stepper definition", e);
         }
     }
     @Override

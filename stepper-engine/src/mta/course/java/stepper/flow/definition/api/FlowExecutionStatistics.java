@@ -16,6 +16,7 @@ public class FlowExecutionStatistics
     private FlowDefinition flow;
     private StepExecutionContext context;
 
+
     public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowResult flowResult, double duration,FlowDefinition flow, StepExecutionContext context) {
         this.startTime = startTime;//TODO check if format matches HH:MM:SS
         this.flowName = flowName;
@@ -69,5 +70,23 @@ public class FlowExecutionStatistics
                 System.out.println(content);
             System.out.println();
         }
+    }
+    public String getFlowName() {
+        return flowName;
+    }
+    public String getFlowId() {
+        return flowId;
+    }
+    public FlowResult getFlowResult() {
+        return flowResult;
+    }
+    public double getDuration() {
+        return duration;
+    }
+    public FlowDefinition getFlow() {
+        return flow;
+    }
+    public Time getStartTime() {
+        return startTime;
     }
 }

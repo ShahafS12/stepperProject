@@ -12,14 +12,14 @@ public class Main {
 
         FlowDefinition flow1 = new FlowDefinitionImpl("Flow 1", "Hello world");
         flow1.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.HELLO_WORLD.getStepDefinition()));
-        flow1.validateFlowStructure();
+        flow1.createFreeInputOutputLists();
 
         FlowDefinition flow2 = new FlowDefinitionImpl("Flow 2", "show two person details");
         flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.HELLO_WORLD.getStepDefinition()));
         flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PERSON_DETAILS.getStepDefinition(), "Person 1 Details"));
         //flow2.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.PERSON_DETAILS.getStepDefinition(), "Person 2 Details"));
         flow2.getFlowFormalOutputs().add("DETAILS");
-        flow2.validateFlowStructure();
+        flow2.createFreeInputOutputLists();
 
         FlowDefinition flow3 = new FlowDefinitionImpl("Flow 3", "Checking steps");
         flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.SPEND_SOME_TIME.getStepDefinition()));

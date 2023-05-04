@@ -6,6 +6,7 @@ import mta.course.java.stepper.step.api.StepDefinition;
 
 import javax.xml.crypto.Data;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FlowDefinitionImpl implements FlowDefinition {
 
@@ -13,11 +14,13 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final String description;
     private final List<String> flowOutputs;
     private final List<String> flowFreeInputs;
+    private final Map<String,Class<?>> allFlowInputs;
+    private final Map<String,Class<?>> allFlowOutputs;
     private final List<DataDefinitionDeclaration> flowFreeInputsDataDefenition;
     private final List<String> flowFreeOutputs;
     private final List<DataDefinitionDeclaration> flowFreeOutputsDataDefenition;
-
     private final List<StepUsageDeclaration> steps;
+    private final List<String> finalStepNames;
     private final Map<String,String> flowLevelAlias;
     private final Map<String, String> customMapping;
     private boolean readonly;
@@ -34,6 +37,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
         customMapping = new HashMap<>();
         flowFreeInputs = new ArrayList<>();
         readonly = true;
+        allFlowInputs = new HashMap<>();
+        allFlowOutputs = new HashMap<>();
+        finalStepNames = new ArrayList<>();
     }
 
     public FlowDefinitionImpl(STFlow stFlow)
@@ -43,6 +49,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowFreeInputs = new ArrayList<>();
         flowFreeInputsDataDefenition = new ArrayList<>();
         flowFreeOutputsDataDefenition = new ArrayList<>();
+        allFlowInputs = new HashMap<>();
+        allFlowOutputs = new HashMap<>();
+        finalStepNames = new ArrayList<>();
         this.description = stFlow.getSTFlowDescription();
         String[] output = stFlow.getSTFlowOutput().split(",");
         flowOutputs = Arrays.asList(output);
@@ -54,7 +63,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
         for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
         {
             StepUsageDeclaration stepUsageDeclaration = new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i));
-            steps.add(stepUsageDeclaration);//TODO make sure changes didnt fuck anything up
+            steps.add(stepUsageDeclaration);
+            finalStepNames.add(stepUsageDeclaration.getFinalStepName());
             if(!stepUsageDeclaration.getStepDefinition().isReadonly())//if we found a step that is not readonly, the flow is not readonly
                 readonly = false;
         }
@@ -74,11 +84,37 @@ public class FlowDefinitionImpl implements FlowDefinition {
                         stCustomMapping.getTargetStep()+"."+ stCustomMapping.getTargetData());
             }
         }
+        for (int i=0; i<steps.size(); i++) {
+            List<DataDefinitionDeclaration> inputStep = steps.get(i).getStepDefinition().inputs();
+            List<DataDefinitionDeclaration> outputStep = steps.get(i).getStepDefinition().outputs();
+            for (DataDefinitionDeclaration dataInput : inputStep) {
+                String inputToAdd = flowLevelAlias.get(steps.get(i).getFinalStepName() + "." + dataInput.getName());
+                if (inputToAdd == null)
+                    inputToAdd = steps.get(i).getFinalStepName() + "." + dataInput.getName();
+                allFlowInputs.put(inputToAdd, dataInput.dataDefinition().getType());
+
+            }
+            for (DataDefinitionDeclaration dataOutput : outputStep) {
+                String outputToAdd = flowLevelAlias.get(steps.get(i).getFinalStepName() + "." + dataOutput.getName());
+                if (outputToAdd == null)
+                    outputToAdd = steps.get(i).getFinalStepName() + "." + dataOutput.getName();
+                allFlowOutputs.put(outputToAdd, dataOutput.dataDefinition().getType());
+            }
+        }
+        createFreeInputOutputLists();
+        FlowValidator flowValidator = new FlowValidator(this);
+        boolean flowIsValid = flowValidator.validate();
+        if(!flowIsValid)
+            throw new RuntimeException("Flow is not valid");
     }
 
     @Override
     public void addFlowOutput(String outputName) {
         flowOutputs.add(outputName);
+    }
+    @Override
+    public List<String> getFinalStepNames() {
+        return finalStepNames;
     }
 
     @Override
@@ -87,7 +123,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     }
 
     @Override
-    public void validateFlowStructure() {
+    public void createFreeInputOutputLists() {
         List<String> flowOutputsMayBeDeleted = new ArrayList<>();
         for (int i=0; i<steps.size(); i++){
             List<DataDefinitionDeclaration> inputStep =steps.get(i).getStepDefinition().inputs();
@@ -191,16 +227,32 @@ public class FlowDefinitionImpl implements FlowDefinition {
     {
         return flowLevelAlias.get(sourceDataName);
     }
+    @Override
+    public Map<String,String> getAllFlowLevelAlias()
+    {
+        return flowLevelAlias;
+    }
 
     @Override
     public boolean isReadOnly() {
         return readonly;
     }
+    @Override
+    public Map<String,Class<?>> getAllInputs() {
+        return allFlowInputs;
+    }
+    @Override
+    public Map<String,Class<?>> getAllOutputs() {
+        return allFlowOutputs;
+    }
+
 
     @Override
     public void convertInputDataFromArrayStringToDD(List<String> inputs) {
         for (String input:inputs){
             String [] tmp = input.split("\\.");
+            if(tmp.length!=2)
+                return;
             for (StepUsageDeclaration step:steps){
                 if (step.getFinalStepName().equals(tmp[0])){
                     for(DataDefinitionDeclaration inputDataDef:step.getStepDefinition().inputs()){
@@ -287,5 +339,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
             return customMapping.get(nameAfterAlias);
         else
             return customMapping.get(name);
+    }
+    @Override
+    public Map<String,String> getCustomMapping()
+    {
+        return customMapping;
     }
 }

@@ -157,8 +157,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
             return stepAliases.get(key).poll().getStepAlias();
         else {
             System.out.println("No alias for " + key);
-            return null;
-            //TODO: throw exception
+            return "Fake step";
         }
     }
 
