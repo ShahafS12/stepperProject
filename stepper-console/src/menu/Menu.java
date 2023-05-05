@@ -160,7 +160,6 @@ public class Menu
             System.out.println("Is readOnly: "+step.getStepDefinition().isReadonly());
             System.out.println();
         }
-        flow.createFreeInputOutputLists(); // TODO: validate needs to be somewhere else
         flow.printFreeInputs();
         flow.printFreeOutputs();
     }

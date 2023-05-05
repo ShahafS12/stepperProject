@@ -33,7 +33,7 @@ public class FlowValidator
         return false;
     }
     private boolean duplicateOutputNames(){
-        List<String> outputs = flowDefinition.getFlowFormalOutputs();
+        List<String> outputs = flowDefinition.getFlowFreeOutputsString();
         Set<String> set = new HashSet<>(outputs);
         if(set.size() < outputs.size()){
             System.out.println("The flow contains duplicate output names");
