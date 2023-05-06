@@ -20,7 +20,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         addInput(new DataDefinitionDeclarationImpl("FILES_LIST", DataNecessity.MANDATORY, "Files to extract", DataDefinitionRegistry.LIST));
         addInput(new DataDefinitionDeclarationImpl("LINE", DataNecessity.MANDATORY, "Line number to extract", DataDefinitionRegistry.Number));
 
-        addOutput(new DataDefinitionDeclarationImpl("SOURCE", DataNecessity.NA, "Data extraction", DataDefinitionRegistry.RELATION));
+        addOutput(new DataDefinitionDeclarationImpl("DATA", DataNecessity.NA, "Data extraction", DataDefinitionRegistry.RELATION));
     }
 
     public StepResult invoke(StepExecutionContext context){
@@ -70,7 +70,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         }
 
 
-        context.storeDataValue(context.getAlias(finalStepName+"."+"SOURCE",RelationData.class), filesTable);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"DATA",RelationData.class), filesTable);
 
         String summaryLine = "Successfully finish extractor line " + line + " from all files provided";
         context.addSummaryLine("FilesContentExtractor", summaryLine);

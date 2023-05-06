@@ -120,9 +120,9 @@ public class Menu
                 uniqueFlowIdCounter++;
             }
         }
-        catch (Exception e)
+        catch (RuntimeException e)
         {
-            System.out.println("Invalid XML file");
+            System.out.println("Invalid XML file"+e.getMessage());
         }
     }
 

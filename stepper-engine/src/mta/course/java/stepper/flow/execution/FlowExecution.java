@@ -1,9 +1,11 @@
 package mta.course.java.stepper.flow.execution;
 
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.step.api.StepExecutionStatistics;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 public class FlowExecution {
@@ -15,6 +17,7 @@ public class FlowExecution {
     private FlowExecutionResult flowExecutionResult;
     private Map<String,Object> freeInputs;
     private int countHowManyTimesExecution;
+    private List<StepExecutionStatistics> stepExecutionStatisticsList;
 
     // lots more data that needed to be stored while flow is being executed...
 
