@@ -44,8 +44,7 @@ public class StepUsageDeclarationImpl implements StepUsageDeclaration {
         this.stepName = stStepInFlow.getName();
         StepDefinitionRegistry stepDefinitionRegistry = StepDefinitionRegistry.fromString(stStepInFlow.getName());
         if(stepDefinitionRegistry == null) {
-            stepDefinition = new HelloWorldStep();
-            stepAlias = null;
+            throw new RuntimeException("Step " + stStepInFlow.getName() + " not found");
         }
         else {
             stepDefinition = stepDefinitionRegistry.getStepDefinition();

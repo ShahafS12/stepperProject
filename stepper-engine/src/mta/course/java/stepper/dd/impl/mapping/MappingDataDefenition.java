@@ -12,7 +12,6 @@ public class MappingDataDefenition extends AbstractDataDefinition
         super("Mapping", false, Map.class);
     }
     public Map<String, DataDefinition> getValue(String name){
-        //TODO: implement
         return null;
     }
 }

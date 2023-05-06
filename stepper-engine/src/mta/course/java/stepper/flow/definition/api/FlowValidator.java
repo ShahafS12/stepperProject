@@ -34,7 +34,12 @@ public class FlowValidator
     }
     private boolean duplicateOutputNames(){
         List<String> outputs = flowDefinition.getFlowFreeOutputsString();
-        Set<String> set = new HashSet<>(outputs);
+        Map<String,Class<?>> allOutputs = flowDefinition.getAllOutputs();
+        Set<String> set = new HashSet<>();
+        for(String output : outputs){
+            String[] parts = output.split("\\.");
+            set.add(parts[1]);
+        }
         if(set.size() < outputs.size()){
             System.out.println("The flow contains duplicate output names");
         }
@@ -111,21 +116,17 @@ public class FlowValidator
         //multiple inputs with the same name but different types
         List<DataDefinitionDeclaration> flowFreeDD = flowDefinition.getFlowFreeInputs();
         List<String> flowFreeDDNames = flowDefinition.getFlowFreeInputsString();
-        Map<String,Class<?>> inputTypeMap = new HashMap<>();
+        Map<String,Class<?>> inputTypeMap = new HashMap<>(flowDefinition.getAllInputs());
         for (DataDefinitionDeclaration dd : flowFreeDD) {
-            if (inputTypeMap.containsKey(dd.dataDefinition().getName())) {
-                if (!inputTypeMap.get(dd.dataDefinition().getName()).equals(dd.dataDefinition().getType())) {
+            String[] ddparts = flowFreeDDNames.get(flowFreeDD.indexOf(dd)).split("\\.");
+            for(String key : inputTypeMap.keySet()){
+                String[] keyParts = key.split("\\.");
+                if(ddparts[1].equals(keyParts[1]) && !dd.dataDefinition().getType().equals(inputTypeMap.get(key))){
                     System.out.println("The flow contains multiple inputs with the same name but different types");
                     return true;
                 }
             }
-            else {
-                inputTypeMap.put(dd.dataDefinition().getName(), dd.dataDefinition().getType());
-            }
         }
-
         return false;
-
     }
-
 }

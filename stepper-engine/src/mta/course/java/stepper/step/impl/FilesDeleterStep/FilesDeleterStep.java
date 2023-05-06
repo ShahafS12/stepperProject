@@ -25,7 +25,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
     {
         // fetch inputs here, somehow
         String finalStepName = context.getStepAlias(this.name());
-        ArrayList<File> filesList = context.getDataValue(context.getAlias(finalStepName+"."+"FILES_LIST",ArrayList.class), ArrayList.class);//TODO check if it's ok
+        ArrayList<File> filesList = context.getDataValue(context.getAlias(finalStepName+"."+"FILES_LIST",ArrayList.class), ArrayList.class);
 
         ArrayList<File> notDeletedList = new ArrayList<File>();
         int deletedSuccess = 0;
