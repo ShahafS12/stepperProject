@@ -27,10 +27,16 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         String BeforeSleeping = "About to sleep for " + secondToSpend + " seconds...";
         context.addLogLine("SpendSomeTime", BeforeSleeping);
 
-        new Thread(() -> {
+         Thread myThread =  new Thread(() -> {
             sleepForSomeTime(secondToSpend*1000);
-        }).start();
-
+        });
+        myThread.start();
+        try {
+            myThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return StepResult.FAILURE;
+        }
         String afterSleeping = "Done sleeping...";
         context.addLogLine("SpendSomeTime", afterSleeping);
         context.addSummaryLine("SpendSomeTime", afterSleeping);
@@ -41,7 +47,7 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         try {
             Thread.sleep(time);
         } catch (InterruptedException ignored) {
-
+            ignored.printStackTrace();
         }
     }
 }

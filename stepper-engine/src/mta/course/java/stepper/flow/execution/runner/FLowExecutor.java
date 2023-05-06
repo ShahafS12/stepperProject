@@ -4,15 +4,17 @@ import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.definition.api.FlowResult;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.flow.execution.FlowExecution;
+import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContextImpl;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.step.api.StepResult;
 
-import java.sql.SQLOutput;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class FLowExecutor {
@@ -22,7 +24,7 @@ public class FLowExecutor {
         System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
         flowExecution.addingExectionCounter();
         Time executionStartTime = new Time(System.currentTimeMillis());
-        FlowResult flowResult = FlowResult.SUCCESS;
+        FlowExecutionResult flowResult = FlowExecutionResult.SUCCESS;
 
         StepExecutionContext context = new StepExecutionContextImpl(); // actual object goes here...
         List<StepUsageDeclaration> steps = flowExecution.getFlowDefinition().getFlowSteps();
@@ -59,21 +61,29 @@ public class FLowExecutor {
         for (int i = 0; i < flowExecution.getFlowDefinition().getFlowSteps().size(); i++) {
             StepUsageDeclaration stepUsageDeclaration = flowExecution.getFlowDefinition().getFlowSteps().get(i);
             System.out.println("Starting to execute step: " + stepUsageDeclaration.getFinalStepName());
+            Instant start = Instant.now();
             StepResult stepResult = stepUsageDeclaration.getStepDefinition().invoke(context);
             if (stepResult == StepResult.FAILURE)
-                flowResult = FlowResult.FAILURE;
-            if(stepResult == StepResult.WARNING && flowResult != FlowResult.FAILURE)
-                flowResult = FlowResult.WARNING;
+                flowResult = FlowExecutionResult.FAILURE;
+            if(stepResult == StepResult.WARNING && flowResult != FlowExecutionResult.FAILURE)
+                flowResult = FlowExecutionResult.WARNING;
+            Instant end = Instant.now();
+            double totalTime = Duration.between(start, end).toMillis();
+            if(flowExecution.getStepExecutionStatisticsMap().containsKey(stepUsageDeclaration.getFinalStepName())) {
+                flowExecution.getStepExecutionStatisticsMap().get(stepUsageDeclaration.getFinalStepName()).addStepExecutionStatistics(new StepExecutionStatistics(totalTime));
+            }
+            else {
+                flowExecution.getStepExecutionStatisticsMap().put(stepUsageDeclaration.getFinalStepName(), new StepExecutionStatistics(totalTime));
+            }
             System.out.println("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
             // check if should continue etc..
         }
-
-
-
+        flowExecution.setFlowExecutionResult(flowResult);
         double totalTimeFlow = flowExecution.timeTakenForFlow();
         System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
         System.out.println("Total Time: " + totalTimeFlow + " ms");
-        FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId(),flowResult,totalTimeFlow, flowExecution.getFlowDefinition(), context);
+        FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId()
+                ,flowResult,totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getStepExecutionStatisticsMap());
         return result;
     }
 }

@@ -1,30 +1,36 @@
 package mta.course.java.stepper.flow.definition.api;
 
+import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.StepExecutionStatistics;
 
 import java.sql.Time;
 import java.util.List;
+import java.util.Map;
 
 public class FlowExecutionStatistics
 {
     private final Time startTime;
     private final String flowName;
     private final String flowId;
-    private final FlowResult flowResult;
+    private final FlowExecutionResult flowResult;
     private final double duration;
     private FlowDefinition flow;
+    private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
     private StepExecutionContext context;
 
 
-    public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowResult flowResult, double duration,FlowDefinition flow, StepExecutionContext context) {
-        this.startTime = startTime;//TODO check if format matches HH:MM:SS
+    public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowExecutionResult FlowExecutionResult, double duration,FlowDefinition flow,
+                                   StepExecutionContext context,Map<String,StepExecutionStatistics> stepExecutionStatisticsMap){
+        this.startTime = startTime;
         this.flowName = flowName;
         this.flowId = flowId;
-        this.flowResult = flowResult;
+        this.flowResult = FlowExecutionResult;
         this.duration = duration;
         this.flow = flow;
         this.context = context;
+        this.stepExecutionStatisticsMap = stepExecutionStatisticsMap;
         //TODO add details about free inputs and outputs
     }
     public void printStatistics(){
@@ -37,6 +43,11 @@ public class FlowExecutionStatistics
         printFreeInputsExectued();
         System.out.println("----OUTPUTS----");
         printFreeOutputsExectued();
+        System.out.println("----STEPS----");
+        for (Map.Entry<String, StepExecutionStatistics> entry : stepExecutionStatisticsMap.entrySet()) {
+            System.out.println("Step name: " + entry.getKey());
+            entry.getValue().printStatistics();
+        }
     }
 
     public void printFreeInputsExectued() {
@@ -77,7 +88,7 @@ public class FlowExecutionStatistics
     public String getFlowId() {
         return flowId;
     }
-    public FlowResult getFlowResult() {
+    public FlowExecutionResult getFlowResult() {
         return flowResult;
     }
     public double getDuration() {
@@ -88,5 +99,8 @@ public class FlowExecutionStatistics
     }
     public Time getStartTime() {
         return startTime;
+    }
+    public Map<String, StepExecutionStatistics> getStepExecutionStatisticsMap() {
+        return stepExecutionStatisticsMap;
     }
 }
