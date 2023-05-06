@@ -18,7 +18,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         addInput(new DataDefinitionDeclarationImpl("FILES_LIST", DataNecessity.MANDATORY, "Files to delete", DataDefinitionRegistry.LIST));
 
         addOutput(new DataDefinitionDeclarationImpl("DELETED_LIST", DataNecessity.NA, "Files failed to be deleted", DataDefinitionRegistry.LIST));
-        addOutput(new DataDefinitionDeclarationImpl("DELETION_STAT", DataNecessity.NA, "Deletion summary result", DataDefinitionRegistry.MAP));
+        addOutput(new DataDefinitionDeclarationImpl("DELETION_STATS", DataNecessity.NA, "Deletion summary result", DataDefinitionRegistry.MAP));
     }
 
     public StepResult invoke(StepExecutionContext context)
@@ -53,14 +53,14 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             String summaryLineStep = "Deleted all the files that were asked!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias(finalStepName+"."+"DELETED_LIST",ArrayList.class), deletionStat);
+            context.storeDataValue(context.getAlias(finalStepName+"."+"DELETION_STATS",ArrayList.class), deletionStat);
 
             return StepResult.SUCCESS;
         } else if (deletedSuccess == 0) {
             String summaryLineStep = "Didn't delete any file that were asked!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias(this.name()+"."+"DELETED_LIST",ArrayList.class), deletionStat);
+            context.storeDataValue(context.getAlias(this.name()+"."+"DELETION_STATS",ArrayList.class), deletionStat);
 
             return StepResult.FAILURE;
         } else {
@@ -69,7 +69,7 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             String summaryLineStep = "Deleted "+ deletedSuccess+ " files and failed with "+notDeletedList.size()+" files!";
             context.addLogLine("FilesDeleter", summaryLineStep);
             context.addSummaryLine("FilesDeleter", summaryLineStep);
-            context.storeDataValue(context.getAlias(this.name()+"."+"DELETION_STAT", Map.class), deletionStat);
+            context.storeDataValue(context.getAlias(this.name()+"."+"DELETION_STATS", Map.class), deletionStat);
 
             return StepResult.WARNING;
         }
