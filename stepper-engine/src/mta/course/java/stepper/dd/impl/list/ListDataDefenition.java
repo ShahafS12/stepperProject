@@ -10,7 +10,6 @@ public class ListDataDefenition extends AbstractDataDefinition
         super("List", false, ArrayList.class);
     }
     public <T> T getValue(String name){
-        // TODO: IMPLEMENT
         return null;
     }
 }

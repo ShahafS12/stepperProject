@@ -1,6 +1,7 @@
 package mta.course.java.stepper.flow.definition.api;
 
 import dataloader.generated.*;
+import mta.course.java.stepper.flow.execution.context.AutoMapping;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.StepDefinition;
 
@@ -14,6 +15,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final String description;
     private final List<String> flowOutputs;
     private final List<String> flowFreeInputs;
+    private final List<String> preAliasFlowFreeInputs;
     private final Map<String,Class<?>> allFlowInputs;
     private final Map<String,Class<?>> allFlowOutputs;
     private final List<DataDefinitionDeclaration> flowFreeInputsDataDefenition;
@@ -23,6 +25,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final List<String> finalStepNames;
     private final Map<String,String> flowLevelAlias;
     private final Map<String, String> customMapping;
+    private final Map<String,String> AutoMappingMap;
     private boolean readonly;
 
     public FlowDefinitionImpl(String name, String description) {//TODO delete this after we are sure we don't need it
@@ -40,6 +43,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
         allFlowInputs = new HashMap<>();
         allFlowOutputs = new HashMap<>();
         finalStepNames = new ArrayList<>();
+        AutoMappingMap = new HashMap<>();
+        preAliasFlowFreeInputs = new ArrayList<>();
     }
 
     public FlowDefinitionImpl(STFlow stFlow)
@@ -49,9 +54,11 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowFreeInputs = new ArrayList<>();
         flowFreeInputsDataDefenition = new ArrayList<>();
         flowFreeOutputsDataDefenition = new ArrayList<>();
+        preAliasFlowFreeInputs = new ArrayList<>();
         allFlowInputs = new HashMap<>();
         allFlowOutputs = new HashMap<>();
         finalStepNames = new ArrayList<>();
+        AutoMappingMap = new HashMap<>();
         this.description = stFlow.getSTFlowDescription();
         String[] output = stFlow.getSTFlowOutput().split(",");
         flowOutputs = Arrays.asList(output);
@@ -92,6 +99,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
                 if (inputToAdd == null)
                     inputToAdd = steps.get(i).getFinalStepName() + "." + dataInput.getName();
                 allFlowInputs.put(inputToAdd, dataInput.dataDefinition().getType());
+                if(allFlowOutputs.containsKey(inputToAdd) && !AutoMappingMap.containsKey(steps.get(i).getFinalStepName() + "." + inputToAdd))
+                    AutoMappingMap.put(steps.get(i).getFinalStepName() + "." + inputToAdd, inputToAdd);
 
             }
             for (DataDefinitionDeclaration dataOutput : outputStep) {
@@ -99,6 +108,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
                 if (outputToAdd == null)
                     outputToAdd = steps.get(i).getFinalStepName() + "." + dataOutput.getName();
                 allFlowOutputs.put(outputToAdd, dataOutput.dataDefinition().getType());
+
             }
         }
         createFreeInputOutputLists();
@@ -125,12 +135,15 @@ public class FlowDefinitionImpl implements FlowDefinition {
     @Override
     public void createFreeInputOutputLists() {
         List<String> flowOutputsMayBeDeleted = new ArrayList<>();
+        String preAliasKey = "";
         for (int i=0; i<steps.size(); i++){
             List<DataDefinitionDeclaration> inputStep =steps.get(i).getStepDefinition().inputs();
             for (DataDefinitionDeclaration dataInput:inputStep){
                     String key = steps.get(i).getFinalStepName() + "." + dataInput.getName();
-                    if (flowLevelAlias.get(key) != null)
+                    if (flowLevelAlias.get(key) != null) {
+                        preAliasKey = key;
                         key = flowLevelAlias.get(key);
+                    }
 
                     if (flowFreeOutputs.contains(key)) // that means he found him
                         flowFreeOutputs.remove(key);
@@ -138,14 +151,21 @@ public class FlowDefinitionImpl implements FlowDefinition {
                         boolean flagStr = false;
                         for (String str:flowFreeOutputs){
                             String [] tmp = str.split("\\.");
-                            if (tmp[1].equals(dataInput.getName()) && isDataDefEquals(tmp[0], tmp[1], dataInput.dataDefinition().getName())){
+                            String[] tmp2 = key.split("\\.");
+                            if (tmp[1].equals(tmp2[1]) && isDataDefEquals(tmp[0], tmp[1], dataInput.dataDefinition().getName())){
                                 //flowFreeOutputs.remove(str);
                                 flowOutputsMayBeDeleted.add(str);
                                 flagStr = true;
                             }
                         }
-                        if(!flagStr)
+                        if(!flagStr) {
                             flowFreeInputs.add(key);
+                            if (!preAliasKey.equals(""))
+                                preAliasFlowFreeInputs.add(preAliasKey);
+                            else
+                                preAliasFlowFreeInputs.add(key);
+                            preAliasKey = "";
+                        }
                     }
 
 
@@ -189,6 +209,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
             }
         }
         return false;
+    }
+    @Override
+    public List<String> getPreAliasFlowFreeInputs() {
+        return preAliasFlowFreeInputs;
     }
 
     @Override

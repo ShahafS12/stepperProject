@@ -25,8 +25,8 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
 
     public StepResult invoke(StepExecutionContext context){
         String finalStepName = context.getStepAlias(this.name());
-        ArrayList<File> filesList = context.getDataValue(context.getAlias(finalStepName+"."+"FILES_LIST"), ArrayList.class);
-        int line = (int) context.getDataValue(context.getAlias(finalStepName+"."+"LINE"), Number.class);
+        ArrayList<File> filesList = context.getDataValue(context.getAlias(finalStepName+"."+"FILES_LIST",ArrayList.class), ArrayList.class);
+        int line = (int) context.getDataValue(context.getAlias(finalStepName+"."+"LINE",Number.class), Number.class);
 
         ArrayList<String> renameColumns = new ArrayList<String>();
         renameColumns.add("No.");
@@ -70,7 +70,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         }
 
 
-        context.storeDataValue(context.getAlias(finalStepName+"."+"SOURCE"), filesTable);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"SOURCE",RelationData.class), filesTable);
 
         String summaryLine = "Successfully finish extractor line " + line + " from all files provided";
         context.addSummaryLine("FilesContentExtractor", summaryLine);

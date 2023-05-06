@@ -20,7 +20,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
 
     public StepResult invoke(StepExecutionContext context) {
         String finalStepName = context.getStepAlias(this.name());
-        RelationData sourceTable = context.getDataValue(context.getAlias(finalStepName+"."+"SOURCE"), RelationData.class);
+        RelationData sourceTable = context.getDataValue(context.getAlias(finalStepName+"."+"SOURCE",RelationData.class), RelationData.class);
 
         String beforeLog = "About to process " + sourceTable.getNumRows() + " lines of data";
         context.addLogLine("PropertiesExporter", beforeLog);
@@ -47,7 +47,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         String afterLog = "Extracted total of " + result;
         context.addLogLine("PropertiesExporter", afterLog);
 
-        context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT"), result);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), result);
 
         if(sourceTable.isEmpty()){
             String summaryLine = "The table was empty!";

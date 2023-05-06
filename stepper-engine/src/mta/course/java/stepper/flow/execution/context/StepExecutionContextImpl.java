@@ -57,7 +57,17 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     public <T> T getDataValue(String dataName, Class<T> expectedDataType) {
         // assuming that from the data name we can get to its data definition
         DataDefinition theExpectedDataDefinition = (DataDefinition) dataDefinitions.get(dataName);
-
+        if(CustomMapping.containsKey(dataName)){
+            dataName = CustomMapping.get(dataName);
+        }
+        else{
+            for(AutoMapping autoMapping : AutoMappingMap.keySet())
+            {
+                String tmp[] = dataName.split("\\.");
+                if(autoMapping.getName().equals(tmp[1])&&autoMapping.getType().equals(expectedDataType))
+                    return expectedDataType.cast(AutoMappingMap.get(autoMapping));
+            }
+        }
         if (expectedDataType.isAssignableFrom(theExpectedDataDefinition.getType())) {
             Object aValue = dataValues.get(dataName);
             if (aValue == null) {//if value is null, try to get it from auto mapping
@@ -140,8 +150,19 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
     @Override
-    public String getAlias(String key)
+    public String getAlias(String key,Class<?> expectedDataType)
     {
+        for(String CKeys : CustomMapping.keySet())
+        {
+            if(CustomMapping.get(CKeys).equals(key))
+                return CKeys;
+        }
+        for(AutoMapping autoMapping : AutoMappingMap.keySet())
+        {
+            String tmp[] = key.split("\\.");
+            if(autoMapping.getName().equals(tmp[1])&&autoMapping.getType().equals(expectedDataType))
+                return key;
+        }
         if(FlowLevelAliases.containsKey(key))
             return FlowLevelAliases.get(key);
         else {

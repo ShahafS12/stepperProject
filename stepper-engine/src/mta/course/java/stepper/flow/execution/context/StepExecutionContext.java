@@ -15,7 +15,7 @@ public interface StepExecutionContext {
     public void addLogLine(String key, String log);
     public ArrayList<String> getLogs(String key) ;
     public String getSummaryLine(String key);
-    public String getAlias(String key);
+    public String getAlias(String key,Class<?> theExpectedDataType);
     public String getCustomMapping(String key);
     public String getStepAlias(String key);
     Object dataValueReturn (String key);

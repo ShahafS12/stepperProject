@@ -24,6 +24,14 @@ public class StepperDefinitionImpl implements StepperDefinition
         try {
             flows = new ArrayList<>();
             STFlows stFlows = stepper.getSTFlows();
+            //check if there are multiple flows with same name
+            for(STFlow flow: stFlows.getSTFlow()){
+                for(STFlow flow2: stFlows.getSTFlow()){
+                    if(flow.getName().equals(flow2.getName()) && flow != flow2){
+                        throw new RuntimeException("Error initializing stepper definition: multiple flows with same name");
+                    }
+                }
+            }
             List<STFlow> stFlowList = stFlows.getSTFlow();
             for (int i = 0; i < stFlowList.size(); i++) {
                 flows.add(new FlowDefinitionImpl(stFlowList.get(i)));

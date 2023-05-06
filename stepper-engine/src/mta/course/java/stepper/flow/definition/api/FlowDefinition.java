@@ -30,6 +30,7 @@ public interface FlowDefinition {
     Map<String,Class<?>> getAllOutputs();
     List<String> getFinalStepNames();
     Map<String,String> getAllFlowLevelAlias();
+    List<String> getPreAliasFlowFreeInputs();
 
 
     String getFlowLevelCustomMapping(String name);
