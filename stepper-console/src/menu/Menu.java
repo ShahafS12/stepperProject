@@ -7,6 +7,7 @@ import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.flow.execution.FlowExecution;
 import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
+import mta.course.java.stepper.menu.MenuVariables;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import mta.course.java.stepper.stepper.StepperDefinition;
 import org.xml.sax.SAXException;
@@ -17,13 +18,7 @@ import java.util.*;
 
 public class Menu
 {
-    private StepperDefinition stepper;
-    private ArrayList<String> flowNames = new ArrayList<>();
-    private Integer uniqueFlowIdCounter = 0;
-    private Map<Integer,FlowExecution> flowExecutionMap = new HashMap<>();
-    private Map<Integer,FlowExecutionStatistics> stats = new HashMap<>();
-    private Integer uniqueFlowExecutionIdCounter = 1;
-    private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap = new HashMap<>();
+    private MenuVariables menuVariables = new MenuVariables();
 
     public void showMenu() throws IOException, ParserConfigurationException, SAXException {
         System.out.println("1. Load flow from XML file");
@@ -94,8 +89,8 @@ public class Menu
         int actionFlow;
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
-        for (Integer key : stats.keySet()) {
-            FlowExecutionStatistics value = stats.get(key);
+        for (Integer key : menuVariables.getStats().keySet()) {
+            FlowExecutionStatistics value = menuVariables.getStats().get(key);
             System.out.println(key + ") " + value.getFlowName() + " - " + value.getStartTime());
         }
         System.out.println();
@@ -104,21 +99,27 @@ public class Menu
         {
             return;
         }
-        FlowExecutionStatistics flowExecutionStatistics = stats.get(actionFlow);
+        FlowExecutionStatistics flowExecutionStatistics = menuVariables.getStats().get(actionFlow);
         flowExecutionStatistics.printStatistics();
     }
 
     private void loadStepperFromXml() throws IOException, ParserConfigurationException, SAXException
     {
         try {
+            MenuVariables newMenuVariables = new MenuVariables();
             LoadXMLFile loadXMLFile = new LoadXMLFile();
-            stepper = (loadXMLFile.loadXMLFile());
-            flowNames.addAll(stepper.getFlowNames());//add the latest names of the flows
+            StepperDefinition newStepper = (loadXMLFile.loadXMLFile());
+            newMenuVariables.setStepper(newStepper);
+            ArrayList<String> newFlowNames = new ArrayList<>();
+            newFlowNames.addAll(newStepper.getFlowNames());//add the latest names of the flows
+            newMenuVariables.setFlowNames(newFlowNames);
             //flowIdMap.put(flowNames.get(flowNames.size()-1),uniqueFlowIdCounter);
-            for (int i = 0; i < flowNames.size(); i++) {
-                flowExecutionMap.put(uniqueFlowIdCounter, new FlowExecution(flowNames.get(i), stepper.getFlowDefinition(flowNames.get(i))));
-                uniqueFlowIdCounter++;
+            for (int i = 0; i < newMenuVariables.getFlowNames().size(); i++) {
+                newMenuVariables.putFlowExecutionMap(newMenuVariables.getUniqueFlowIdCounter(),
+                        new FlowExecution(newMenuVariables.getFlowNames().get(i), newStepper.getFlowDefinition(newFlowNames.get(i))));
+                newMenuVariables.upuniqueFlowIdCounter();
             }
+            this.menuVariables = newMenuVariables;
         }
         catch (RuntimeException e)
         {
@@ -131,8 +132,8 @@ public class Menu
         int actionFlow;
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
-        for (int i = 0; i < flowNames.size(); i++) {
-            System.out.println(i + 1 + ": " + flowNames.get(i));
+        for (int i = 0; i < menuVariables.getFlowNames().size(); i++) {
+            System.out.println(i + 1 + ": " + menuVariables.getFlowNames().get(i));
         }
         System.out.println();
         actionFlow = scanner.nextInt();
@@ -140,19 +141,19 @@ public class Menu
         {
             return;
         }
-        FlowDefinition chosenFlow = stepper.getFlowDefinition(flowNames.get(actionFlow - 1));
+        FlowDefinition chosenFlow = menuVariables.getStepper().getFlowDefinition(menuVariables.getFlowNames().get(actionFlow - 1));
         FLowExecutor fLowExecutor = new FLowExecutor();
-        stats.put(uniqueFlowExecutionIdCounter,fLowExecutor.executeFlow(flowExecutionMap.get(actionFlow - 1)));
-        uniqueFlowExecutionIdCounter++;
-        if(flowExecutionsStatisticsMap.containsKey(chosenFlow.getName()))
+        menuVariables.getStats().put(menuVariables.getUniqueFlowExecutionIdCounter(),fLowExecutor.executeFlow(menuVariables.getFlowExecutionMap().get(actionFlow - 1)));
+        menuVariables.upuniqueFlowExecutionIdCounter();
+        if(menuVariables.getFlowExecutionsStatisticsMap().containsKey(chosenFlow.getName()))
         {
-            flowExecutionsStatisticsMap.get(chosenFlow.getName()).addFlowExecutionStatistics(stats.get(uniqueFlowExecutionIdCounter-1));
+            menuVariables.getFlowExecutionsStatisticsMap().get(chosenFlow.getName()).addFlowExecutionStatistics(menuVariables.getStats().get(menuVariables.getUniqueFlowExecutionIdCounter()-1));
         }
         else
         {
             FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
-            flowExecutionsStatistics.addFlowExecutionStatistics(stats.get(uniqueFlowExecutionIdCounter-1));
-            flowExecutionsStatisticsMap.put(chosenFlow.getName(),flowExecutionsStatistics);
+            flowExecutionsStatistics.addFlowExecutionStatistics(menuVariables.getStats().get(menuVariables.getUniqueFlowExecutionIdCounter()-1));
+            menuVariables.getFlowExecutionsStatisticsMap().put(chosenFlow.getName(),flowExecutionsStatistics);
         }
     }
 
@@ -161,8 +162,8 @@ public class Menu
         int actionFlow;
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
-        for (int i = 0; i < flowNames.size(); i++) {
-            System.out.println(i + 1 + ": " + flowNames.get(i));
+        for (int i = 0; i < menuVariables.getFlowNames().size(); i++) {
+            System.out.println(i + 1 + ": " + menuVariables.getFlowNames().get(i));
         }
         System.out.println();
         actionFlow = scanner.nextInt();
@@ -170,12 +171,13 @@ public class Menu
         {
             return;
         }
-        FlowDefinition flow = stepper.getFlowDefinition(flowNames.get(actionFlow - 1));
+        FlowDefinition flow = menuVariables.getStepper().getFlowDefinition(menuVariables.getFlowNames().get(actionFlow - 1));
         System.out.println(flow.getName());
         System.out.println(flow.getDescription());
         System.out.println(flow.getFlowFormalOutputs());
         System.out.println("The flow read-only: "+flow.isReadOnly());
         List<StepUsageDeclaration> steps = flow.getFlowSteps();
+        System.out.println("\nSteps: ");
         for (int i = 0; i < steps.size(); i++) {
             StepUsageDeclaration step = steps.get(i);
             if (step.getStepName() != step.getFinalStepName())
@@ -191,15 +193,15 @@ public class Menu
     private void showStatistics(Scanner scanner){
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
-        for (int i = 0; i < flowNames.size(); i++) {
-            System.out.println(i + 1 + ": " + flowNames.get(i));
+        for (int i = 0; i < menuVariables.getFlowNames().size(); i++) {
+            System.out.println(i + 1 + ": " + menuVariables.getFlowNames().get(i));
         }
         System.out.println();
         int actionFlow = scanner.nextInt();
         if(actionFlow == 0)
             return;
-        FlowDefinition flow = stepper.getFlowDefinition(flowNames.get(actionFlow - 1));
-        FlowExecutionsStatistics flowExecutionsStatistics = flowExecutionsStatisticsMap.get(flow.getName());
+        FlowDefinition flow = menuVariables.getStepper().getFlowDefinition(menuVariables.getFlowNames().get(actionFlow - 1));
+        FlowExecutionsStatistics flowExecutionsStatistics = menuVariables.getFlowExecutionsStatisticsMap().get(flow.getName());
         flowExecutionsStatistics.printStatistics();
     }
 }

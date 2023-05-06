@@ -3,6 +3,7 @@ package mta.course.java.stepper.flow.execution.context;
 import mta.course.java.stepper.dd.api.DataDefinition;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface StepExecutionContext {
     <T> T getDataValue(String dataName, Class<T> expectedDataType);
@@ -16,6 +17,7 @@ public interface StepExecutionContext {
     public ArrayList<String> getLogs(String key) ;
     public String getSummaryLine(String key);
     public String getAlias(String key,Class<?> theExpectedDataType);
+    public Map<String, Object> getDataValuesMap();
     public String getCustomMapping(String key);
     public String getStepAlias(String key);
     Object dataValueReturn (String key);

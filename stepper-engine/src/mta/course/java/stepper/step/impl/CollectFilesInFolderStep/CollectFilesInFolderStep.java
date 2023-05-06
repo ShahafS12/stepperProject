@@ -21,7 +21,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         addInput(new DataDefinitionDeclarationImpl("FILTER", DataNecessity.OPTIONAL, "Filter only these files", DataDefinitionRegistry.STRING));
 
         addOutput(new DataDefinitionDeclarationImpl("FILES_LIST", DataNecessity.NA, "Files list", DataDefinitionRegistry.LIST));
-        addOutput(new DataDefinitionDeclarationImpl("TOTAL_FOUND", DataNecessity.NA, "Total files found", DataDefinitionRegistry.DOUBLE));//change later if needed
+        addOutput(new DataDefinitionDeclarationImpl("TOTAL_FOUND", DataNecessity.NA, "Total files found", DataDefinitionRegistry.Number));
     }
     public StepResult invoke(StepExecutionContext context)
     {
@@ -74,7 +74,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         ArrayList<File> filesArrayList = new ArrayList<>(filesList);
 
         context.storeDataValue(context.getAlias(finalStepName+"."+"FILES_LIST",ArrayList.class), filesArrayList);
-        context.storeDataValue(context.getAlias(finalStepName+"."+"TOTAL_FOUND", Double.class), totalFilesFound);
+        context.storeDataValue(context.getAlias(finalStepName+"."+"TOTAL_FOUND", int.class), totalFilesFound);
 
         // through the context, as part of writing the step's logic I should be able to:
         // 1. add log lines

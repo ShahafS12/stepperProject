@@ -26,6 +26,7 @@ public interface FlowDefinition {
     public Map<String,String> getCustomMapping();
     void printFreeInputs();
     void printFreeOutputs();
+    String getUniqueId();
     Map<String,Class<?>> getAllInputs();
     Map<String,Class<?>> getAllOutputs();
     List<String> getFinalStepNames();

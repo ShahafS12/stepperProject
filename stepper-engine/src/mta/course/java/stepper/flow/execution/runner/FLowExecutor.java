@@ -21,7 +21,7 @@ public class FLowExecutor {
 
     public FlowExecutionStatistics executeFlow(FlowExecution flowExecution) {
 
-        System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]");
+        System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]");
         flowExecution.addingExectionCounter();
         Time executionStartTime = new Time(System.currentTimeMillis());
         FlowExecutionResult flowResult = FlowExecutionResult.SUCCESS;
@@ -80,7 +80,14 @@ public class FLowExecutor {
         }
         flowExecution.setFlowExecutionResult(flowResult);
         double totalTimeFlow = flowExecution.timeTakenForFlow();
-        System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+        System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+        List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
+        int i = 0;
+        for(DataDefinitionDeclaration output : flowExecution.getFlowDefinition().getFlowFreeOutputs()) {
+            String tmp = flowFreeOutputs.get(i);
+            System.out.println("\nUser string: " + output.userString() + " Value:\n" + context.getDataValuesMap().get(tmp).toString());
+            i++;
+        }
         System.out.println("Total Time: " + totalTimeFlow + " ms");
         FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId()
                 ,flowResult,totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getStepExecutionStatisticsMap());

@@ -39,6 +39,10 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         ArrayList<String> list = logs.get(key);
         list.add(log);
     }
+    @Override
+    public Map<String, Object> getDataValuesMap() {
+        return dataValues;
+    }
 
     @Override
     public void addSummaryLine(String key, String summaryLine) { summaryLines.put(key, summaryLine);    }

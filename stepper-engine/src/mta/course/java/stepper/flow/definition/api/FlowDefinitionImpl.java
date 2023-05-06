@@ -15,6 +15,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final String description;
     private final List<String> flowOutputs;
     private final List<String> flowFreeInputs;
+    private final String uniqueId;
     private final List<String> preAliasFlowFreeInputs;
     private final Map<String,Class<?>> allFlowInputs;
     private final Map<String,Class<?>> allFlowOutputs;
@@ -45,6 +46,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         finalStepNames = new ArrayList<>();
         AutoMappingMap = new HashMap<>();
         preAliasFlowFreeInputs = new ArrayList<>();
+        uniqueId = UUID.randomUUID().toString();
     }
 
     public FlowDefinitionImpl(STFlow stFlow)
@@ -59,6 +61,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         allFlowOutputs = new HashMap<>();
         finalStepNames = new ArrayList<>();
         AutoMappingMap = new HashMap<>();
+        uniqueId = UUID.randomUUID().toString();
         this.description = stFlow.getSTFlowDescription();
         String[] output = stFlow.getSTFlowOutput().split(",");
         flowOutputs = Arrays.asList(output);
@@ -121,6 +124,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
     @Override
     public void addFlowOutput(String outputName) {
         flowOutputs.add(outputName);
+    }
+    @Override
+    public String getUniqueId() {
+        return uniqueId;
     }
     @Override
     public List<String> getFinalStepNames() {

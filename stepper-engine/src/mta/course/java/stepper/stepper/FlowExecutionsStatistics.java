@@ -37,7 +37,7 @@ public class FlowExecutionsStatistics
         System.out.println("Average duration: " + averageDuration);
         System.out.println("----STEPS----");
         for (Map.Entry<String, StepExecutionStatistics> entry : stepExecutionStatisticsMap.entrySet()) {
-            System.out.println("Step name: " + entry.getKey()+"ms");
+            System.out.println("Step name: " + entry.getKey());
             entry.getValue().printStatistics();
         }
     }

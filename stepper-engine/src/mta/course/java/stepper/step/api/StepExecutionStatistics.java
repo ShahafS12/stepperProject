@@ -19,7 +19,7 @@ public class StepExecutionStatistics
     }
     public void printStatistics(){
         System.out.println("Number of executions: " + countHowManyTimesExecution);
-        System.out.println("Average duration: " + averageDuration);
+        System.out.println("Average duration: " + averageDuration+"ms\n");
     }
     public int getCountHowManyTimesExecution() {
         return countHowManyTimesExecution;
