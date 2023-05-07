@@ -17,7 +17,8 @@ import java.util.*;
 
 public class FLowExecutor {
 
-    public FlowExecutionStatistics executeFlow(FlowExecution flowExecution) {
+    public FlowExecutionStatistics executeFlow(FlowExecution flowExecution)
+    {
 
         System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]");
         flowExecution.addingExectionCounter();
@@ -40,9 +41,9 @@ public class FLowExecutor {
             for (DataDefinitionDeclaration input : inputs) {
                 if (flowFreeInputsString.contains(step1.getFinalStepName() + "." + input.getName())) {
                     if (input.necessity().equals(DataNecessity.MANDATORY)) {
-                        mandatoryInputs.add(new InputWithStepName(step1.getFinalStepName(),input));
+                        mandatoryInputs.add(new InputWithStepName(step1.getFinalStepName(), input));
                     } else {
-                        optionalInputs.add(new InputWithStepName(step1.getFinalStepName(),input));
+                        optionalInputs.add(new InputWithStepName(step1.getFinalStepName(), input));
                     }
                 }
             }
@@ -51,7 +52,7 @@ public class FLowExecutor {
             StepDefinition stepDefinition = step.getStepDefinition();
             List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
             List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
-            context.addStepAlias(step.getStepName(), step.getFinalStepName(),step.skipIfFail());
+            context.addStepAlias(step.getStepName(), step.getFinalStepName(), step.skipIfFail());
             while (!finishedEnteringInputs) {
                 printFlowFreeInputs(mandatoryInputs, optionalInputs);
                 Scanner scanner = new Scanner(System.in);
@@ -75,38 +76,38 @@ public class FLowExecutor {
                     } else {
                         System.out.println("Invalid input");
                     }
-                    if(mandatoryInputs.size() == 0 && optionalInputs.size()>0) {
+                    if(mandatoryInputs.size() == 0 && optionalInputs.size() == 0){
+                        finishedEnteringInputs = true;
+                    }
+                    else if (mandatoryInputs.size() == 0 && optionalInputs.size() > 0) {
                         System.out.println("Do you want to enter more inputs? (Y/N)");
                         String answer = scanner.next();
                         if (answer.equals("N")) {
-                                finishedEnteringInputs = true;
+                            finishedEnteringInputs = true;
                         } else if (answer.equals("Y")) {
                             finishedEnteringInputs = false;
-                        }
-                        else {
+                        } else {
                             while (!answer.equals("Y") && !answer.equals("N")) {
                                 System.out.println("Invalid input, please enter Y/N");
                                 answer = scanner.next();
                             }
                             if (answer.equals("N")) {
-                                    finishedEnteringInputs = true;
-                            }
-                            else if (answer.equals("Y")) {
+                                finishedEnteringInputs = true;
+                            } else if (answer.equals("Y")) {
                                 finishedEnteringInputs = false;
                             }
                         }
                     }
-                }
-                catch (InputMismatchException e){
+                } catch (InputMismatchException e) {
                     System.out.println("Invalid input, please enter a number");
                 }
             }
-            for(InputWithStepName optionalInput : optionalInputs){//if the user didn't enter optional inputs, we need to add them to the dataValues
-                dataValues.put(optionalInput.getStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(),"");
-                dataDefinitions.put(optionalInput.getStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(),optionalInput.getDataDefinitionDeclaration().dataDefinition());
+            for (InputWithStepName optionalInput : optionalInputs) {//if the user didn't enter optional inputs, we need to add them to the dataValues
+                dataValues.put(optionalInput.getStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(), "");
+                dataDefinitions.put(optionalInput.getStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(), optionalInput.getDataDefinitionDeclaration().dataDefinition());
             }
             for (DataDefinitionDeclaration input : inputs) {//adding the inputs to the context by the order of the flowFreeInputsString
-                if(flowFreeInputsString.contains(step.getFinalStepName() + "." +input.getName())) {
+                if (flowFreeInputsString.contains(step.getFinalStepName() + "." + input.getName())) {
                     context.addStep(step.getFinalStepName() + "." + input.getName(),
                             dataValues.get(step.getFinalStepName() + "." + input.getName()),
                             dataDefinitions.get(step.getFinalStepName() + "." + input.getName()),
@@ -126,43 +127,57 @@ public class FLowExecutor {
         }
 
         // start actual execution
-        for (int i = 0; i < flowExecution.getFlowDefinition().getFlowSteps().size(); i++) {
-            StepUsageDeclaration stepUsageDeclaration = flowExecution.getFlowDefinition().getFlowSteps().get(i);
-            System.out.println("Starting to execute step: " + stepUsageDeclaration.getFinalStepName());
-            Instant start = Instant.now();
-            StepResult stepResult = stepUsageDeclaration.getStepDefinition().invoke(context);
-            if (stepResult == StepResult.FAILURE)
-                flowResult = FlowExecutionResult.FAILURE;
-            if(stepResult == StepResult.WARNING && flowResult != FlowExecutionResult.FAILURE)
-                flowResult = FlowExecutionResult.WARNING;
-            Instant end = Instant.now();
-            double totalTime = Duration.between(start, end).toMillis();
-            if(flowExecution.getStepExecutionStatisticsMap().containsKey(stepUsageDeclaration.getFinalStepName())) {
-                flowExecution.getStepExecutionStatisticsMap().get(stepUsageDeclaration.getFinalStepName()).addStepExecutionStatistics(new StepExecutionStatistics(totalTime));
+        try {
+            for (int i = 0; i < flowExecution.getFlowDefinition().getFlowSteps().size(); i++) {
+                StepUsageDeclaration stepUsageDeclaration = flowExecution.getFlowDefinition().getFlowSteps().get(i);
+                System.out.println("Starting to execute step: " + stepUsageDeclaration.getFinalStepName());
+                Instant start = Instant.now();
+                StepResult stepResult = stepUsageDeclaration.getStepDefinition().invoke(context);
+                if (stepResult == StepResult.FAILURE) {
+                    flowResult = FlowExecutionResult.FAILURE;
+                    if (!flowExecution.getFlowDefinition().getFlowSteps().get(i).skipIfFail()) {
+                        throw new RuntimeException("Step " + stepUsageDeclaration.getFinalStepName() + " failed");
+                    }
+                }
+                if (stepResult == StepResult.WARNING && flowResult != FlowExecutionResult.FAILURE)
+                    flowResult = FlowExecutionResult.WARNING;
+                Instant end = Instant.now();
+                double totalTime = Duration.between(start, end).toMillis();
+                if (flowExecution.getStepExecutionStatisticsMap().containsKey(stepUsageDeclaration.getFinalStepName())) {
+                    flowExecution.getStepExecutionStatisticsMap().get(stepUsageDeclaration.getFinalStepName()).addStepExecutionStatistics(new StepExecutionStatistics(totalTime));
+                } else {
+                    flowExecution.getStepExecutionStatisticsMap().put(stepUsageDeclaration.getFinalStepName(), new StepExecutionStatistics(totalTime));
+                }
+                flowExecution.getSingleStepExecutionDataMap().put(stepUsageDeclaration.getFinalStepName(), new SingleStepExecutionData(totalTime, stepResult,
+                        context.getSummaryLine(stepUsageDeclaration.getFinalStepName()),
+                        context.getLogs(stepUsageDeclaration.getFinalStepName())));
+                System.out.println("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
+                // check if should continue etc..
             }
-            else {
-                flowExecution.getStepExecutionStatisticsMap().put(stepUsageDeclaration.getFinalStepName(), new StepExecutionStatistics(totalTime));
+            flowExecution.setFlowExecutionResult(flowResult);
+            double totalTimeFlow = flowExecution.timeTakenForFlow();
+            System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+            List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
+            int i = 0;
+            for (DataDefinitionDeclaration output : flowExecution.getFlowDefinition().getFlowFreeOutputs()) {
+                String tmp = flowFreeOutputs.get(i);
+                System.out.println("\nUser string: " + output.userString() + " Value:\n" + context.getDataValuesMap().get(tmp).toString());
+                i++;
             }
-            flowExecution.getSingleStepExecutionDataMap().put(stepUsageDeclaration.getFinalStepName(), new SingleStepExecutionData(totalTime, stepResult,
-                    context.getSummaryLine(stepUsageDeclaration.getFinalStepName()),
-                    context.getLogs(stepUsageDeclaration.getFinalStepName())));
-            System.out.println("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
-            // check if should continue etc..
+            System.out.println("Total Time: " + totalTimeFlow + " ms");
+            FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime, flowExecution.getFlowDefinition().getName(), flowExecution.getUniqueId()
+                    , flowResult, totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
+            return result;
         }
-        flowExecution.setFlowExecutionResult(flowResult);
-        double totalTimeFlow = flowExecution.timeTakenForFlow();
-        System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
-        List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
-        int i = 0;
-        for(DataDefinitionDeclaration output : flowExecution.getFlowDefinition().getFlowFreeOutputs()) {
-            String tmp = flowFreeOutputs.get(i);
-            System.out.println("\nUser string: " + output.userString() + " Value:\n" + context.getDataValuesMap().get(tmp).toString());
-            i++;
+        catch (RuntimeException e)
+        {
+            System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+            double totalTimeFlow = flowExecution.timeTakenForFlow();
+            System.out.println("Total Time: " + totalTimeFlow + " ms");
+            FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime, flowExecution.getFlowDefinition().getName(), flowExecution.getUniqueId()
+                    , flowResult, totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
+            return result;
         }
-        System.out.println("Total Time: " + totalTimeFlow + " ms");
-        FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId()
-                ,flowResult,totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
-        return result;
     }
     private void printFlowFreeInputs(List<InputWithStepName> mandatoryInputs, List<InputWithStepName> optionalInputs) {
         System.out.println("Please choose an input to enter:");
