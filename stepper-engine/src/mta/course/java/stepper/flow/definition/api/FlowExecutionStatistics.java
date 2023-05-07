@@ -3,6 +3,7 @@ package mta.course.java.stepper.flow.definition.api;
 import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 
 import java.sql.Time;
@@ -17,12 +18,14 @@ public class FlowExecutionStatistics
     private final FlowExecutionResult flowResult;
     private final double duration;
     private FlowDefinition flow;
+    private Map<String, SingleStepExecutionData> singleStepExecutionDataMap;
     private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
     private StepExecutionContext context;
 
 
     public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowExecutionResult FlowExecutionResult, double duration,FlowDefinition flow,
-                                   StepExecutionContext context,Map<String,StepExecutionStatistics> stepExecutionStatisticsMap){
+                                   StepExecutionContext context,Map<String, SingleStepExecutionData> singleStepExecutionDataMap,
+                                   Map<String,StepExecutionStatistics> stepExecutionStatisticsMap){
         this.startTime = startTime;
         this.flowName = flowName;
         this.flowId = flowId;
@@ -30,6 +33,7 @@ public class FlowExecutionStatistics
         this.duration = duration;
         this.flow = flow;
         this.context = context;
+        this.singleStepExecutionDataMap = singleStepExecutionDataMap;
         this.stepExecutionStatisticsMap = stepExecutionStatisticsMap;
         //TODO add details about free inputs and outputs
     }
@@ -44,7 +48,7 @@ public class FlowExecutionStatistics
         System.out.println("----OUTPUTS----");
         printFreeOutputsExectued();
         System.out.println("----STEPS----");
-        for (Map.Entry<String, StepExecutionStatistics> entry : stepExecutionStatisticsMap.entrySet()) {
+        for (Map.Entry<String, SingleStepExecutionData> entry : singleStepExecutionDataMap.entrySet()) {
             System.out.println("Step name: " + entry.getKey());
             entry.getValue().printStatistics();
         }
@@ -100,7 +104,10 @@ public class FlowExecutionStatistics
     public Time getStartTime() {
         return startTime;
     }
-    public Map<String, StepExecutionStatistics> getStepExecutionStatisticsMap() {
+    public Map<String, SingleStepExecutionData> getSingleStepExecutionDataMap() {
+        return singleStepExecutionDataMap;
+    }
+    public Map<String,StepExecutionStatistics> getStepExecutionStatisticsMap() {
         return stepExecutionStatisticsMap;
     }
 }

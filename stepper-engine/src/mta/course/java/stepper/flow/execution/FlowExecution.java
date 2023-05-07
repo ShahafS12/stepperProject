@@ -1,6 +1,7 @@
 package mta.course.java.stepper.flow.execution;
 
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 
 import java.time.Duration;
@@ -17,14 +18,17 @@ public class FlowExecution {
     private FlowExecutionResult flowExecutionResult;
     private Map<String,Object> freeInputs;
     private int countHowManyTimesExecution;
+    private Map<String, SingleStepExecutionData> singleStepExecutionDataMap;
+
     private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
 
     // lots more data that needed to be stored while flow is being executed...
 
     public FlowExecution(String uniqueId, FlowDefinition flowDefinition) {
-        this.uniqueId = uniqueId;
+        this.uniqueId = flowDefinition.getUniqueId();
         this.flowDefinition = flowDefinition;
         start = Instant.now();
+        singleStepExecutionDataMap = new HashMap<>();
         stepExecutionStatisticsMap = new HashMap<>();
     }
 
@@ -55,6 +59,9 @@ public class FlowExecution {
     public long timeTakenForFlow (){
         endTime();
         return totalTime;
+    }
+    public Map<String, SingleStepExecutionData> getSingleStepExecutionDataMap() {
+        return singleStepExecutionDataMap;
     }
     public Map<String,StepExecutionStatistics> getStepExecutionStatisticsMap() {
         return stepExecutionStatisticsMap;
