@@ -23,7 +23,7 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         RelationData sourceTable = context.getDataValue(context.getAlias(finalStepName+"."+"SOURCE",RelationData.class), RelationData.class);
 
         String beforeLog = "About to process " + sourceTable.getNumRows() + " lines of data";
-        context.addLogLine("PropertiesExporter", beforeLog);
+        context.addLogLine(finalStepName, beforeLog);
 
         ArrayList<String> columns = sourceTable.getColumns();
         int numRows = sourceTable.getNumRows();
@@ -45,19 +45,19 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         }
 
         String afterLog = "Extracted total of " + result;
-        context.addLogLine("PropertiesExporter", afterLog);
+        context.addLogLine(finalStepName, afterLog);
 
         context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), result);
 
         if(sourceTable.isEmpty()){
             String summaryLine = "The table was empty!";
-            context.addLogLine("PropertiesExporter", summaryLine);
-            context.addSummaryLine("PropertiesExporter", summaryLine);
+            context.addLogLine(finalStepName, summaryLine);
+            context.addSummaryLine(finalStepName, summaryLine);
             return StepResult.WARNING;
         }
 
         String summaryLine = "Extracted table successfully!";
-        context.addSummaryLine("PropertiesExporter", summaryLine);
+        context.addSummaryLine(finalStepName, summaryLine);
         return StepResult.SUCCESS;
     }
 }

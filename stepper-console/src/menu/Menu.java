@@ -91,7 +91,7 @@ public class Menu
         System.out.println("0: return to main menu ");
         for (Integer key : menuVariables.getStats().keySet()) {
             FlowExecutionStatistics value = menuVariables.getStats().get(key);
-            System.out.println(key + ") " + value.getFlowName() + " - " + value.getStartTime());
+            System.out.println(key + ") " + value.getFlowName() + " - " + value.getFlowId() +" - " + value.getStartTime());
         }
         System.out.println();
         actionFlow = scanner.nextInt();

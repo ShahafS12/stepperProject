@@ -24,7 +24,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
         RelationData sourceTable = context.getDataValue(context.getAlias(finalStepName+"."+"SOURCE",RelationData.class), RelationData.class);
 
         String beforeLog = "About to process " + sourceTable.getNumRows() + " line of data";
-        context.addLogLine("CSVExporter", beforeLog);
+        context.addLogLine(finalStepName, beforeLog);
 
         ArrayList<String> columnsList =sourceTable.getColumns();
         String columns = String.join(",",columnsList);
@@ -43,13 +43,13 @@ public class CSVExporterStep extends AbstractStepDefinition {
 
         if(sourceTable.isEmpty()){ // TODO: the content will have 1 line of columns?! check it! its written in the explanation word
             String emptyTable = "The table is EMPTY!";
-            context.addLogLine("CSVExporter", emptyTable);
-            context.addSummaryLine("CSVExporter", emptyTable);
+            context.addLogLine(finalStepName, emptyTable);
+            context.addSummaryLine(finalStepName, emptyTable);
             return StepResult.WARNING;
         }
 
         String summaryLine = "Successfully created the table!";
-        context.addSummaryLine("CSVExporter", summaryLine);
+        context.addSummaryLine(finalStepName, summaryLine);
         return StepResult.SUCCESS;
     }
 }

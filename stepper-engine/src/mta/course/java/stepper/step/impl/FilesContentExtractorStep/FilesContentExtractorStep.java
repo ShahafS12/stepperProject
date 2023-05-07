@@ -38,7 +38,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
 
         for (File file : filesList) {
             String beforeLog = "About to start work on file "+ file.getName();
-            context.addLogLine("FilesContentExtractor", beforeLog);
+            context.addLogLine(finalStepName, beforeLog);
 
             try  (BufferedReader br = new BufferedReader(new FileReader(file))){
                 String lineContent;
@@ -57,15 +57,15 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
             }
             catch (IOException e) {
                 String problemFileLog = "Problem extracting line number " + line + " from file " + file.getName();
-                context.addLogLine("FilesContentExtractor", problemFileLog);
+                context.addLogLine(finalStepName, problemFileLog);
             }
             counter++;
         }
 
         if (filesList.size() == 0 ){
             String emptyList = "The list of files is empty";
-            context.addLogLine("FilesContentExtractor", emptyList);
-            context.addSummaryLine("FilesContentExtractor", emptyList);
+            context.addLogLine(finalStepName, emptyList);
+            context.addSummaryLine(finalStepName, emptyList);
             return StepResult.SUCCESS;
         }
 
@@ -73,7 +73,7 @@ public class FilesContentExtractorStep extends AbstractStepDefinition {
         context.storeDataValue(context.getAlias(finalStepName+"."+"DATA",RelationData.class), filesTable);
 
         String summaryLine = "Successfully finish extractor line " + line + " from all files provided";
-        context.addSummaryLine("FilesContentExtractor", summaryLine);
+        context.addSummaryLine(finalStepName, summaryLine);
         return StepResult.SUCCESS;
     }
 }

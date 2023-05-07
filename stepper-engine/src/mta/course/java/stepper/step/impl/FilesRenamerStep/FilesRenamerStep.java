@@ -35,12 +35,12 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
         if (filesRename.isEmpty()){
             String emptyListSummary = "The list of files is empty";
-            context.addSummaryLine("FilesRenamerStep", emptyListSummary);
+            context.addSummaryLine(finalStepName, emptyListSummary);
             return StepResult.SUCCESS;
         }
         ArrayList<String> failedFileArray = new ArrayList<>();
         String changeFileLog = "About to start rename " + filesRename.size() + " files. Adding prefix: "+ prefix + "; adding suffix: " +suffix;
-        context.addLogLine("FilesRenamerStep",changeFileLog );
+        context.addLogLine(finalStepName,changeFileLog );
         int counter =1;
         for (File file:filesRename){
             String newName;
@@ -66,7 +66,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
                 String failedFile= file.getName();
                 failedFileArray.add(failedFile);
                 String failedFileLog = "Problem renaming file: " + file.getName();
-                context.addLogLine("FilesRenamerStep",failedFileLog );
+                context.addLogLine(finalStepName,failedFileLog );
             }
         }
 
@@ -79,7 +79,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
             for (String file : failedFileArray){
                 failedFilesNames += file + " ";
             }
-            context.addSummaryLine("FilesRenamerStep", failedFilesNames);
+            context.addSummaryLine(finalStepName, failedFilesNames);
             return StepResult.WARNING;
         }
 

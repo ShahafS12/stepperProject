@@ -19,13 +19,13 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
         int secondToSpend = (int) context.getDataValue(context.getAlias(finalStepName+"."+"TIME_TO_SPEND",Number.class), Number.class);
         if (secondToSpend <= 0){
             String negativeTimeToSpend = "Cannot sleep non positive number of time (" + secondToSpend + ")";
-            context.addLogLine("SpendSomeTime", negativeTimeToSpend);
-            context.addSummaryLine("SpendSomeTime", negativeTimeToSpend);
+            context.addLogLine(finalStepName, negativeTimeToSpend);
+            context.addSummaryLine(finalStepName, negativeTimeToSpend);
             return StepResult.FAILURE;
         }
 
         String BeforeSleeping = "About to sleep for " + secondToSpend + " seconds...";
-        context.addLogLine("SpendSomeTime", BeforeSleeping);
+        context.addLogLine(finalStepName, BeforeSleeping);
 
          Thread myThread =  new Thread(() -> {
             sleepForSomeTime(secondToSpend*1000);
@@ -38,8 +38,8 @@ public class SpendSomeTimeStep extends AbstractStepDefinition {
             return StepResult.FAILURE;
         }
         String afterSleeping = "Done sleeping...";
-        context.addLogLine("SpendSomeTime", afterSleeping);
-        context.addSummaryLine("SpendSomeTime", afterSleeping);
+        context.addLogLine(finalStepName, afterSleeping);
+        context.addSummaryLine(finalStepName, afterSleeping);
         return StepResult.SUCCESS;
     }
 

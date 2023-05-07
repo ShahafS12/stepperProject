@@ -27,27 +27,27 @@ public class FileDumperStep extends AbstractStepDefinition {
         String fileName = context.getDataValue(context.getAlias(finalStepName+"."+"FILE_NAME",String.class), String.class);
 
         String beforeWriting = "About to create file named "+ fileName;
-        context.addLogLine("FileDumper", beforeWriting);
+        context.addLogLine(finalStepName, beforeWriting);
 
         try {
             FileWriter writer = new FileWriter(fileName);
             writer.write(content);
             writer.close();
             String afterWritingSummary = "Finish writing successfully";
-            context.addSummaryLine("FileDumper",afterWritingSummary);
+            context.addSummaryLine(finalStepName,afterWritingSummary);
         }
         catch (IOException e){
-            String failedWriting = "Failed writing the file: " + fileName; // TODO: Why failed! Dont understand the instrunctions
-            context.addLogLine("FileDumper", failedWriting);
-            context.addSummaryLine("FileDumper", failedWriting);
+            String failedWriting = "Failed writing the file: " + fileName;
+            context.addLogLine(finalStepName, failedWriting);
+            context.addSummaryLine(finalStepName, failedWriting);
             return StepResult.FAILURE;
         }
 
-        context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), content); // TODO: dont really understand what should be in result
+        context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), content);
 
         if (content == "") {
             String emptyFile = "The content was empty, created empty file!";
-            context.addLogLine("FileDumper",emptyFile);
+            context.addLogLine(finalStepName,emptyFile);
             return StepResult.WARNING;
         }
 

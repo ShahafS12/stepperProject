@@ -31,13 +31,13 @@ public class FilesDeleterStep extends AbstractStepDefinition {
         int deletedSuccess = 0;
         // do some complex logic...
         String beforeDeletingFiles = "About to start delete " + filesList.size() + " files";
-        context.addLogLine("FilesDeleter", beforeDeletingFiles);
+        context.addLogLine(finalStepName, beforeDeletingFiles);
         for (File file:filesList){
             if(file.delete()){
                 deletedSuccess++;
             } else{
                 String failedDeleteFile = "Failed to delete file " + file.getName();
-                context.addLogLine("FilesDeleter", failedDeleteFile);
+                context.addLogLine(finalStepName, failedDeleteFile);
                 notDeletedList.add(file);
             }
         }
@@ -51,15 +51,15 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             deletionStat.put("car", deletedSuccess);
             deletionStat.put("cdr", notDeletedList.size());
             String summaryLineStep = "Deleted all the files that were asked!";
-            context.addLogLine("FilesDeleter", summaryLineStep);
-            context.addSummaryLine("FilesDeleter", summaryLineStep);
+            context.addLogLine(finalStepName, summaryLineStep);
+            context.addSummaryLine(finalStepName, summaryLineStep);
             context.storeDataValue(context.getAlias(finalStepName+"."+"DELETION_STATS",ArrayList.class), deletionStat);
 
             return StepResult.SUCCESS;
         } else if (deletedSuccess == 0) {
             String summaryLineStep = "Didn't delete any file that were asked!";
-            context.addLogLine("FilesDeleter", summaryLineStep);
-            context.addSummaryLine("FilesDeleter", summaryLineStep);
+            context.addLogLine(finalStepName, summaryLineStep);
+            context.addSummaryLine(finalStepName, summaryLineStep);
             context.storeDataValue(context.getAlias(this.name()+"."+"DELETION_STATS",ArrayList.class), deletionStat);
 
             return StepResult.FAILURE;
@@ -67,8 +67,8 @@ public class FilesDeleterStep extends AbstractStepDefinition {
             deletionStat.put("car", deletedSuccess);
             deletionStat.put("cdr", notDeletedList.size());
             String summaryLineStep = "Deleted "+ deletedSuccess+ " files and failed with "+notDeletedList.size()+" files!";
-            context.addLogLine("FilesDeleter", summaryLineStep);
-            context.addSummaryLine("FilesDeleter", summaryLineStep);
+            context.addLogLine(finalStepName, summaryLineStep);
+            context.addSummaryLine(finalStepName, summaryLineStep);
             context.storeDataValue(context.getAlias(this.name()+"."+"DELETION_STATS", Map.class), deletionStat);
 
             return StepResult.WARNING;

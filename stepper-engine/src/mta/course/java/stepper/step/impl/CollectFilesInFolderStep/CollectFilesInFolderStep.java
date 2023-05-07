@@ -32,7 +32,7 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
 
         // do some complex logic...
         String beforeReading = "Reading folder " + folderName + " content with filter " + filter;
-        context.addLogLine("CollectFilesInFolder", beforeReading);
+        context.addLogLine(finalStepName, beforeReading);
         // add outputs here, somehow
 
 
@@ -42,14 +42,14 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         String failedFolder;
         if (!folder.exists()){
             failedFolder = "The provided path: "+ folderName +" is not exists";
-            context.addLogLine("CollectFilesInFolder", failedFolder);
-            context.addSummaryLine("CollectFilesInFolder", failedFolder);
+            context.addLogLine(finalStepName, failedFolder);
+            context.addSummaryLine(finalStepName, failedFolder);
             return StepResult.FAILURE;
 
         } else if (!folder.isDirectory()) {
             failedFolder = "The provided path: "+ folderName + " is not a directory";
-            context.addLogLine("CollectFilesInFolder", failedFolder);
-            context.addSummaryLine("CollectFilesInFolder", failedFolder);
+            context.addLogLine(finalStepName, failedFolder);
+            context.addSummaryLine(finalStepName, failedFolder);
             return StepResult.FAILURE;
         }
 
@@ -76,19 +76,16 @@ public class CollectFilesInFolderStep extends AbstractStepDefinition {
         context.storeDataValue(context.getAlias(finalStepName+"."+"FILES_LIST",ArrayList.class), filesArrayList);
         context.storeDataValue(context.getAlias(finalStepName+"."+"TOTAL_FOUND", int.class), totalFilesFound);
 
-        // through the context, as part of writing the step's logic I should be able to:
-        // 1. add log lines
-        // 2. add summary line
 
         String afterReading = "Found " + totalFilesFound + " files in folder matching the filter";
-        context.addLogLine("CollectFilesInFolder", afterReading);
+        context.addLogLine(finalStepName, afterReading);
 
         if (totalFilesFound == 0){
-            context.addSummaryLine("CollectFilesInFolder", "The folder had no files");
+            context.addSummaryLine(finalStepName, "The folder had no files");
             return StepResult.WARNING;
         }
 
-        context.addSummaryLine("CollectFilesInFolder", afterReading);
+        context.addSummaryLine(finalStepName, afterReading);
         return StepResult.SUCCESS;
     }
 
