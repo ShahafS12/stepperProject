@@ -25,6 +25,14 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         String beforeLog = "About to process " + sourceTable.getNumRows() + " lines of data";
         context.addLogLine(finalStepName, beforeLog);
 
+        if(sourceTable.getNumRows() == 0){
+            String summaryLine = "The table was empty!";
+            context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), "");
+            context.addLogLine(finalStepName, summaryLine);
+            context.addSummaryLine(finalStepName, summaryLine);
+            return StepResult.WARNING;
+        }
+
         ArrayList<String> columns = sourceTable.getColumns();
         int numRows = sourceTable.getNumRows();
         ArrayList<RelationData.SingleRow> rows = sourceTable.getRows();
@@ -48,13 +56,6 @@ public class PropertiesExporterStep extends AbstractStepDefinition {
         context.addLogLine(finalStepName, afterLog);
 
         context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), result);
-
-        if(sourceTable.isEmpty()){
-            String summaryLine = "The table was empty!";
-            context.addLogLine(finalStepName, summaryLine);
-            context.addSummaryLine(finalStepName, summaryLine);
-            return StepResult.WARNING;
-        }
 
         String summaryLine = "Extracted table successfully!";
         context.addSummaryLine(finalStepName, summaryLine);

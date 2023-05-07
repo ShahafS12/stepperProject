@@ -35,6 +35,7 @@ public class FilesRenamerStep extends AbstractStepDefinition {
 
         if (filesRename.isEmpty()){
             String emptyListSummary = "The list of files is empty";
+            context.storeDataValue(context.getAlias(finalStepName+"."+"RENAME_RESULT",RelationData.class), renameTable);
             context.addSummaryLine(finalStepName, emptyListSummary);
             return StepResult.SUCCESS;
         }

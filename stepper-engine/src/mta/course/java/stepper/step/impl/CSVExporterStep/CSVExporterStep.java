@@ -41,7 +41,7 @@ public class CSVExporterStep extends AbstractStepDefinition {
 
         context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT",String.class), result);
 
-        if(sourceTable.isEmpty()){ // TODO: the content will have 1 line of columns?! check it! its written in the explanation word
+        if(numRows == 0){
             String emptyTable = "The table is EMPTY!";
             context.addLogLine(finalStepName, emptyTable);
             context.addSummaryLine(finalStepName, emptyTable);
