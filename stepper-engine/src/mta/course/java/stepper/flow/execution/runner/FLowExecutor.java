@@ -1,5 +1,7 @@
 package mta.course.java.stepper.flow.execution.runner;
 
+import mta.course.java.stepper.dd.api.DataDefinition;
+import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.flow.execution.FlowExecution;
@@ -11,7 +13,7 @@ import mta.course.java.stepper.step.api.*;
 import java.sql.Time;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
+import java.util.*;
 
 public class FLowExecutor {
 
@@ -19,23 +21,95 @@ public class FLowExecutor {
 
         System.out.println("Starting execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]");
         flowExecution.addingExectionCounter();
+        List<InputWithStepName> mandatoryInputs = new ArrayList<>();
+        List<InputWithStepName> optionalInputs = new ArrayList<>();
         Time executionStartTime = new Time(System.currentTimeMillis());
+        Map<String, Object> dataValues = new HashMap<>();
+        Map<String, DataDefinition> dataDefinitions = new HashMap<>();
         FlowExecutionResult flowResult = FlowExecutionResult.SUCCESS;
 
         StepExecutionContext context = new StepExecutionContextImpl(); // actual object goes here...
         List<StepUsageDeclaration> steps = flowExecution.getFlowDefinition().getFlowSteps();
+        boolean finishedEnteringInputs = false;
         List<String> flowFreeInputsString = flowExecution.getFlowDefinition().getPreAliasFlowFreeInputs();
         List<String> flowFreeOutputsString = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
+        for (StepUsageDeclaration step1 : steps) {
+            StepDefinition stepDefinition = step1.getStepDefinition();
+            List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
+            List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
+            for (DataDefinitionDeclaration input : inputs) {
+                if (flowFreeInputsString.contains(step1.getFinalStepName() + "." + input.getName())) {
+                    if (input.necessity().equals(DataNecessity.MANDATORY)) {
+                        mandatoryInputs.add(new InputWithStepName(step1.getFinalStepName(),input));
+                    } else {
+                        optionalInputs.add(new InputWithStepName(step1.getFinalStepName(),input));
+                    }
+                }
+            }
+        }
         for (StepUsageDeclaration step : steps) {
             StepDefinition stepDefinition = step.getStepDefinition();
             List<DataDefinitionDeclaration> inputs = stepDefinition.inputs();
             List<DataDefinitionDeclaration> outputs = stepDefinition.outputs();
             context.addStepAlias(step.getStepName(), step.getFinalStepName(),step.skipIfFail());
-            for (DataDefinitionDeclaration input : inputs) {
+            while (!finishedEnteringInputs) {
+                printFlowFreeInputs(mandatoryInputs, optionalInputs);
+                Scanner scanner = new Scanner(System.in);
+                try {
+                    int choice = scanner.nextInt();
+                    if (choice <= mandatoryInputs.size()) {//saving values in map to add to context later
+                        Object value = mandatoryInputs.get(choice - 1).getDataDefinitionDeclaration().dataDefinition().getValue(mandatoryInputs.get(choice - 1).getDataDefinitionDeclaration().userString());
+                        DataDefinition dataDefinition = mandatoryInputs.get(choice - 1).getDataDefinitionDeclaration().dataDefinition();
+                        dataValues.put(mandatoryInputs.get(choice - 1).getStepName() + "." + mandatoryInputs.get(choice - 1).getDataDefinitionDeclaration().getName(), value);
+                        dataDefinitions.put(mandatoryInputs.get(choice - 1).getStepName() + "." + mandatoryInputs.get(choice - 1).getDataDefinitionDeclaration().getName(), dataDefinition);
+                        mandatoryInputs.remove(choice - 1);
+                    } else if (choice <= mandatoryInputs.size() + optionalInputs.size()) {//saving values in map to add to context later
+                        Object value = optionalInputs.get(choice - 1 - mandatoryInputs.size()).getDataDefinitionDeclaration().dataDefinition().
+                                getValue(optionalInputs.get(choice - 1 - mandatoryInputs.size()).getDataDefinitionDeclaration().userString());
+                        DataDefinition dataDefinition = optionalInputs.get(choice - 1 - mandatoryInputs.size()).getDataDefinitionDeclaration().dataDefinition();
+                        dataValues.put(optionalInputs.get(choice - 1 - mandatoryInputs.size()).getStepName() + "." +
+                                optionalInputs.get(choice - 1 - mandatoryInputs.size()).getDataDefinitionDeclaration().getName(), value);
+                        dataDefinitions.put(optionalInputs.get(choice - 1 - mandatoryInputs.size()).getStepName() + "." +
+                                optionalInputs.get(choice - 1 - mandatoryInputs.size()).getDataDefinitionDeclaration().getName(), dataDefinition);
+                        optionalInputs.remove(choice - 1 - mandatoryInputs.size());
+                    } else {
+                        System.out.println("Invalid input");
+                    }
+                    if(mandatoryInputs.size() == 0 && optionalInputs.size()>0) {
+                        System.out.println("Do you want to enter more inputs? (Y/N)");
+                        String answer = scanner.next();
+                        if (answer.equals("N")) {
+                                finishedEnteringInputs = true;
+                        } else if (answer.equals("Y")) {
+                            finishedEnteringInputs = false;
+                        }
+                        else {
+                            while (!answer.equals("Y") && !answer.equals("N")) {
+                                System.out.println("Invalid input, please enter Y/N");
+                                answer = scanner.next();
+                            }
+                            if (answer.equals("N")) {
+                                    finishedEnteringInputs = true;
+                            }
+                            else if (answer.equals("Y")) {
+                                finishedEnteringInputs = false;
+                            }
+                        }
+                    }
+                }
+                catch (InputMismatchException e){
+                    System.out.println("Invalid input, please enter a number");
+                }
+            }
+            for(InputWithStepName optionalInput : optionalInputs){//if the user didn't enter optional inputs, we need to add them to the dataValues
+                dataValues.put(step.getFinalStepName() + "." + optionalInput.getDataDefinitionDeclaration(),"");
+                dataDefinitions.put(step.getFinalStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(),optionalInput.getDataDefinitionDeclaration().dataDefinition());
+            }
+            for (DataDefinitionDeclaration input : inputs) {//adding the inputs to the context by the order of the flowFreeInputsString
                 if(flowFreeInputsString.contains(step.getFinalStepName() + "." +input.getName())) {
                     context.addStep(step.getFinalStepName() + "." + input.getName(),
-                            input.dataDefinition().getValue(input.userString()),
-                            input.dataDefinition(),
+                            dataValues.get(step.getFinalStepName() + "." + input.getName()),
+                            dataDefinitions.get(step.getFinalStepName() + "." + input.getName()),
                             flowExecution.getFlowDefinition().getFlowLevelAlias(step.getFinalStepName() + "." + input.getName()),
                             flowExecution.getFlowDefinition().getFlowLevelCustomMapping(step.getFinalStepName() + "." + input.getName())
                     );
@@ -50,8 +124,6 @@ public class FLowExecutor {
                 );
             }
         }
-        // populate context with all free inputs (mandatory & optional) that were given from the user
-        // (typically stored on top of the flow execution object)
 
         // start actual execution
         for (int i = 0; i < flowExecution.getFlowDefinition().getFlowSteps().size(); i++) {
@@ -91,5 +163,19 @@ public class FLowExecutor {
         FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime,flowExecution.getFlowDefinition().getName(),flowExecution.getUniqueId()
                 ,flowResult,totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
         return result;
+    }
+    private void printFlowFreeInputs(List<InputWithStepName> mandatoryInputs, List<InputWithStepName> optionalInputs) {
+        System.out.println("Please choose an input to enter:");
+        int i = 1;
+        System.out.println("Mandatory inputs:\n");
+        for (InputWithStepName input : mandatoryInputs) {
+            System.out.println(i + ") " + input.getDataDefinitionDeclaration().userString());
+            i++;
+        }
+        System.out.println("\nOptional inputs:\n");
+        for (InputWithStepName input : optionalInputs) {
+            System.out.println(i + ") " + input.getDataDefinitionDeclaration().userString());
+            i++;
+        }
     }
 }
