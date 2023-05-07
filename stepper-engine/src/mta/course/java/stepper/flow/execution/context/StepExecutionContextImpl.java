@@ -4,6 +4,7 @@ import mta.course.java.stepper.dd.api.DataDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 
+import java.sql.Time;
 import java.time.Instant;
 import java.util.*;
 
@@ -38,7 +39,8 @@ public class StepExecutionContextImpl implements StepExecutionContext {
             logs.put(key, new ArrayList<String>());
         }
         ArrayList<String> list = logs.get(key);
-        log = log + "|" + Instant.now();
+        Time time = new Time(System.currentTimeMillis());
+        log = log + "|" + time.toString();
         list.add(log);
     }
     @Override

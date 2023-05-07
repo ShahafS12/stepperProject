@@ -102,8 +102,8 @@ public class FLowExecutor {
                 }
             }
             for(InputWithStepName optionalInput : optionalInputs){//if the user didn't enter optional inputs, we need to add them to the dataValues
-                dataValues.put(step.getFinalStepName() + "." + optionalInput.getDataDefinitionDeclaration(),"");
-                dataDefinitions.put(step.getFinalStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(),optionalInput.getDataDefinitionDeclaration().dataDefinition());
+                dataValues.put(optionalInput.getStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(),"");
+                dataDefinitions.put(optionalInput.getStepName() + "." + optionalInput.getDataDefinitionDeclaration().getName(),optionalInput.getDataDefinitionDeclaration().dataDefinition());
             }
             for (DataDefinitionDeclaration input : inputs) {//adding the inputs to the context by the order of the flowFreeInputsString
                 if(flowFreeInputsString.contains(step.getFinalStepName() + "." +input.getName())) {

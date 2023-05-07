@@ -18,7 +18,7 @@ import java.util.*;
 
 public class Menu
 {
-    private MenuVariables menuVariables = new MenuVariables();
+    private MenuVariables menuVariables;
 
     public void showMenu() throws IOException, ParserConfigurationException, SAXException {
         System.out.println("1. Load flow from XML file");
@@ -201,7 +201,14 @@ public class Menu
         if(actionFlow == 0)
             return;
         FlowDefinition flow = menuVariables.getStepper().getFlowDefinition(menuVariables.getFlowNames().get(actionFlow - 1));
-        FlowExecutionsStatistics flowExecutionsStatistics = menuVariables.getFlowExecutionsStatisticsMap().get(flow.getName());
-        flowExecutionsStatistics.printStatistics();
+        if(!menuVariables.getFlowExecutionsStatisticsMap().containsKey(flow.getName()))
+        {
+            System.out.println("No statistics for this flow");
+            return;
+        }
+        else {
+            FlowExecutionsStatistics flowExecutionsStatistics = menuVariables.getFlowExecutionsStatisticsMap().get(flow.getName());
+            flowExecutionsStatistics.printStatistics();
+        }
     }
 }
