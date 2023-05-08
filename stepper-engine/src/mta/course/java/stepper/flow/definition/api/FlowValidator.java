@@ -99,9 +99,15 @@ public class FlowValidator
             String[] parts = key.split("\\.");
             for(StepUsageDeclaration step : steps) {
                 if (step.getStepName().equals(parts[0])) {
-                    List<DataDefinitionDeclaration> inputsAndOutputs = step.getStepDefinition().inputs();
-                    inputsAndOutputs.addAll(step.getStepDefinition().outputs());
-                    for (DataDefinitionDeclaration dd : inputsAndOutputs) {
+                    List<DataDefinitionDeclaration> inputs = step.getStepDefinition().inputs();
+                    List<DataDefinitionDeclaration> outputs = step.getStepDefinition().outputs();
+                    for (DataDefinitionDeclaration dd : inputs) {
+                        if (dd.dataDefinition().getName().equals(parts[1])) {
+                            System.out.println("The flow contains an alias to a non-existing step/data");
+                            return true;
+                        }
+                    }
+                    for (DataDefinitionDeclaration dd : outputs) {
                         if (dd.dataDefinition().getName().equals(parts[1])) {
                             System.out.println("The flow contains an alias to a non-existing step/data");
                             return true;
