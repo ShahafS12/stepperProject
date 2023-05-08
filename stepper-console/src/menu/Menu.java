@@ -86,6 +86,11 @@ public class Menu
 
     private void showPastRun(Scanner scanner)
     {
+        if(this.menuVariables==null)
+        {
+            System.out.println("No XML loaded");
+            return;
+        }
         int actionFlow;
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
@@ -129,6 +134,11 @@ public class Menu
 
     private void executeFlow(Scanner scanner)
     {
+        if(this.menuVariables==null)
+        {
+            System.out.println("No XML loaded");
+            return;
+        }
         int actionFlow;
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
@@ -159,6 +169,11 @@ public class Menu
 
     private void showFlow(Scanner scanner)
     {
+        if(this.menuVariables==null)
+        {
+            System.out.println("No XML loaded");
+            return;
+        }
         int actionFlow;
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
@@ -191,6 +206,11 @@ public class Menu
         flow.printFreeOutputs();
     }
     private void showStatistics(Scanner scanner){
+        if(this.menuVariables==null)
+        {
+            System.out.println("No XML loaded");
+            return;
+        }
         System.out.println("Choose a flow: ");
         System.out.println("0: return to main menu ");
         for (int i = 0; i < menuVariables.getFlowNames().size(); i++) {
