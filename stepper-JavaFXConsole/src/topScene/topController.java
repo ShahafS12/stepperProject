@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.execution.FlowExecution;
@@ -29,6 +30,8 @@ public class topController {
 
     @FXML
     private Button flowsDefButton;
+    @FXML
+    private HBox mostTopBox;
 
     @FXML
     private Button flowsExecutionButton;

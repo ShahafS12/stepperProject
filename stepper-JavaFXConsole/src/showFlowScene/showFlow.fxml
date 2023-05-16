@@ -5,15 +5,16 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<SplitPane dividerPositions="0.39464882943143814" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="showFlowScene.ShowFlowController">
+<SplitPane cacheShape="false" centerShape="false" dividerPositions="0.3745819397993311" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="600.0" stylesheets="@ShowFlowStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="showFlowScene.ShowFlowController">
   <items>
+    <AnchorPane>
+         <children>
+            <ListView fx:id="flowsList" layoutX="14.0" layoutY="14.0" prefHeight="398.0" prefWidth="221.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+         </children>
+      </AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
-            <ListView fx:id="flowsList" layoutX="14.0" layoutY="14.0" prefHeight="370.0" prefWidth="207.0" />
-         </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-         <children>
-            <TextArea fx:id="chosenFlowData" layoutX="9.0" layoutY="14.0" prefHeight="370.0" prefWidth="333.0" />
+            <TextArea fx:id="chosenFlowData" layoutX="9.0" layoutY="14.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="398.0" prefWidth="359.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
          </children></AnchorPane>
   </items>
 </SplitPane>

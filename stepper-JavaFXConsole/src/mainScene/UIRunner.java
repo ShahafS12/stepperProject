@@ -24,7 +24,7 @@ public class UIRunner extends Application
         javafx.scene.Parent root = fxmlLoader.load();
         mainController mainController = fxmlLoader.getController();
         //topController.setModel(model);
-        javafx.scene.Scene scene = new javafx.scene.Scene(root, 300, 275);
+        javafx.scene.Scene scene = new javafx.scene.Scene(root, 700, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

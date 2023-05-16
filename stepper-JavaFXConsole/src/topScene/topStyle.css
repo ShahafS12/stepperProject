@@ -1,0 +1,86 @@
+/* Apply styles to the root VBox */
+.vbox {
+    -fx-pref-height: 108.0;
+    -fx-pref-width: 600.0;
+}
+
+/* Apply styles to the first HBox */
+.hbox1 {
+    -fx-alignment: center-left;
+    -fx-pref-height: 109.0;
+    -fx-pref-width: 600.0;
+    -fx-spacing: 15.0;
+    -fx-padding: 0 0 0 15.0;
+}
+
+/* Apply styles to the LoadXMLButton */
+#LoadXMLButton {
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 100.0;
+}
+
+/* Apply styles to the currentXMLLabel */
+#currentXMLLabel {
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 468.0;
+    -fx-wrap-text: true;
+}
+
+/* Apply styles to the second HBox */
+.hbox2 {
+    -fx-alignment: center-right;
+    -fx-pref-height: 120.0;
+    -fx-pref-width: 600.0;
+    -fx-spacing: 15.0;
+    -fx-padding: 0 15.0 0 0;
+}
+
+/* Apply styles to the buttons in the second HBox */
+#flowsDefButton,
+#flowsExecutionButton,
+#executionsHistoryButton,
+#statisticsButton {
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 120.0;
+}
+.button {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-color: #e33f3f;
+    -fx-border-color: #000000;
+}
+.button:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+#LoadXMLButton {
+    -fx-background-color: rgba(38, 185, 154, 0.53);
+    -fx-animated: true;
+    -fx-border-color: rgba(26, 136, 113, 0.53);
+}
+#LoadXMLButton:hover {
+    -fx-background-color: rgba(38, 185, 154, 0.73);
+}
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #000000;
+    -fx-wrap-text: true;
+    -fx-background-color: linear-gradient(to bottom right, #a8a8a8, #4f4e4e);
+    -fx-border-radius: 10px;
+    -fx-padding: 5px;
+}
+#currentXMLLabel:hover {
+    -fx-background-color: linear-gradient(to bottom right, #7e7e7e, #383838);
+}
+#mostTopBox {
+    -fx-alignment: center;
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 600.0;
+    -fx-spacing: 15.0;
+    -fx-padding: 5px;
+    -fx-animated: true;
+}

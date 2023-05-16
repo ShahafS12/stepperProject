@@ -1,0 +1,74 @@
+.root {
+    -fx-background-color: #ffffff;
+}
+
+.topComponent {
+    -fx-padding: 10px;
+}
+
+.flowsList {
+    -fx-pref-width: 200px;
+}
+
+.chosenFlowData {
+    -fx-pref-width: 300px;
+}
+
+.LoadXMLButton {
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #26B99A;
+    -fx-color: #ffffff;
+}
+
+.currentXMLLabel {
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-wrap-text: true;
+}
+
+.flowsDefButton {
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #4D4B4B;
+    -fx-color: #ffffff;
+}
+
+.flowsExecutionButton {
+    -fx-font-size: 16px;
+    -fx-text-fill: #ff0000;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #FF8040;
+    -fx-color: #360b0b;
+}
+
+.flowsExecutionButton {
+    -fx-background-color: #841e1e;
+}
+
+.executionsHistoryButton {
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #0000FF;
+    -fx-color: #ffffff;
+}
+
+.statisticsButton {
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-background-color: linear-gradient(#ff6600, #cc6600);
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #32AA15;
+    -fx-color: #ffffff;
+}

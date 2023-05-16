@@ -3,6 +3,7 @@ package showFlowScene;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
@@ -43,9 +44,14 @@ public class ShowFlowController {
 
         // Append flow details to the outputTextArea
         chosenFlowData.appendText("Flow Name: " + flow.getName() + "\n");
+        int endIndex = "Flow Name:".length();
         chosenFlowData.appendText("Description: " + flow.getDescription() + "\n");
         chosenFlowData.appendText("Flow Formal Outputs: " + flow.getFlowFormalOutputs() + "\n");
-        chosenFlowData.appendText("read-only: " + flow.isReadOnly() + "\n");
+        chosenFlowData.appendText("read-only: " );
+        if (flow.isReadonly())
+            chosenFlowData.appendText("\u2713\n");
+        else
+            chosenFlowData.appendText("\u2717\n");
         List<StepUsageDeclaration> steps = flow.getFlowSteps();
         chosenFlowData.appendText("\nSteps: \n");
         for (int i = 0; i < steps.size(); i++) {
