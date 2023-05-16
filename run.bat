@@ -1,0 +1,1 @@
+java -jar stepper-console.jar
