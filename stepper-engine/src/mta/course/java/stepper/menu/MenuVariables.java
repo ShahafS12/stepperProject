@@ -37,6 +37,7 @@ public class MenuVariables
     public void upuniqueFlowIdCounter() {
         this.uniqueFlowIdCounter++;
     }
+
     public void setStepper(StepperDefinition stepper) {
         this.stepper = stepper;
     }
