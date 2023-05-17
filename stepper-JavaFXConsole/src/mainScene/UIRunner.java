@@ -24,7 +24,7 @@ public class UIRunner extends Application
         //topController.setModel(model);
         javafx.scene.Scene scene = new javafx.scene.Scene(root, 700, 600);
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new javafx.scene.image.Image("mainScene/image.jfif"));
+        primaryStage.getIcons().add(new javafx.scene.image.Image("mainScene/imagez.png"));
         primaryStage.show();
     }
 }
