@@ -1,14 +1,22 @@
 package showFlowScene;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 
+import java.net.URL;
 import java.util.List;
 
 public class ShowFlowController {
@@ -19,7 +27,19 @@ public class ShowFlowController {
 
     @FXML
     private TextFlow chosenFlowData;
+    private Parent root;
+    private Scene scene;
+    private Stage stage;
 
+    public void initialize() {
+        if (flowsList != null) {
+            flowsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    handleFlowSelection(newValue);
+                }
+            });
+        }
+    }
     public void setMainController(mainController mainController) {
         this.mainController = mainController;
     }
@@ -33,11 +53,28 @@ public class ShowFlowController {
             }
         });
     }
+    public void switchToStatisticsScene(){
+
+    }
 
     private void handleFlowSelection(String newValue)
     {
         FlowDefinition flow = mainController.getFlowDefinition(newValue);
         setChosenFlowData(flow);
+    }
+    public void switchToStatisticsScene(ActionEvent event){
+        try {
+            URL url = getClass().getResource("statisticsSceme.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(url);
+            root = fxmlLoader.load();
+            stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public void setChosenFlowData(FlowDefinition flow) {
