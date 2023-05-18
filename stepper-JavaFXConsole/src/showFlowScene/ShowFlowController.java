@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
@@ -17,7 +18,7 @@ public class ShowFlowController {
     private ListView<String> flowsList;
 
     @FXML
-    private TextArea chosenFlowData;
+    private TextFlow chosenFlowData;
 
     public void setMainController(mainController mainController) {
         this.mainController = mainController;
@@ -40,27 +41,33 @@ public class ShowFlowController {
     }
 
     public void setChosenFlowData(FlowDefinition flow) {
-        chosenFlowData.clear();
+        if(flow == null)
+            return;
+        if(chosenFlowData!=null)
+            chosenFlowData.getChildren().clear();
 
         // Append flow details to the outputTextArea
-        chosenFlowData.appendText("Flow Name: " + flow.getName() + "\n");
-        int endIndex = "Flow Name:".length();
-        chosenFlowData.appendText("Description: " + flow.getDescription() + "\n");
-        chosenFlowData.appendText("Flow Formal Outputs: " + flow.getFlowFormalOutputs() + "\n");
-        chosenFlowData.appendText("read-only: " );
+        Text flowName = new Text("Flow Name: " + flow.getName() + "\n");
+        flowName.setStyle("-fx-font-weight: bold");
+        chosenFlowData.getChildren().add(flowName);
+        chosenFlowData.getChildren().add(new Text("Description: " + flow.getDescription() + "\n"));
+        chosenFlowData.getChildren().add(new Text("Flow Formal Outputs: " + flow.getFlowFormalOutputs() + "\n"));
+        chosenFlowData.getChildren().add(new Text("read-only: " ));
         if (flow.isReadonly())
-            chosenFlowData.appendText("\u2713\n");
+            chosenFlowData.getChildren().add(new Text("\u2713\n"));
         else
-            chosenFlowData.appendText("\u2717\n");
+            chosenFlowData.getChildren().add(new Text("\u2717\n"));
         List<StepUsageDeclaration> steps = flow.getFlowSteps();
-        chosenFlowData.appendText("\nSteps: \n");
+        Text stepsText = new Text("\nSteps: \n");
+        stepsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        chosenFlowData.getChildren().add(stepsText);
         for (int i = 0; i < steps.size(); i++) {
             StepUsageDeclaration step = steps.get(i);
             if (step.getStepName() != step.getFinalStepName())
-                chosenFlowData.appendText(step.getStepName() + "," + step.getFinalStepName() + "\n");
+                chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName() + "\n"));
             else
-                chosenFlowData.appendText(step.getStepName() + "\n");
-            chosenFlowData.appendText("Is readOnly: " + step.getStepDefinition().isReadonly() + "\n\n");
+                chosenFlowData.getChildren().add(new Text(step.getStepName() + "\n"));
+            chosenFlowData.getChildren().add(new Text("Is readOnly: " + step.getStepDefinition().isReadonly() + "\n\n"));
         }
         //TODO print flow free inputs and outputs
     }

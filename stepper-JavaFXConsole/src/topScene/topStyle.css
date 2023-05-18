@@ -34,15 +34,6 @@
     -fx-spacing: 15.0;
     -fx-padding: 0 15.0 0 0;
 }
-
-/* Apply styles to the buttons in the second HBox */
-#flowsDefButton,
-#flowsExecutionButton,
-#executionsHistoryButton,
-#statisticsButton {
-    -fx-pref-height: 30.0;
-    -fx-pref-width: 120.0;
-}
 .button {
     -fx-font-size: 12px;
     -fx-text-fill: #000000;
