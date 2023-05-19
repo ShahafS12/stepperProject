@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -21,6 +22,8 @@ import java.util.List;
 
 public class ShowFlowController {
     private mainScene.mainController mainController;
+    @FXML
+    private AnchorPane showFlowAnchorPane;
 
     @FXML
     private ListView<String> flowsList;
@@ -39,6 +42,9 @@ public class ShowFlowController {
                 }
             });
         }
+    }
+    public AnchorPane getShowFlowAnchorPane(){
+        return showFlowAnchorPane;
     }
     public void setMainController(mainController mainController) {
         this.mainController = mainController;

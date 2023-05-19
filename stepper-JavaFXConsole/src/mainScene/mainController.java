@@ -11,15 +11,18 @@ import javafx.stage.Stage;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.menu.MenuVariables;
 import showFlowScene.ShowFlowController;
-import showFlowScene.statisticsController;
 import topScene.topController;
+import StatisticsScene.statisticsController;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class mainController {
     @FXML private topController topComponentController;
     @FXML private ShowFlowController ShowFlowComponentController;
 
     @FXML private BorderPane mainBorder;
-    private showFlowScene.statisticsController statisticsController;
+    private statisticsController statisticsController;
     private MenuVariables menuVariables;
     private Parent root;
     private Scene scene;
@@ -50,8 +53,17 @@ public class mainController {
         return menuVariables.getStepper().getFlowDefinition(newValue);
     }
     public void switchToStatisticsScene(ActionEvent event){
+        if(statisticsController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../StatisticsScene/statisticsSceme.fxml"));
+            try {
+                Parent statisticsRoot = loader.load();
+                statisticsController = loader.getController();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         try {
-            AnchorPane view = FXMLLoader.load(getClass().getResource("../showFlowScene/statisticsSceme.fxml"));
+            AnchorPane view = statisticsController.getStatisticsAnchorPane();
             mainBorder.setCenter(view);
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,7 +71,7 @@ public class mainController {
     }
     public void switchToShowFlowScene(ActionEvent event){
         try {
-            AnchorPane view = FXMLLoader.load(getClass().getResource("../showFlowScene/showFlow.fxml"));
+            AnchorPane view = ShowFlowComponentController.getShowFlowAnchorPane();
             mainBorder.setCenter(view);
         } catch (Exception e) {
             e.printStackTrace();

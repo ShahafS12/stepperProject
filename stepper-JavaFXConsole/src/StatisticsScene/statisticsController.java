@@ -1,4 +1,4 @@
-package showFlowScene;
+package StatisticsScene;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -41,6 +41,9 @@ public class statisticsController {
         if (mainController != null) {
             mainController.setStatisticsController(this);
         }
+    }
+    public AnchorPane getStatisticsAnchorPane(){
+        return statisticsAnchorPane;
     }
 
 }
