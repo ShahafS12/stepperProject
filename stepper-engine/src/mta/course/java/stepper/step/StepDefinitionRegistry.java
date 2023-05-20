@@ -3,6 +3,7 @@ package mta.course.java.stepper.step;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.step.api.StepDefinition;
 import mta.course.java.stepper.step.impl.CSVExporterStep.CSVExporterStep;
+import mta.course.java.stepper.step.impl.CommandLineStep.CommandLineStep;
 import mta.course.java.stepper.step.impl.FileDumperStep.FileDumperStep;
 import mta.course.java.stepper.step.impl.FilesContentExtractorStep.FilesContentExtractorStep;
 import mta.course.java.stepper.step.impl.FilesDeleterStep.FilesDeleterStep;
@@ -12,6 +13,7 @@ import mta.course.java.stepper.step.impl.PersonDetailsStep;
 import mta.course.java.stepper.step.impl.PropertiesExporterStep.PropertiesExporterStep;
 import mta.course.java.stepper.step.impl.SpendSomeTimeStep.SpendSomeTimeStep;
 import mta.course.java.stepper.step.impl.CollectFilesInFolderStep.CollectFilesInFolderStep;
+import mta.course.java.stepper.step.impl.ZipperStep.ZipperStep;
 
 public enum StepDefinitionRegistry {
     HELLO_WORLD(new HelloWorldStep()),
@@ -24,6 +26,8 @@ public enum StepDefinitionRegistry {
     FILES_DELETER(new FilesDeleterStep()),
     FILES_RENAMER(new FilesRenamerStep()),
     PROPERTIES_EXPORTER(new PropertiesExporterStep()),
+    ZIPPER(new ZipperStep()),
+    COMMAND_LINE(new CommandLineStep())
     ;
 
     private final StepDefinition stepDefinition;
