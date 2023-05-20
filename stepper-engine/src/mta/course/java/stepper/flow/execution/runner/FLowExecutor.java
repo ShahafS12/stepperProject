@@ -159,6 +159,7 @@ public class FLowExecutor {
             System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
             List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
             int i = 0;
+            System.out.println("--------FLOW OUTPUTS--------");
             for (DataDefinitionDeclaration output : flowExecution.getFlowDefinition().getFlowFreeOutputs()) {
                 String tmp = flowFreeOutputs.get(i);
                 System.out.println("\nUser string: " + output.userString() + " Value:\n" + context.getDataValuesMap().get(tmp).toString());
@@ -171,11 +172,16 @@ public class FLowExecutor {
         }
         catch (RuntimeException e)
         {
-            System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
+            flowExecution.setFlowExecutionResult(flowResult);
             double totalTimeFlow = flowExecution.timeTakenForFlow();
+            System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
             System.out.println("Total Time: " + totalTimeFlow + " ms");
             FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime, flowExecution.getFlowDefinition().getName(), flowExecution.getUniqueId()
                     , flowResult, totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
+            System.out.println("--------FLOW OUTPUTS--------");
+            for (DataDefinitionDeclaration output : flowExecution.getFlowDefinition().getFlowFreeOutputs()) {
+                System.out.println("\nUser string: " + output.userString() + " Value:\n" + "Not created due to failure in flow");
+            }
             return result;
         }
     }
