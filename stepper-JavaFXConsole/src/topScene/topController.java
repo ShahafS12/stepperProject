@@ -82,5 +82,13 @@ public class topController {
     public void setMainController(mainController mainController) {
         this.mainController = mainController;
     }
+    @FXML
+    public void switchToStatisticsScene(ActionEvent event) {
+        mainController.switchToStatisticsScene( event);
+    }
+    @FXML
+    public void switchToShowFlowScene(ActionEvent event) {
+        mainController.switchToShowFlowScene( event);
+    }
 
 }

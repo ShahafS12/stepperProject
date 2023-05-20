@@ -1,6 +1,8 @@
 package mta.course.java.stepper.flow.definition.api;
 
+import dataloader.generated.STFlow;
 import dataloader.generated.*;
+import dataloader.generated.STStepsInFlow;
 import mta.course.java.stepper.flow.execution.context.AutoMapping;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.StepDefinition;
@@ -19,6 +21,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final List<String> preAliasFlowFreeInputs;
     private final Map<String,Class<?>> allFlowInputs;
     private final Map<String,Class<?>> allFlowOutputs;
+    private final Map<String,Object> innitialDataValues;
     private final List<DataDefinitionDeclaration> flowFreeInputsDataDefenition;
     private final List<String> flowFreeOutputs;
     private final List<DataDefinitionDeclaration> flowFreeOutputsDataDefenition;
@@ -36,6 +39,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowFreeOutputsDataDefenition = new ArrayList<>();
         flowOutputs = new ArrayList<>();
         flowFreeOutputs = new ArrayList<>();
+        innitialDataValues = new HashMap<>();
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
@@ -69,6 +73,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         steps = new ArrayList<>();
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
+        innitialDataValues = new HashMap<>();
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
         {

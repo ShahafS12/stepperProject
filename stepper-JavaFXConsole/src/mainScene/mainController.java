@@ -2,17 +2,31 @@ package mainScene;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.menu.MenuVariables;
 import showFlowScene.ShowFlowController;
 import topScene.topController;
+import StatisticsScene.statisticsController;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class mainController {
     @FXML private topController topComponentController;
     @FXML private ShowFlowController ShowFlowComponentController;
+
+    @FXML private BorderPane mainBorder;
+    private statisticsController statisticsController;
     private MenuVariables menuVariables;
+    private Parent root;
+    private Scene scene;
+    private Stage stage;
 
     @FXML
     public void initialize() {
@@ -37,5 +51,35 @@ public class mainController {
     public FlowDefinition getFlowDefinition(String newValue)
     {
         return menuVariables.getStepper().getFlowDefinition(newValue);
+    }
+    public void switchToStatisticsScene(ActionEvent event){
+        if(statisticsController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../StatisticsScene/statisticsSceme.fxml"));
+            try {
+                Parent statisticsRoot = loader.load();
+                statisticsController = loader.getController();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            AnchorPane view = statisticsController.getStatisticsAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void switchToShowFlowScene(ActionEvent event){
+        try {
+            AnchorPane view = ShowFlowComponentController.getShowFlowAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setStatisticsController(statisticsController statisticsController)
+    {
+        this.statisticsController = statisticsController;
     }
 }
