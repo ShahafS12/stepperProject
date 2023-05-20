@@ -1,6 +1,7 @@
 package mta.course.java.stepper.dd.impl;
 
 import mta.course.java.stepper.dd.api.DataDefinition;
+import mta.course.java.stepper.dd.impl.Enumerator.EnumeratorDataDefinition;
 import mta.course.java.stepper.dd.impl.Number.NumberDataDefinition;
 import mta.course.java.stepper.dd.impl.list.ListDataDefenition;
 import mta.course.java.stepper.dd.impl.mapping.MappingDataDefenition;
@@ -14,7 +15,9 @@ public enum DataDefinitionRegistry implements DataDefinition{
     RELATION(new RelationDataDefinition()),
     LIST(new ListDataDefenition()),
     MAP (new MappingDataDefenition()),
-    Number(new NumberDataDefinition());
+
+    Number(new NumberDataDefinition()),
+    Enumeration(new EnumeratorDataDefinition());
 
     DataDefinitionRegistry(DataDefinition dataDefinition) {
         this.dataDefinition = dataDefinition;
