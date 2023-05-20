@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{}ST-Flow" maxOccurs="unbounded"/>
+ *       &lt;sequence maxOccurs="unbounded">
+ *         &lt;element ref="{}ST-Continuation"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stFlow"
+    "stContinuation"
 })
-@XmlRootElement(name = "ST-Flows")
-public class STFlows {
+@XmlRootElement(name = "ST-Continuations")
+public class STContinuations {
 
-    @XmlElement(name = "ST-Flow", required = true)
-    protected List<STFlow> stFlow;
+    @XmlElement(name = "ST-Continuation", required = true)
+    protected List<STContinuation> stContinuation;
 
     /**
-     * Gets the value of the stFlow property.
+     * Gets the value of the stContinuation property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stFlow property.
+     * This is why there is not a <CODE>set</CODE> method for the stContinuation property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSTFlow().add(newItem);
+     *    getSTContinuation().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link STFlow }
+     * {@link STContinuation }
      * 
      * 
      */
-    public List<STFlow> getSTFlow() {
-        if (stFlow == null) {
-            stFlow = new ArrayList<STFlow>();
+    public List<STContinuation> getSTContinuation() {
+        if (stContinuation == null) {
+            stContinuation = new ArrayList<STContinuation>();
         }
-        return this.stFlow;
+        return this.stContinuation;
     }
 
 }
