@@ -21,7 +21,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final List<String> preAliasFlowFreeInputs;
     private final Map<String,Class<?>> allFlowInputs;
     private final Map<String,Class<?>> allFlowOutputs;
-    private final Map<String,Object> innitialDataValues;
+    private final Map<String,String> innitialDataValues;
     private final List<DataDefinitionDeclaration> flowFreeInputsDataDefenition;
     private final List<String> flowFreeOutputs;
     private final List<DataDefinitionDeclaration> flowFreeOutputsDataDefenition;
@@ -97,6 +97,11 @@ public class FlowDefinitionImpl implements FlowDefinition {
             for (STCustomMapping stCustomMapping : stCustomMappingList) {
                 customMapping.put(stCustomMapping.getSourceStep()+"."+ stCustomMapping.getSourceData(),
                         stCustomMapping.getTargetStep()+"."+ stCustomMapping.getTargetData());
+            }
+        }
+        if(stFlow.getSTInitialInputValues()!=null) {
+            for (STInitialInputValue stInitialInputValue : stFlow.getSTInitialInputValues().getSTInitialInputValue()) {
+                innitialDataValues.put(stInitialInputValue.getInputName(), stInitialInputValue.getInitialValue());
             }
         }
         for (int i=0; i<steps.size(); i++) {
