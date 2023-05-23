@@ -9,10 +9,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.SingleStepExecutionData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +37,14 @@ public class executionController {
 
     @FXML
     private Button flowContinuationButton;
+    @FXML
+    private TextFlow stepDetails;
     private List<Control> mandatoryInputs;
     private List<Control> optionalInputs;
     private List<InputWithStepName> outputs;
     private mainScene.mainController mainController;
     private FlowDefinition chosenFlow;
+    private List<SingleStepExecutionData> executionData;
     private int currentAmountOfMandatoryInputs;
     public AnchorPane getExecutionAnchorPane(){
         return executionAnchorPane;
@@ -60,7 +66,24 @@ public class executionController {
     }
     private void handleStepSelection(String newValue)
     {
-        //TODO: implement
+        stepDetails.getChildren().clear();
+        stepDetails.getChildren().add(new Text(newValue));
+    }
+    private void handleStepSelection(SingleStepExecutionData newValue) {
+        stepDetails.getChildren().clear();
+        stepDetails.getChildren().add(new Text("Step name: " + newValue.getStepName()));
+        stepDetails.getChildren().add(new Text("Duration: " + String.format("%.2f", newValue.getDuration()) + " ms\n"));
+        stepDetails.getChildren().add(new Text("Success: " + newValue.getSuccess() + "\n"));
+        stepDetails.getChildren().add(new Text("Summary Line: " + newValue.getSummaryLine()));
+        stepDetails.getChildren().add(new Text("\n"));
+        Text logsText = new Text("Logs: \n");
+        logsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        stepDetails.getChildren().add(logsText);
+        for (String log : newValue.getLogs()) {
+            String[] logParts = log.split("\\|");
+            for(String logPart : logParts)
+                stepDetails.getChildren().add(new Text(logPart+"\n"));
+        }
     }
     public void setChosenFlow(FlowDefinition chosenFlow){
         this.chosenFlow = chosenFlow;
@@ -108,23 +131,38 @@ public class executionController {
         inputsGridPane.add(executeButton, 2, row);
         //executeButton.setDisable(true);//TODO: change to false when all mandatory inputs are filled
     }
+    public void pupulateCurrentExecutionSteps(){
+        currentExecutionSteps.getItems().clear();
+        for(SingleStepExecutionData step : executionData){
+            currentExecutionSteps.getItems().add(step.getStepName());
+        }
+        if(currentExecutionSteps.getItems().size() > 0){
+            currentExecutionSteps.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if(newValue != null){
+                    handleStepSelection(executionData.get(currentExecutionSteps.getSelectionModel().getSelectedIndex()));;
+                }
+            });
+        }
+    }
 
     @FXML
     public void executeFlow(ActionEvent event)
     {
+        executionData = new ArrayList<>();
         Timer timer = new Timer();
         int interval = 100; // Interval in milliseconds
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                //System.out.println("Hello");
+                pupulateCurrentExecutionSteps();
             }
         }, interval, interval);
         FLowExecutor fLowExecutor = new FLowExecutor();
-        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(1),mandatoryInputs,optionalInputs,outputs);
+        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(1),mandatoryInputs,optionalInputs,outputs,executionData);
         //print hello every 100 ms
         timer.cancel();
+        pupulateCurrentExecutionSteps();
     }
 
     public void continuation(ActionEvent event)

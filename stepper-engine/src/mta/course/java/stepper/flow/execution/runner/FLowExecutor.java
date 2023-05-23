@@ -154,7 +154,8 @@ public class FLowExecutor {
                 }
                 flowExecution.getSingleStepExecutionDataMap().put(stepUsageDeclaration.getFinalStepName(), new SingleStepExecutionData(totalTime, stepResult,
                         context.getSummaryLine(stepUsageDeclaration.getFinalStepName()),
-                        context.getLogs(stepUsageDeclaration.getFinalStepName())));
+                        context.getLogs(stepUsageDeclaration.getFinalStepName()),
+                        stepUsageDeclaration.getFinalStepName()));
                 System.out.println("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
                 // check if should continue etc..
             }
@@ -198,7 +199,7 @@ public class FLowExecutor {
         }
     }
     public FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Control> mandatoryInputsTXT, List<Control> optionalInputsTXT,
-                                                 List<InputWithStepName> outputs){
+                                                 List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList){
         List<InputWithStepName> mandatoryInputs = flowExecution.getFlowDefinition().getMandatoryInputs();
         List<InputWithStepName> optionalInputs = flowExecution.getFlowDefinition().getOptionalInputs();
         Time executionStartTime = new Time(System.currentTimeMillis());
@@ -255,9 +256,10 @@ public class FLowExecutor {
                 } else {
                     flowExecution.getStepExecutionStatisticsMap().put(stepUsageDeclaration.getFinalStepName(), new StepExecutionStatistics(totalTime));
                 }
-                flowExecution.getSingleStepExecutionDataMap().put(stepUsageDeclaration.getFinalStepName(), new SingleStepExecutionData(totalTime, stepResult,
+                singleStepExecutionDataList.add(new SingleStepExecutionData(totalTime, stepResult,
                         context.getSummaryLine(stepUsageDeclaration.getFinalStepName()),
-                        context.getLogs(stepUsageDeclaration.getFinalStepName())));
+                        context.getLogs(stepUsageDeclaration.getFinalStepName()),
+                        stepUsageDeclaration.getStepName()));
                 System.out.println("Done executing step: " + stepUsageDeclaration.getFinalStepName() + ". Result: " + stepResult);
                 // check if should continue etc..
             }
