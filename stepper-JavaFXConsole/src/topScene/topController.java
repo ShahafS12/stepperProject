@@ -91,4 +91,9 @@ public class topController {
         mainController.switchToShowFlowScene( event);
     }
 
+    @FXML
+    public void switchToExecutionScene(ActionEvent event)
+    {
+        mainController.switchToExecutionScene(event);
+    }
 }
