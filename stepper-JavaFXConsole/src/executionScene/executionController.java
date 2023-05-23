@@ -128,7 +128,7 @@ public class executionController {
             row++;
             currentOptionalInputs++;
         }
-        inputsGridPane.add(executeButton, 2, row);
+        //inputsGridPane.add(executeButton, 2, row);
         //executeButton.setDisable(true);//TODO: change to false when all mandatory inputs are filled
     }
     public void pupulateCurrentExecutionSteps(){
