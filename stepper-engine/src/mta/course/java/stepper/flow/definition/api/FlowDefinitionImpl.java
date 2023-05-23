@@ -3,13 +3,11 @@ package mta.course.java.stepper.flow.definition.api;
 import dataloader.generated.STFlow;
 import dataloader.generated.*;
 import dataloader.generated.STStepsInFlow;
-import mta.course.java.stepper.flow.execution.context.AutoMapping;
+import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
-import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.step.api.DataNecessity;
 
-import javax.xml.crypto.Data;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FlowDefinitionImpl implements FlowDefinition {
 
@@ -30,11 +28,17 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final Map<String,String> flowLevelAlias;
     private final Map<String, String> customMapping;
     private final Map<String,String> AutoMappingMap;
+    private final Map<String, String> ContinuationMap;
+    private final List<InputWithStepName> mandatoryInputs;
+    private final List<InputWithStepName> optionalInputs;
+
     private boolean readonly;
 
     public FlowDefinitionImpl(String name, String description) {//TODO delete this after we are sure we don't need it
         this.name = name;
         this.description = description;
+        mandatoryInputs = new ArrayList<>();
+        optionalInputs = new ArrayList<>();
         flowFreeInputsDataDefenition = new ArrayList<>();
         flowFreeOutputsDataDefenition = new ArrayList<>();
         flowOutputs = new ArrayList<>();
@@ -50,6 +54,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         finalStepNames = new ArrayList<>();
         AutoMappingMap = new HashMap<>();
         preAliasFlowFreeInputs = new ArrayList<>();
+        ContinuationMap = new HashMap<>();
         uniqueId = UUID.randomUUID().toString();
     }
 
@@ -58,6 +63,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
         readonly = true;
         this.name = stFlow.getName();
         flowFreeInputs = new ArrayList<>();
+        mandatoryInputs = new ArrayList<>();
+        optionalInputs = new ArrayList<>();
         flowFreeInputsDataDefenition = new ArrayList<>();
         flowFreeOutputsDataDefenition = new ArrayList<>();
         preAliasFlowFreeInputs = new ArrayList<>();
@@ -74,6 +81,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
         innitialDataValues = new HashMap<>();
+        ContinuationMap = new HashMap<>();
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
         {
@@ -102,6 +110,15 @@ public class FlowDefinitionImpl implements FlowDefinition {
         if(stFlow.getSTInitialInputValues()!=null) {
             for (STInitialInputValue stInitialInputValue : stFlow.getSTInitialInputValues().getSTInitialInputValue()) {
                 innitialDataValues.put(stInitialInputValue.getInputName(), stInitialInputValue.getInitialValue());
+        STContinuations stContinuationsMap = stFlow.getSTContinuations();
+        if(stContinuationsMap != null){
+            List<STContinuation> stFlowContinuationList = stContinuationsMap.getSTContinuation();
+            for (STContinuation stContinuation : stFlowContinuationList){
+                List<STContinuationMapping> stContinueMap = stContinuation.getSTContinuationMapping();
+                for (STContinuationMapping i : stContinueMap){
+                    ContinuationMap.put(name + "." + stContinuation.getTargetFlow() ,
+                         i.getSourceData() + "." + i.getTargetData());
+                }
             }
         }
         for (int i=0; i<steps.size(); i++) {
@@ -129,6 +146,34 @@ public class FlowDefinitionImpl implements FlowDefinition {
         boolean flowIsValid = flowValidator.validate();
         if(!flowIsValid)
             throw new RuntimeException("Flow is not valid");
+
+        int counter = 0;
+        for (DataDefinitionDeclaration input : flowFreeInputsDataDefenition){
+            String key = getStepName(counter++);
+            if (input.necessity().equals(DataNecessity.MANDATORY)) {
+                mandatoryInputs.add(new InputWithStepName(key, input));
+            }
+            else{
+                optionalInputs.add(new InputWithStepName(key, input));
+            }
+        }
+    }
+
+    @Override
+    public String getStepName(int counter){
+        String fullNameInput = flowFreeInputs.get(counter);
+        String [] tmp = fullNameInput.split("\\.");
+        return tmp[0];
+    }
+
+    @Override
+    public List<InputWithStepName> getMandatoryInputs (){
+        return mandatoryInputs;
+    }
+
+    @Override
+    public List<InputWithStepName> getOptionalInputs (){
+        return optionalInputs;
     }
 
     @Override

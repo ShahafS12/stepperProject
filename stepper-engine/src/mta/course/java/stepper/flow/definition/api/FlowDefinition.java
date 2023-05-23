@@ -1,5 +1,6 @@
 package mta.course.java.stepper.flow.definition.api;
 
+import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 
 import java.util.List;
@@ -13,6 +14,11 @@ public interface FlowDefinition {
     void createFreeInputOutputLists();
     boolean isReadonly();
     List<DataDefinitionDeclaration> getFlowFreeInputs();
+
+    List<InputWithStepName> getMandatoryInputs();
+
+    List<InputWithStepName> getOptionalInputs();
+
     void addFlowOutput(String outputName);
     void addFlowStep(StepUsageDeclaration stepUsageDeclaration);
     String getFlowLevelAlias(String sourceDataName);
@@ -32,7 +38,8 @@ public interface FlowDefinition {
     List<String> getFinalStepNames();
     Map<String,String> getAllFlowLevelAlias();
     List<String> getPreAliasFlowFreeInputs();
+    String getStepName(int counter);
 
 
-    String getFlowLevelCustomMapping(String name);
+        String getFlowLevelCustomMapping(String name);
 }

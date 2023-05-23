@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import java.io.IOException;
+
 
 
 public class ZipperStep extends AbstractStepDefinition {
@@ -27,7 +29,8 @@ public class ZipperStep extends AbstractStepDefinition {
     public StepResult invoke(StepExecutionContext context){
         String finalStepName = context.getStepAlias(this.name());
         String folderName = context.getDataValue(context.getAlias(finalStepName+"."+"SOURCE",String.class), String.class);
-        String operationType = context.getDataValue(context.getAlias(finalStepName+"."+"FILTER",String.class), String.class);
+        String operationType = context.getDataValue(context.getAlias(finalStepName+"."+"OPERATION",String.class), String.class);
+        // TODO: make sure that when I choose operation type it been only the options that asked : zip, unzip
 
         String beforeStarting = "About to perform operation " + operationType + " on source" + folderName;
         context.addLogLine(finalStepName, beforeStarting);
@@ -40,22 +43,28 @@ public class ZipperStep extends AbstractStepDefinition {
             }
             catch (Exception e ){
                 String failedFolder = "The provided path: "+ folderName + " is not able to be unzip";
+                context.addSummaryLine(finalStepName, failedFolder);
                 return StepResult.FAILURE;
             }
         } else if (operationType.equals("zip")) {
             try{
                 File sourceFile = new File(folderName);
-                String parentPath = sourceFile.getParent();
-                zip(folderName, parentPath);
+                String zipFilePath = sourceFile + ".zip";
+                zip(folderName, zipFilePath);
             }
             catch (Exception e){
                 String failedFolder = "The provided path: "+ folderName + " is not able to be zip";
+                context.addSummaryLine(finalStepName, failedFolder);
                 return StepResult.FAILURE;
             }
         } else {
             String failedFolder = operationType + " is invalid operation type";
+            context.addSummaryLine(finalStepName, failedFolder);
             return StepResult.FAILURE;
         }
+
+        String successSum = "Finished the " + operationType + " successfully";
+        context.addSummaryLine(finalStepName, successSum);
 
         return StepResult.SUCCESS;
     }
@@ -96,56 +105,60 @@ public class ZipperStep extends AbstractStepDefinition {
         }
     }
 
+    private static void zip(String sourcePath, String zipFilePath) throws IOException {
+        FileOutputStream fos = new FileOutputStream(zipFilePath);
+        ZipOutputStream zos = new ZipOutputStream(fos);
 
-    public static void zip(String sourcePath, String zipFilePath) throws Exception {
-        try {
-            FileOutputStream fos = new FileOutputStream(zipFilePath);
-            ZipOutputStream zipOutputStream = new ZipOutputStream(fos);
-            File sourceFile = new File(sourcePath);
-
-            if (sourceFile.isDirectory()) {
-                zipDirectory(sourceFile, sourceFile.getName(), zipOutputStream);
-            } else {
-                zipFile(sourceFile, sourceFile.getName(), zipOutputStream);
-            }
-
-            zipOutputStream.close();
-            fos.close();
-
-            System.out.println("Zip completed successfully.");
-        } catch (Exception e) {
-            throw new Exception("Failed to create the zip file: " + e.getMessage());
+        File sourceFile = new File(sourcePath);
+        if (sourceFile.isDirectory()) {
+            zipDirectory(sourceFile, sourceFile.getName(), zos);
+        } else {
+            zipFile(sourceFile, zos);
         }
+
+        zos.close();
+        fos.close();
     }
 
-    private static void zipDirectory(File directory, String parentPath, ZipOutputStream zipOutputStream) throws Exception {
+    private static void zipDirectory(File directory, String baseName, ZipOutputStream zos) throws IOException {
         File[] files = directory.listFiles();
+        byte[] buffer = new byte[1024];
 
         for (File file : files) {
             if (file.isDirectory()) {
-                zipDirectory(file, parentPath + File.separator + file.getName(), zipOutputStream);
+                zipDirectory(file, baseName + File.separator + file.getName(), zos);
             } else {
-                zipFile(file, parentPath, zipOutputStream);
+                FileInputStream fis = new FileInputStream(file);
+                zos.putNextEntry(new ZipEntry(baseName + File.separator + file.getName()));
+
+                int length;
+                while ((length = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, length);
+                }
+
+                zos.closeEntry();
+                fis.close();
             }
         }
     }
 
-    private static void zipFile(File file, String parentPath, ZipOutputStream zipOutputStream) throws Exception {
+    private static void zipFile(File file, ZipOutputStream zos) throws IOException {
         byte[] buffer = new byte[1024];
         FileInputStream fis = new FileInputStream(file);
-        ZipEntry zipEntry = new ZipEntry(parentPath + File.separator + file.getName());
-        zipOutputStream.putNextEntry(zipEntry);
+
+        zos.putNextEntry(new ZipEntry(file.getName()));
 
         int length;
         while ((length = fis.read(buffer)) > 0) {
-            zipOutputStream.write(buffer, 0, length);
+            zos.write(buffer, 0, length);
         }
 
+        zos.closeEntry();
         fis.close();
-        zipOutputStream.closeEntry();
     }
-
-
-
-
 }
+
+
+
+
+

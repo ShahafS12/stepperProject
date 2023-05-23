@@ -36,13 +36,19 @@ public class CommandLineStep extends AbstractStepDefinition {
         }
         catch (Exception e){}
 
+        String successSum = "Command line is done";
+        context.addSummaryLine(finalStepName, successSum);
         return StepResult.SUCCESS;
     }
     public static String runCommand(String command, String arguments) throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder(command, arguments);
-        Process process = processBuilder.start();
+        ProcessBuilder processBuilder = new ProcessBuilder();
 
-        // Read the output of the command
+        String commandWithArguments = command + " " + arguments;
+
+        processBuilder.command("cmd.exe", "/c", commandWithArguments);
+
+
+        Process process = processBuilder.start();
         InputStream inputStream = process.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder output = new StringBuilder();
