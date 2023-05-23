@@ -3,10 +3,7 @@ package executionScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.JavaFXBuilderFactory;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -71,9 +68,8 @@ public class executionController {
     }
     private void handleStepSelection(SingleStepExecutionData newValue) {
         stepDetails.getChildren().clear();
-        stepDetails.getChildren().add(new Text("Step name: " + newValue.getStepName()));
         stepDetails.getChildren().add(new Text("Duration: " + String.format("%.2f", newValue.getDuration()) + " ms\n"));
-        stepDetails.getChildren().add(new Text("Success: " + newValue.getSuccess() + "\n"));
+        stepDetails.getChildren().add(new Text("Status: " + newValue.getSuccess() + "\n"));
         stepDetails.getChildren().add(new Text("Summary Line: " + newValue.getSummaryLine()));
         stepDetails.getChildren().add(new Text("\n"));
         Text logsText = new Text("Logs: \n");
@@ -110,7 +106,9 @@ public class executionController {
                 optionalInputs.add(new javafx.scene.control.TextField());
 
         }
-        inputsGridPane.addRow(row,new javafx.scene.control.Label("Mandatory Inputs:"));
+        Label mandatoryInputsLabel = new Label("Mandatory Inputs:");
+        mandatoryInputsLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        inputsGridPane.addRow(row,mandatoryInputsLabel);
         row++;
         row++;
         for (InputWithStepName input : chosenFlow.getMandatoryInputs()) {
@@ -120,7 +118,9 @@ public class executionController {
             row++;
             currentMandatoryInputs++;
         }
-        inputsGridPane.addRow(row,new javafx.scene.control.Label("Optional Inputs:"));
+        Label optionalInputsLabel = new Label("Optional Inputs:");
+        optionalInputsLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        inputsGridPane.addRow(row,optionalInputsLabel);
         row++;
         row++;
         for (InputWithStepName input : chosenFlow.getOptionalInputs()) {
@@ -152,7 +152,7 @@ public class executionController {
         Timer timer = new Timer();
         int interval = 100; // Interval in milliseconds
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {//TODO check why it crashes on the second run
             @Override
             public void run() {
                 pupulateCurrentExecutionSteps();

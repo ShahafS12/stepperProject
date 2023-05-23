@@ -33,7 +33,7 @@
                                                       <Button fx:id="executeButton" mnemonicParsing="false" onAction="#executeFlow" text="Execute" />
                                                    </children>
                                                 </FlowPane>
-                                                <GridPane fx:id="inputsGridPane" alignment="CENTER_LEFT" hgap="10.0" vgap="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <GridPane fx:id="inputsGridPane" alignment="CENTER_LEFT" hgap="10.0" prefHeight="237.0" prefWidth="542.0" vgap="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="63.0" AnchorPane.topAnchor="0.0">
                                                   <columnConstraints>
                                                     <ColumnConstraints minWidth="30.0" />
                                                       <ColumnConstraints minWidth="30.0" />
