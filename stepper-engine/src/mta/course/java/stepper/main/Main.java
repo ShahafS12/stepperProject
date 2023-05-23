@@ -22,7 +22,7 @@ public class Main {
         flow2.createFreeInputOutputLists();
 
         FlowDefinition flow3 = new FlowDefinitionImpl("Flow 3", "Checking steps");
-        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.SPEND_SOME_TIME.getStepDefinition()));
+        flow3.getFlowSteps().add(new StepUsageDeclarationImpl(StepDefinitionRegistry.COLLECT_FILES_IN_FOLDER.getStepDefinition()));
 
 
         FLowExecutor fLowExecutor = new FLowExecutor();
