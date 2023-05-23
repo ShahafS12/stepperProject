@@ -43,6 +43,12 @@ public class mainController {
     public void setShowFlowComponentController(){
         ShowFlowComponentController.setFlowsList(menuVariables.getFlowNames());
     }
+
+    public MenuVariables getMenuVariables()
+    {
+        return menuVariables;
+    }
+
     public void setMenuVariables(MenuVariables variables){
         this.menuVariables = variables;
     }
@@ -91,6 +97,7 @@ public class mainController {
             try {
                 Parent executionRoot = loader.load();
                 executionController = loader.getController();
+                executionController.setMainController(this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
