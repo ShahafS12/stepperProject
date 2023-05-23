@@ -4,15 +4,6 @@
     -fx-pref-width: 600.0;
 }
 
-/* Apply styles to the first HBox */
-.hbox1 {
-    -fx-alignment: center-left;
-    -fx-pref-height: 109.0;
-    -fx-pref-width: 600.0;
-    -fx-spacing: 15.0;
-    -fx-padding: 0 0 0 15.0;
-}
-
 /* Apply styles to the LoadXMLButton */
 #LoadXMLButton {
     -fx-pref-height: 30.0;
@@ -27,13 +18,6 @@
 }
 
 /* Apply styles to the second HBox */
-.hbox2 {
-    -fx-alignment: center-right;
-    -fx-pref-height: 120.0;
-    -fx-pref-width: 600.0;
-    -fx-spacing: 15.0;
-    -fx-padding: 0 15.0 0 0;
-}
 .button {
     -fx-font-size: 12px;
     -fx-text-fill: #000000;

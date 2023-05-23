@@ -8,6 +8,7 @@ SplitPane {
 /* AnchorPane styling */
 AnchorPane {
     -fx-background-color: linear-gradient(to bottom right, #ffffff, #f2f2f2);
+    -fx-alignment: center;
 }
 
 /* ListView styling */
@@ -24,4 +25,21 @@ TextArea {
     -fx-font-family: Arial, sans-serif;
     -fx-font-size: 14px;
     -fx-text-fill: #0f254f;
+}
+.button {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-color: #e33f3f;
+    -fx-border-color: #000000;
+    /*-fx-alignment: bottom-right;*/
+}
+#executeButton {
+    -fx-background-color: rgba(38, 185, 154, 0.53);
+    -fx-animated: true;
+    -fx-border-color: rgba(26, 136, 113, 0.53);
+    -fx-background-position: center;
+    -fx-position: center;
 }

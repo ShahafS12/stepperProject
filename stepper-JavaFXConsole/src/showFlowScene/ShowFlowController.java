@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -27,6 +28,8 @@ public class ShowFlowController {
 
     @FXML
     private ListView<String> flowsList;
+    @FXML
+    private Button executeButton;
 
     @FXML
     private TextFlow chosenFlowData;
@@ -41,6 +44,14 @@ public class ShowFlowController {
                     handleFlowSelection(newValue);
                 }
             });
+        }
+    }
+    @FXML
+    void executeChosenFlow(ActionEvent event) {
+        String chosenFlow = flowsList.getSelectionModel().getSelectedItem();
+        if (chosenFlow != null) {
+            FlowDefinition flow = mainController.getFlowDefinition(chosenFlow);
+            mainController.switchToExecutionScene(event, flow);
         }
     }
     public AnchorPane getShowFlowAnchorPane(){
@@ -114,5 +125,4 @@ public class ShowFlowController {
         }
         //TODO print flow free inputs and outputs
     }
-
 }

@@ -12,7 +12,7 @@
    <children>
       <HBox fx:id="mostTopBox" alignment="CENTER_LEFT" prefHeight="109.0" prefWidth="600.0" spacing="15.0">
          <children>
-            <Button fx:id="LoadXMLButton" mnemonicParsing="false" onAction="#loadStepperFromXml" text="Load XML file" />
+            <Button fx:id="LoadXMLButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadStepperFromXml" text="Load XML file" />
             <Label fx:id="currentXMLLabel" prefHeight="30.0" prefWidth="468.0" text="No XML file is currently loaded" wrapText="true" />
          </children>
          <VBox.margin>
@@ -32,7 +32,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button fx:id="flowsExecutionButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Execute Flow">
+            <Button fx:id="flowsExecutionButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToExecutionScene" text="Execute Flow">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
