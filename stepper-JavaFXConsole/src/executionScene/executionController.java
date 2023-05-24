@@ -159,8 +159,8 @@ public class executionController {
             }
         }, interval, interval);
         FLowExecutor fLowExecutor = new FLowExecutor();
-        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(1),mandatoryInputs,optionalInputs,outputs,executionData);
-        //print hello every 100 ms
+        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(2),mandatoryInputs,optionalInputs,outputs,executionData);
+
         timer.cancel();
         pupulateCurrentExecutionSteps();
     }

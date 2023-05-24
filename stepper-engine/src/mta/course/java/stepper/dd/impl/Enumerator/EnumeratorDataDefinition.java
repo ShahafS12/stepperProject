@@ -3,11 +3,12 @@ package mta.course.java.stepper.dd.impl.Enumerator;
 import mta.course.java.stepper.dd.api.AbstractDataDefinition;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
 
+import java.util.Enumeration;
 import java.util.Scanner;
 
 public class EnumeratorDataDefinition extends AbstractDataDefinition
 {
-    public EnumeratorDataDefinition()  {super("Enumerator", true, Enum.class);}
+    public EnumeratorDataDefinition()  {super("Enumerator", true, String.class);}
     public String getValue(String name){
         boolean validInput = false;
         String string = "";
