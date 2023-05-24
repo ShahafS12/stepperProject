@@ -24,6 +24,7 @@ public interface FlowDefinition {
     String getFlowLevelAlias(String sourceDataName);
     boolean isDataDefEquals(String stepName, String outputName,String dataDefName);
     boolean isReadOnly();
+    List<InputWithStepName> getOutputs();
     void convertInputDataFromArrayStringToDD (List<String> inputs);
     void convertOutpusDataFromArrayStringToDD (List<String> outputs);
     List<String> getFlowFreeInputsString();

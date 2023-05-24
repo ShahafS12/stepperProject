@@ -1,0 +1,110 @@
+/* Apply styles to the root AnchorPane */
+#executionAnchorPane {
+    -fx-pref-height: 532.0;
+    -fx-pref-width: 633.0;
+}
+
+/* Apply styles to the ScrollPane */
+.scroll-pane {
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
+/* Apply styles to the SplitPane */
+.split-pane {
+    -fx-divider-position: 0.5;
+}
+.button {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-color: #e33f3f;
+    -fx-border-color: #000000;
+}
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-background-color: #aba8a8;
+}
+
+/* Apply styles to the FlowPane */
+.flow-pane {
+    -fx-alignment: bottom-right;
+}
+.button:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+/* Apply styles to the Button */
+
+/* Apply styles to the ListView */
+.list-view {
+    -fx-pref-height: 200.0;
+    -fx-pref-width: 200.0;
+}
+
+/* Apply styles to the TextFlow */
+.text-flow {
+    -fx-pref-height: 100.0;
+    -fx-pref-width: 160.0;
+}
+
+/* Apply styles to the second SplitPane */
+.split-pane > .split-pane {
+    -fx-divider-position: 0.29797979797979796;
+}
+
+/* Apply styles to the AnchorPane inside the second SplitPane */
+.split-pane > .split-pane > .anchor-pane {
+    -fx-pref-height: 160.0;
+    -fx-pref-width: 100.0;
+}
+
+/* Apply styles to the ScrollPane inside the second AnchorPane */
+.split-pane > .split-pane > .anchor-pane > .scroll-pane {
+    -fx-fit-to-height: true;
+    -fx-fit-to-width: true;
+}
+
+/* Apply styles to the nested SplitPane inside the ScrollPane */
+.split-pane > .split-pane > .anchor-pane > .scroll-pane > .split-pane {
+    -fx-divider-position: 0.6893617021276596;
+}
+
+/* Apply styles to the AnchorPane inside the nested SplitPane */
+.split-pane > .split-pane > .anchor-pane > .scroll-pane > .split-pane > .anchor-pane {
+    -fx-pref-height: 100.0;
+    -fx-pref-width: 160.0;
+}
+
+/* Apply styles to the TextFlow inside the nested AnchorPane */
+.split-pane > .split-pane > .anchor-pane > .scroll-pane > .split-pane > .anchor-pane > .text-flow {
+    -fx-pref-width: 160.0;
+}
+
+/* Apply styles to the FlowPane inside the nested AnchorPane */
+.split-pane > .split-pane > .anchor-pane > .scroll-pane > .split-pane > .anchor-pane > .flow-pane {
+    -fx-alignment: bottom-right;
+}
+
+/* Apply styles to the Button inside the nested AnchorPane */
+.split-pane > .split-pane > .anchor-pane > .scroll-pane > .split-pane > .anchor-pane > .flow-pane > .button {
+    -fx-margin: 5.0;
+}
+.grid-pane {
+    -fx-alignment: center;
+    -fx-vgap: 5.0; /* Add vertical gap between rows */
+    -fx-hgap: 5.0; /* Add horizontal gap between columns */
+}
+
+/* Apply styles to the Labels inside the GridPane */
+.grid-pane .label {
+    -fx-padding: 5.0; /* Add padding to the Labels */
+}
+
+/* Apply styles to the TextFields inside the GridPane */
+.grid-pane .text-field {
+    -fx-padding: 5.0; /* Add padding to the TextFields */
+}

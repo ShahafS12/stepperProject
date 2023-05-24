@@ -13,6 +13,7 @@ import mta.course.java.stepper.menu.MenuVariables;
 import showFlowScene.ShowFlowController;
 import topScene.topController;
 import StatisticsScene.statisticsController;
+import executionScene.executionController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,10 +24,8 @@ public class mainController {
 
     @FXML private BorderPane mainBorder;
     private statisticsController statisticsController;
+    private executionController executionController;
     private MenuVariables menuVariables;
-    private Parent root;
-    private Scene scene;
-    private Stage stage;
 
     @FXML
     public void initialize() {
@@ -44,6 +43,12 @@ public class mainController {
     public void setShowFlowComponentController(){
         ShowFlowComponentController.setFlowsList(menuVariables.getFlowNames());
     }
+
+    public MenuVariables getMenuVariables()
+    {
+        return menuVariables;
+    }
+
     public void setMenuVariables(MenuVariables variables){
         this.menuVariables = variables;
     }
@@ -81,5 +86,45 @@ public class mainController {
     public void setStatisticsController(statisticsController statisticsController)
     {
         this.statisticsController = statisticsController;
+    }
+    public void setExecutionController(executionController executionController)
+    {
+        this.executionController = executionController;
+    }
+    public void switchToExecutionScene(ActionEvent event, FlowDefinition chosenFlow){
+        if(executionController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../executionScene/executionScene.fxml"));
+            try {
+                Parent executionRoot = loader.load();
+                executionController = loader.getController();
+                executionController.setMainController(this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            executionController.setChosenFlow(chosenFlow);
+            AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void switchToExecutionScene(ActionEvent event){
+        if(executionController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../executionScene/executionScene.fxml"));
+            try {
+                Parent executionRoot = loader.load();
+                executionController = loader.getController();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

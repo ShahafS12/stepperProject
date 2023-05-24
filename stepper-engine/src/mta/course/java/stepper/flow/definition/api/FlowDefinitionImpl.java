@@ -19,7 +19,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final List<String> preAliasFlowFreeInputs;
     private final Map<String,Class<?>> allFlowInputs;
     private final Map<String,Class<?>> allFlowOutputs;
-    private final Map<String,Object> innitialDataValues;
+    private final Map<String,String> innitialDataValues;
     private final List<DataDefinitionDeclaration> flowFreeInputsDataDefenition;
     private final List<String> flowFreeOutputs;
     private final List<DataDefinitionDeclaration> flowFreeOutputsDataDefenition;
@@ -31,6 +31,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final Map<String, String> ContinuationMap;
     private final List<InputWithStepName> mandatoryInputs;
     private final List<InputWithStepName> optionalInputs;
+    private final List<InputWithStepName> outputs;
 
     private boolean readonly;
 
@@ -56,6 +57,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         preAliasFlowFreeInputs = new ArrayList<>();
         ContinuationMap = new HashMap<>();
         uniqueId = UUID.randomUUID().toString();
+        outputs = new ArrayList<>();
     }
 
     public FlowDefinitionImpl(STFlow stFlow)
@@ -72,6 +74,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         allFlowOutputs = new HashMap<>();
         finalStepNames = new ArrayList<>();
         AutoMappingMap = new HashMap<>();
+        outputs = new ArrayList<>();
         uniqueId = UUID.randomUUID().toString();
         this.description = stFlow.getSTFlowDescription();
         String[] output = stFlow.getSTFlowOutput().split(",");
@@ -83,79 +86,96 @@ public class FlowDefinitionImpl implements FlowDefinition {
         innitialDataValues = new HashMap<>();
         ContinuationMap = new HashMap<>();
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
-        for(int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++)
-        {
+        for (int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++) {
             StepUsageDeclaration stepUsageDeclaration = new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i));
             steps.add(stepUsageDeclaration);
             finalStepNames.add(stepUsageDeclaration.getFinalStepName());
-            if(!stepUsageDeclaration.getStepDefinition().isReadonly())//if we found a step that is not readonly, the flow is not readonly
+            if (!stepUsageDeclaration.getStepDefinition().isReadonly())//if we found a step that is not readonly, the flow is not readonly
                 readonly = false;
         }
         STFlowLevelAliasing stFlowLevelAliasing = stFlow.getSTFlowLevelAliasing();
-        if(stFlowLevelAliasing!=null) {
+        if (stFlowLevelAliasing != null) {
             List<STFlowLevelAlias> stFlowLevelAliasList = stFlowLevelAliasing.getSTFlowLevelAlias();
             for (STFlowLevelAlias stFlowLevelAlias : stFlowLevelAliasList) {
-                flowLevelAlias.put(stFlowLevelAlias.getStep()+"."+stFlowLevelAlias.getSourceDataName(),
-                        stFlowLevelAlias.getStep()+"."+stFlowLevelAlias.getAlias());
+                flowLevelAlias.put(stFlowLevelAlias.getStep() + "." + stFlowLevelAlias.getSourceDataName(),
+                        stFlowLevelAlias.getStep() + "." + stFlowLevelAlias.getAlias());
             }
         }
         STCustomMappings stCustomMappings = stFlow.getSTCustomMappings();
-        if(stCustomMappings!=null) {
+        if (stCustomMappings != null) {
             List<STCustomMapping> stCustomMappingList = stCustomMappings.getSTCustomMapping();
             for (STCustomMapping stCustomMapping : stCustomMappingList) {
-                customMapping.put(stCustomMapping.getSourceStep()+"."+ stCustomMapping.getSourceData(),
-                        stCustomMapping.getTargetStep()+"."+ stCustomMapping.getTargetData());
+                customMapping.put(stCustomMapping.getSourceStep() + "." + stCustomMapping.getSourceData(),
+                        stCustomMapping.getTargetStep() + "." + stCustomMapping.getTargetData());
             }
         }
-        STContinuations stContinuationsMap = stFlow.getSTContinuations();
-        if(stContinuationsMap != null){
-            List<STContinuation> stFlowContinuationList = stContinuationsMap.getSTContinuation();
-            for (STContinuation stContinuation : stFlowContinuationList){
-                List<STContinuationMapping> stContinueMap = stContinuation.getSTContinuationMapping();
-                for (STContinuationMapping i : stContinueMap){
-                    ContinuationMap.put(name + "." + stContinuation.getTargetFlow() ,
-                         i.getSourceData() + "." + i.getTargetData());
+        if (stFlow.getSTInitialInputValues() != null) {
+            for (STInitialInputValue stInitialInputValue : stFlow.getSTInitialInputValues().getSTInitialInputValue()) {
+                innitialDataValues.put(stInitialInputValue.getInputName(), stInitialInputValue.getInitialValue());
+            }
+        }
+                STContinuations stContinuationsMap = stFlow.getSTContinuations();
+                if (stContinuationsMap != null) {
+                    List<STContinuation> stFlowContinuationList = stContinuationsMap.getSTContinuation();
+                    for (STContinuation stContinuation : stFlowContinuationList) {
+                        List<STContinuationMapping> stContinueMap = stContinuation.getSTContinuationMapping();
+                        for (STContinuationMapping i : stContinueMap) {
+                            ContinuationMap.put(name + "." + stContinuation.getTargetFlow(),
+                                    i.getSourceData() + "." + i.getTargetData());
+                        }
+                    }
+                }
+                for (int i = 0; i < steps.size(); i++) {
+                    List<DataDefinitionDeclaration> inputStep = steps.get(i).getStepDefinition().inputs();
+                    List<DataDefinitionDeclaration> outputStep = steps.get(i).getStepDefinition().outputs();
+                    for (DataDefinitionDeclaration dataInput : inputStep) {
+                        String inputToAdd = flowLevelAlias.get(steps.get(i).getFinalStepName() + "." + dataInput.getName());
+                        if (inputToAdd == null)
+                            inputToAdd = steps.get(i).getFinalStepName() + "." + dataInput.getName();
+                        allFlowInputs.put(inputToAdd, dataInput.dataDefinition().getType());
+                        if (allFlowOutputs.containsKey(inputToAdd) && !AutoMappingMap.containsKey(steps.get(i).getFinalStepName() + "." + inputToAdd))
+                            AutoMappingMap.put(steps.get(i).getFinalStepName() + "." + inputToAdd, inputToAdd);
+
+                    }
+                    for (DataDefinitionDeclaration dataOutput : outputStep) {
+                        String outputToAdd = flowLevelAlias.get(steps.get(i).getFinalStepName() + "." + dataOutput.getName());
+                        if (outputToAdd == null)
+                            outputToAdd = steps.get(i).getFinalStepName() + "." + dataOutput.getName();
+                        allFlowOutputs.put(outputToAdd, dataOutput.dataDefinition().getType());
+
+                    }
+                }
+                createFreeInputOutputLists();
+                FlowValidator flowValidator = new FlowValidator(this);
+                boolean flowIsValid = flowValidator.validate();
+                if (!flowIsValid)
+                    throw new RuntimeException("Flow is not valid");
+
+                int counter = 0;
+                for (DataDefinitionDeclaration input : flowFreeInputsDataDefenition) {
+                    String key = getStepName(counter++);
+                    if (input.necessity().equals(DataNecessity.MANDATORY)) {
+                        mandatoryInputs.add(new InputWithStepName(key, input));
+                    } else {
+                        optionalInputs.add(new InputWithStepName(key, input));
+                    }
+                }
+        initializeOutputs();
+    }
+    private void initializeOutputs() {
+        for (StepUsageDeclaration step : steps) {
+            for(DataDefinitionDeclaration output : step.getStepDefinition().outputs()){
+                String outputName = step.getFinalStepName() + "." + output.getName();
+                if (allFlowOutputs.containsKey(outputName)) {
+                    outputs.add(new InputWithStepName(step.getFinalStepName(), output));
                 }
             }
         }
-        for (int i=0; i<steps.size(); i++) {
-            List<DataDefinitionDeclaration> inputStep = steps.get(i).getStepDefinition().inputs();
-            List<DataDefinitionDeclaration> outputStep = steps.get(i).getStepDefinition().outputs();
-            for (DataDefinitionDeclaration dataInput : inputStep) {
-                String inputToAdd = flowLevelAlias.get(steps.get(i).getFinalStepName() + "." + dataInput.getName());
-                if (inputToAdd == null)
-                    inputToAdd = steps.get(i).getFinalStepName() + "." + dataInput.getName();
-                allFlowInputs.put(inputToAdd, dataInput.dataDefinition().getType());
-                if(allFlowOutputs.containsKey(inputToAdd) && !AutoMappingMap.containsKey(steps.get(i).getFinalStepName() + "." + inputToAdd))
-                    AutoMappingMap.put(steps.get(i).getFinalStepName() + "." + inputToAdd, inputToAdd);
-
-            }
-            for (DataDefinitionDeclaration dataOutput : outputStep) {
-                String outputToAdd = flowLevelAlias.get(steps.get(i).getFinalStepName() + "." + dataOutput.getName());
-                if (outputToAdd == null)
-                    outputToAdd = steps.get(i).getFinalStepName() + "." + dataOutput.getName();
-                allFlowOutputs.put(outputToAdd, dataOutput.dataDefinition().getType());
-
-            }
-        }
-        createFreeInputOutputLists();
-        FlowValidator flowValidator = new FlowValidator(this);
-        boolean flowIsValid = flowValidator.validate();
-        if(!flowIsValid)
-            throw new RuntimeException("Flow is not valid");
-
-        int counter = 0;
-        for (DataDefinitionDeclaration input : flowFreeInputsDataDefenition){
-            String key = getStepName(counter++);
-            if (input.necessity().equals(DataNecessity.MANDATORY)) {
-                mandatoryInputs.add(new InputWithStepName(key, input));
-            }
-            else{
-                optionalInputs.add(new InputWithStepName(key, input));
-            }
-        }
     }
-
+    @Override
+    public List<InputWithStepName> getOutputs() {
+        return outputs;
+    }
     @Override
     public String getStepName(int counter){
         String fullNameInput = flowFreeInputs.get(counter);

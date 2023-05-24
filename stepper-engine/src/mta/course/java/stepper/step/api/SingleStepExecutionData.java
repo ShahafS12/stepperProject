@@ -8,16 +8,22 @@ public class SingleStepExecutionData
     private final StepResult success;
     private String summaryLine;
     private List<String> logs;
-    public SingleStepExecutionData(double duration, StepResult success, String summaryLine, List<String> logs)
+    private String stepName;
+    public SingleStepExecutionData(double duration, StepResult success, String summaryLine, List<String> logs,String stepName)
     {
         this.duration = duration;
         this.success = success;
         this.summaryLine = summaryLine;
         this.logs = logs;
+        this.stepName = stepName;
     }
     public double getDuration()
     {
         return duration;
+    }
+    public String getStepName()
+    {
+        return stepName;
     }
     public StepResult getSuccess()
     {
