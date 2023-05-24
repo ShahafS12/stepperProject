@@ -32,7 +32,11 @@
 .flow-pane {
     -fx-alignment: bottom-right;
 }
-
+.button:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
 /* Apply styles to the Button */
 
 /* Apply styles to the ListView */
