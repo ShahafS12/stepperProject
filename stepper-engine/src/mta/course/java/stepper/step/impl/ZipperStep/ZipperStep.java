@@ -35,7 +35,7 @@ public class ZipperStep extends AbstractStepDefinition {
         String beforeStarting = "About to perform operation " + operationType + " on source" + folderName;
         context.addLogLine(finalStepName, beforeStarting);
 
-        if (operationType.equals("unzip")) {
+        if (operationType.equals("UNZIP")) {
             try {
                 File sourceFile = new File(folderName);
                 String parentPath = sourceFile.getParent();
@@ -46,7 +46,7 @@ public class ZipperStep extends AbstractStepDefinition {
                 context.addSummaryLine(finalStepName, failedFolder);
                 return StepResult.FAILURE;
             }
-        } else if (operationType.equals("zip")) {
+        } else if (operationType.equals("ZIP")) {
             try{
                 File sourceFile = new File(folderName);
                 String zipFilePath = sourceFile + ".zip";
