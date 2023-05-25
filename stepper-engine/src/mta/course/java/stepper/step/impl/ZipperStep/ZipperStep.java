@@ -9,6 +9,7 @@ import mta.course.java.stepper.step.api.StepResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -30,12 +31,11 @@ public class ZipperStep extends AbstractStepDefinition {
         String finalStepName = context.getStepAlias(this.name());
         String folderName = context.getDataValue(context.getAlias(finalStepName+"."+"SOURCE",String.class), String.class);
         String operationType = context.getDataValue(context.getAlias(finalStepName+"."+"OPERATION",String.class), String.class);
-        // TODO: make sure that when I choose operation type it been only the options that asked : zip, unzip
 
         String beforeStarting = "About to perform operation " + operationType + " on source" + folderName;
         context.addLogLine(finalStepName, beforeStarting);
 
-        if (operationType.equals("unzip")) {
+        if (operationType.equals("UNZIP")) {
             try {
                 File sourceFile = new File(folderName);
                 String parentPath = sourceFile.getParent();
@@ -46,7 +46,7 @@ public class ZipperStep extends AbstractStepDefinition {
                 context.addSummaryLine(finalStepName, failedFolder);
                 return StepResult.FAILURE;
             }
-        } else if (operationType.equals("zip")) {
+        } else if (operationType.equals("ZIP")) {
             try{
                 File sourceFile = new File(folderName);
                 String zipFilePath = sourceFile + ".zip";

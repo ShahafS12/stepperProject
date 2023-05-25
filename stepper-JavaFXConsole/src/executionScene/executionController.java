@@ -194,6 +194,10 @@ public class executionController {
                 });
             }
         }, interval, interval);
+        FLowExecutor fLowExecutor = new FLowExecutor();
+        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(2),mandatoryInputs,optionalInputs,outputs,executionData);
+        timer.cancel();
+        pupulateCurrentExecutionSteps();
     }
 
     public void continuation(ActionEvent event)
