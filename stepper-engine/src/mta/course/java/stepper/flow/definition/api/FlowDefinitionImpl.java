@@ -169,6 +169,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
                 if (allFlowOutputs.containsKey(outputName)) {
                     outputs.add(new InputWithStepName(step.getFinalStepName(), output));
                 }
+                else if(allFlowOutputs.containsKey(getFlowLevelAlias(outputName))){
+                    outputs.add(new InputWithStepName(step.getFinalStepName(), output));
+                }
             }
         }
     }

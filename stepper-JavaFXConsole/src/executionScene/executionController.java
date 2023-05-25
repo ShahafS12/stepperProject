@@ -159,7 +159,7 @@ public class executionController {
             @Override
             protected Void call() throws Exception {
                 FLowExecutor fLowExecutor = new FLowExecutor();
-                fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(1),
+                fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(0),
                         mandatoryInputs, optionalInputs, outputs, executionData);
                 return null;
             }
@@ -189,7 +189,6 @@ public class executionController {
             {
                 // This code will run on the background thread
                 Platform.runLater(() -> {
-                    System.out.println("Updating current execution steps");
                     pupulateCurrentExecutionSteps();
                 });
             }
