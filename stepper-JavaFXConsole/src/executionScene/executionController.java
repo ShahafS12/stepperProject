@@ -1,5 +1,7 @@
 package executionScene;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -113,8 +115,6 @@ public class executionController {
         row++;
         for (InputWithStepName input : chosenFlow.getMandatoryInputs()) {
             inputsGridPane.addRow(row, new javafx.scene.control.Label(input.getDataDefinitionDeclaration().userString()), mandatoryInputs.get(currentMandatoryInputs));
-            //inputsGridPane.addRow(row,new javafx.scene.control.Label(input.getDataDefinitionDeclaration().userString()),
-                    //new javafx.scene.control.Spinner<Integer>(0,100,0,1));
             row++;
             currentMandatoryInputs++;
         }
@@ -146,21 +146,56 @@ public class executionController {
     }
 
     @FXML
-    public void executeFlow(ActionEvent event)
-    {
-        executionData = new ArrayList<>();
-        Timer timer = new Timer();
-        int interval = 100; // Interval in milliseconds
+    public void executeFlow(ActionEvent event) {
+        if (executionData != null)
+            executionData.clear();
+        else
+            executionData = new ArrayList<>();
 
-        timer.scheduleAtFixedRate(new TimerTask() {//TODO check why it crashes on the second run
+        // Create a Task to execute the executeFlowUI() method
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                FLowExecutor fLowExecutor = new FLowExecutor();
+                fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(1),
+                        mandatoryInputs, optionalInputs, outputs, executionData);
+                return null;
+            }
+        };
+
+        // Set up the completion handler when the task is finished
+        Timer timer = new Timer();
+        int interval = 1000; // Interval in milliseconds
+        task.setOnSucceeded(e -> {
+            // This code will run on the JavaFX application thread
+            timer.cancel();
+            pupulateCurrentExecutionSteps();
+        });
+
+        // Set up the exception handler if an exception occurs during the task
+        task.setOnFailed(e -> {
+            // This code will run on the JavaFX application thread
+            Throwable exception = task.getException();
+            // Handle the exception appropriately
+        });
+
+        // Execute the task in a separate thread
+        Thread thread = new Thread(task);
+        thread.start();
+
+
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                pupulateCurrentExecutionSteps();
+                Platform.runLater(() -> {
+                    // This code will run on the JavaFX application thread
+                    System.out.println("Updating current execution steps");
+                    pupulateCurrentExecutionSteps();
+                });
             }
         }, interval, interval);
         FLowExecutor fLowExecutor = new FLowExecutor();
         fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(2),mandatoryInputs,optionalInputs,outputs,executionData);
-
         timer.cancel();
         pupulateCurrentExecutionSteps();
     }

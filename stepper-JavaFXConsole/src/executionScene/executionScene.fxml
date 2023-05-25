@@ -37,7 +37,6 @@
                                                   <columnConstraints>
                                                     <ColumnConstraints minWidth="30.0" />
                                                       <ColumnConstraints minWidth="30.0" />
-                                                    <ColumnConstraints minWidth="30.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -73,12 +72,20 @@
                                             <items>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                    <children>
-                                                      <TextFlow fx:id="stepDetails" layoutX="43.0" layoutY="-33.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0" />
+                                                      <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0">
+                                                         <content>
+                                                            <TextFlow fx:id="stepDetails" />
+                                                         </content>
+                                                      </ScrollPane>
                                                    </children>
                                                 </AnchorPane>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                    <children>
-                                                      <TextFlow AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <content>
+                                                            <TextFlow />
+                                                         </content>
+                                                      </ScrollPane>
                                                       <FlowPane alignment="BOTTOM_RIGHT" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                                          <children>
                                                             <Button fx:id="flowContinuationButton" mnemonicParsing="false" onAction="#continuation" text="Continue" />
