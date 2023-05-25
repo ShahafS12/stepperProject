@@ -153,6 +153,8 @@ public class executionController {
             executionData = new ArrayList<>();
 
         // Create a Task to execute the executeFlowUI() method
+        Timer timer = new Timer();
+        int interval = 100; // Interval in milliseconds
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -164,8 +166,6 @@ public class executionController {
         };
 
         // Set up the completion handler when the task is finished
-        Timer timer = new Timer();
-        int interval = 1000; // Interval in milliseconds
         task.setOnSucceeded(e -> {
             // This code will run on the JavaFX application thread
             timer.cancel();
@@ -183,21 +183,17 @@ public class executionController {
         Thread thread = new Thread(task);
         thread.start();
 
-
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() {
+            public void run()
+            {
+                // This code will run on the background thread
                 Platform.runLater(() -> {
-                    // This code will run on the JavaFX application thread
                     System.out.println("Updating current execution steps");
                     pupulateCurrentExecutionSteps();
                 });
             }
         }, interval, interval);
-        FLowExecutor fLowExecutor = new FLowExecutor();
-        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(2),mandatoryInputs,optionalInputs,outputs,executionData);
-        timer.cancel();
-        pupulateCurrentExecutionSteps();
     }
 
     public void continuation(ActionEvent event)
