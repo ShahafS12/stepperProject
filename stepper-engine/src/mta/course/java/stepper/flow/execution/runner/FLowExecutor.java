@@ -202,6 +202,7 @@ public class FLowExecutor {
                                                  List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList){
         List<InputWithStepName> mandatoryInputs = flowExecution.getFlowDefinition().getMandatoryInputs();
         List<InputWithStepName> optionalInputs = flowExecution.getFlowDefinition().getOptionalInputs();
+        Instant executionStartTimeInstant = Instant.now();
         Time executionStartTime = new Time(System.currentTimeMillis());
         FlowExecutionResult flowResult = FlowExecutionResult.SUCCESS;
         StepExecutionContext context = new StepExecutionContextImpl();
@@ -264,7 +265,8 @@ public class FLowExecutor {
                 // check if should continue etc..
             }
             flowExecution.setFlowExecutionResult(flowResult);
-            double totalTimeFlow = flowExecution.timeTakenForFlow();
+            Instant executionEndTime = Instant.now();
+            double totalTimeFlow = Duration.between(executionStartTimeInstant, executionEndTime).toMillis();
             System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
             List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
             int i = 0;

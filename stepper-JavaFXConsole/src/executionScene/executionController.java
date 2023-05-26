@@ -159,7 +159,7 @@ public class executionController {
             @Override
             protected Void call() throws Exception {
                 FLowExecutor fLowExecutor = new FLowExecutor();
-                fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(0),
+                fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMap().get(2),
                         mandatoryInputs, optionalInputs, outputs, executionData);
                 return null;
             }
