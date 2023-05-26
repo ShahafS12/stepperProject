@@ -134,7 +134,7 @@ public class mainController {
             try {
                 Parent executionRoot = loader.load();
                 historySceneController = loader.getController();
-                executionController.setMainController(this);
+                historySceneController.setMainController(this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

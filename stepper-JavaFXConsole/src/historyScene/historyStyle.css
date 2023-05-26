@@ -1,0 +1,54 @@
+/* Apply styles to the root VBox */
+.vbox {
+    -fx-pref-height: 108.0;
+    -fx-pref-width: 600.0;
+}
+
+/* Apply styles to the LoadXMLButton */
+#LoadXMLButton {
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 100.0;
+}
+
+/* Apply styles to the currentXMLLabel */
+#currentXMLLabel {
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 468.0;
+    -fx-wrap-text: true;
+}
+
+/* Apply styles to the second HBox */
+.button {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-color: #e33f3f;
+    -fx-border-color: #000000;
+}
+.button:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+#LoadXMLButton {
+    -fx-background-color: rgba(38, 185, 154, 0.53);
+    -fx-animated: true;
+    -fx-border-color: rgba(26, 136, 113, 0.53);
+}
+#LoadXMLButton:hover {
+    -fx-background-color: rgba(38, 185, 154, 0.73);
+}
+
+#currentXMLLabel:hover {
+    -fx-background-color: linear-gradient(to bottom right, #7e7e7e, #383838);
+}
+#mostTopBox {
+    -fx-alignment: center;
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 600.0;
+    -fx-spacing: 15.0;
+    -fx-padding: 5px;
+    -fx-animated: true;
+}
