@@ -63,6 +63,8 @@ public class mainController {
             try {
                 Parent statisticsRoot = loader.load();
                 statisticsController = loader.getController();
+                statisticsController.setMainController(this);
+                //statisticsController.setFlowExecutionsStatistics(menuVariables.get);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

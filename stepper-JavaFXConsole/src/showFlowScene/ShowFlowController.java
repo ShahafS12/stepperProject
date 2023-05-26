@@ -54,6 +54,14 @@ public class ShowFlowController {
             mainController.switchToExecutionScene(event, flow);
         }
     }
+    public FlowDefinition getChoosenFlow(){
+        String chosenFlow = flowsList.getSelectionModel().getSelectedItem();
+        if (chosenFlow != null) {
+            FlowDefinition flow = mainController.getFlowDefinition(chosenFlow);
+            return flow;
+        }
+        return null;
+    }
     public AnchorPane getShowFlowAnchorPane(){
         return showFlowAnchorPane;
     }

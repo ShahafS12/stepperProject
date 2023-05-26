@@ -5,6 +5,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import mainScene.mainController;
+import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
+import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
 public class statisticsController {
     @FXML
@@ -33,6 +35,8 @@ public class statisticsController {
     @FXML
     private TableColumn<?, ?> StepAvgDurationCol;
     private mainScene.mainController mainController;
+    private FlowExecutionsStatistics flowExecutionsStatistics;
+    private FlowExecutionStatistics flowExecutionStatistics;
     public  void setMainController(mainController mainController) {
         this.mainController = mainController;
     }
@@ -44,6 +48,12 @@ public class statisticsController {
     }
     public AnchorPane getStatisticsAnchorPane(){
         return statisticsAnchorPane;
+    }
+    public void setFlowExecutionsStatistics(FlowExecutionsStatistics flowExecutionsStatistics) {
+        this.flowExecutionsStatistics = flowExecutionsStatistics;
+    }
+    public void setFlowExecutionStatistics(FlowExecutionStatistics flowExecutionStatistics) {
+        this.flowExecutionStatistics = flowExecutionStatistics;
     }
 
 }

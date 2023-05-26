@@ -57,8 +57,9 @@ public class topController {
             newMenuVariables.setFlowNames(newFlowNames);
             //flowIdMap.put(flowNames.get(flowNames.size()-1),uniqueFlowIdCounter);
             for (int i = 0; i < newMenuVariables.getFlowNames().size(); i++) {
-                newMenuVariables.putFlowExecutionMap(newMenuVariables.getUniqueFlowIdCounter(),
-                        new FlowExecution(newMenuVariables.getFlowNames().get(i), newStepper.getFlowDefinition(newFlowNames.get(i))));
+                FlowExecution flowExecution = new FlowExecution(newMenuVariables.getFlowNames().get(i), newStepper.getFlowDefinition(newFlowNames.get(i)));
+                newMenuVariables.putFlowExecutionMap(newMenuVariables.getUniqueFlowIdCounter(), flowExecution);
+                newMenuVariables.putFlowExecutionMapFromFlowName(newMenuVariables.getFlowNames().get(i), flowExecution);
                 newMenuVariables.upuniqueFlowIdCounter();
             }
             this.menuVariables = newMenuVariables;

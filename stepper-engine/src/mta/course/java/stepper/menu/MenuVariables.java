@@ -1,5 +1,6 @@
 package mta.course.java.stepper.menu;
 
+import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.execution.FlowExecution;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
@@ -16,6 +17,7 @@ public class MenuVariables
     private ArrayList<String> flowNames;
     private Integer uniqueFlowIdCounter;
     private Map<Integer, FlowExecution> flowExecutionMap;
+    private Map<String,FlowExecution> flowExecutionMapFromFlowName;
     private Map<Integer, FlowExecutionStatistics> stats;
     private Integer uniqueFlowExecutionIdCounter;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
@@ -29,6 +31,13 @@ public class MenuVariables
         this.uniqueFlowExecutionIdCounter = 1;
         this.flowExecutionsStatisticsMap = new HashMap<String, FlowExecutionsStatistics>();
         this.singleStepExecutionDataMap = new HashMap<String, SingleStepExecutionData>();
+        this.flowExecutionMapFromFlowName = new HashMap<String, FlowExecution>();
+    }
+    public Map<String, FlowExecution> getFlowExecutionMapFromFlowName() {
+        return flowExecutionMapFromFlowName;
+    }
+    public void putFlowExecutionMapFromFlowName(String key, FlowExecution value) {
+        this.flowExecutionMapFromFlowName.put(key, value);
     }
 
     public StepperDefinition getStepper() {
