@@ -4,19 +4,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.menu.MenuVariables;
 import showFlowScene.ShowFlowController;
 import topScene.topController;
 import StatisticsScene.statisticsController;
 import executionScene.executionController;
+import historyScene.historySceneController;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class mainController {
     @FXML private topController topComponentController;
@@ -26,6 +24,7 @@ public class mainController {
     private statisticsController statisticsController;
     private executionController executionController;
     private MenuVariables menuVariables;
+    private historySceneController historySceneController;
 
     @FXML
     public void initialize() {
@@ -124,6 +123,24 @@ public class mainController {
         }
         try {
             AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void switchToHistoryScene(ActionEvent event){
+        if(historySceneController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../historyScene/historySceneBuilder.fxml"));
+            try {
+                Parent executionRoot = loader.load();
+                historySceneController = loader.getController();
+                executionController.setMainController(this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            AnchorPane view = historySceneController.getHistoryAnchorPane();
             mainBorder.setCenter(view);
         } catch (Exception e) {
             e.printStackTrace();

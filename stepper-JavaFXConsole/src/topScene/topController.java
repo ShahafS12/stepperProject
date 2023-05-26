@@ -91,10 +91,8 @@ public class topController {
     public void switchToShowFlowScene(ActionEvent event) {
         mainController.switchToShowFlowScene( event);
     }
-
     @FXML
-    public void switchToExecutionScene(ActionEvent event)
-    {
-        mainController.switchToExecutionScene(event);
-    }
+    public void switchToExecutionScene(ActionEvent event) { mainController.switchToExecutionScene(event);}
+    @FXML
+    public void switchToHistoryScene(ActionEvent event) { mainController.switchToHistoryScene(event); }
 }
