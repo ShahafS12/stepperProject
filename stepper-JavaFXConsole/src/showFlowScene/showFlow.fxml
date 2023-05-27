@@ -7,7 +7,7 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="showFlowAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="showFlowScene.ShowFlowController">
    <children>
@@ -24,9 +24,13 @@
                      <children>
                         <ScrollPane layoutX="15.0" layoutY="14.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="14.0">
                            <content>
-                              <TextFlow fx:id="chosenFlowData" prefHeight="388.0" prefWidth="355.0" />
+                              <VBox fx:id="chosenFlowData">
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
                            </content></ScrollPane>
-                        <FlowPane alignment="BOTTOM_RIGHT" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0.0">
+                        <FlowPane alignment="BOTTOM_RIGHT" layoutX="270.0" layoutY="335.0" prefHeight="35.0" prefWidth="82.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="335.0">
                            <children>
                               <Button fx:id="executeButton" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" graphicTextGap="2.0" mnemonicParsing="false" onAction="#executeChosenFlow" text="Execute flow">
                                  <FlowPane.margin>

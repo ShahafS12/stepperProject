@@ -4,6 +4,10 @@
 SplitPane {
     -fx-background-color: linear-gradient(to bottom, #0f254f, #4f3680);
 }
+.mainComponent{
+    -fx-dark-header-color: #202225;
+    -fx-dark-body-color: #36393f;
+}
 
 /* AnchorPane styling */
 AnchorPane {
@@ -47,3 +51,13 @@ TextArea {
     -fx-background-color: rgba(38, 185, 154, 0.73);
     -fx-border-color: rgba(26, 136, 113, 0.73);
 }
+.button:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+#flowsList .list-cell:selected {
+    -fx-background-color:  linear-gradient( #c2e3ec, #c6e8ce);
+    -fx-text-fill: #000000; /* White text color */
+}
+

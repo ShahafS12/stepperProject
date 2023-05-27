@@ -9,10 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -34,7 +31,7 @@ public class ShowFlowController {
     private Button executeButton;
 
     @FXML
-    private TextFlow chosenFlowData;
+    private VBox chosenFlowData;
     private Parent root;
     private Scene scene;
     private Stage stage;
@@ -131,7 +128,7 @@ public class ShowFlowController {
         else
             chosenFlowData.getChildren().add(new Text("\u2717\n"));
         List<StepUsageDeclaration> steps = flow.getFlowSteps();
-        Text stepsText = new Text("\nSteps: \n");
+        Text stepsText = new Text("Steps: \n");
         stepsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
         chosenFlowData.getChildren().add(stepsText);
         HBox[] hBoxes = new HBox[steps.size()];
@@ -139,18 +136,21 @@ public class ShowFlowController {
         for (int i = 0; i < steps.size(); i++) {
             StepUsageDeclaration step = steps.get(i);
             if (step.getStepName() != step.getFinalStepName()) {
-                chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName() + "\n\n\n"));
-                hBoxes[i] = new HBox();
-                buttons[i] = new Button("Show");
-                buttons[i].setOnAction(event -> {
-                    mainController.switchToHistoryScene(event);
-                });
-                hBoxes[i].getChildren().add(buttons[i]);
-                chosenFlowData.getChildren().add(hBoxes[i]);
+                chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName()));
             }
             else
-                chosenFlowData.getChildren().add(new Text("\n" +step.getStepName() + "\n"));
-            chosenFlowData.getChildren().add(new Text("\nIs readOnly: " + step.getStepDefinition().isReadonly() + "\n\n"));
+                chosenFlowData.getChildren().add(new Text(step.getStepName()));
+            hBoxes[i] = new HBox();
+            buttons[i] = new Button("Show Step Details" + "\n");
+            buttons[i].setOnAction(event -> {
+                chosenFlowData.getChildren().clear();
+                chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName()));
+                flowsList.getSelectionModel().clearSelection();
+            });
+            hBoxes[i].getChildren().add(buttons[i]);
+            chosenFlowData.getChildren().add(new Text("Is readOnly: " + step.getStepDefinition().isReadonly()));
+            chosenFlowData.getChildren().add(hBoxes[i]);
+            chosenFlowData.getChildren().add(new Text("\n"));
         }
         //TODO print flow free inputs and outputs
     }
