@@ -16,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
+import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
 import java.util.List;
@@ -37,16 +38,16 @@ public class statisticsController {
     private TableColumn<String, Double> flowAvgDurationCol;
 
     @FXML
-    private TableView<?> StepStatisticsTable;
+    private TableView<StepExecutionStatistics> StepStatisticsTable;
 
     @FXML
-    private TableColumn<?, ?> stepNameCol;
+    private TableColumn<String, String> stepNameCol;
 
     @FXML
-    private TableColumn<?, ?> StepExecutionCounterCol;
+    private TableColumn<String, Integer> StepExecutionCounterCol;
 
     @FXML
-    private TableColumn<?, ?> StepAvgDurationCol;
+    private TableColumn<String, Double> StepAvgDurationCol;
     private mainScene.mainController mainController;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private FlowExecutionStatistics flowExecutionStatistics;
@@ -88,6 +89,26 @@ public class statisticsController {
         FlowExecutionsCol.setCellValueFactory(new PropertyValueFactory<>("countHowManyTimesExecution"));
         flowAvgDurationCol.setCellValueFactory(new PropertyValueFactory<>("averageDuration"));
 
+    }
+    public void populateStepStatisticsTable(){
+        // Create an ObservableList to hold the data
+        ObservableMap<String, StepExecutionStatistics> observableMap = FXCollections.observableMap(mainController.getMenuVariables().getStepExecutionStatisticsMap());
+        ObservableList<StepExecutionStatistics> rowData = FXCollections.observableArrayList();
+        // Add a listener to the observableMap
+        observableMap.addListener((MapChangeListener<String, StepExecutionStatistics>) change -> {
+            if (change.wasAdded()) {
+                rowData.add(change.getValueAdded());
+            } else if (change.wasRemoved()) {
+                rowData.remove(change.getValueRemoved());
+            }
+        });
+        // Set the data to the table
+        rowData.addAll(mainController.getMenuVariables().getStepExecutionStatisticsMap().values());
+        StepStatisticsTable.setItems(rowData);
+        // Set the cell value factory to the table columns
+        StepExecutionCounterCol.setCellValueFactory(new PropertyValueFactory<>("countHowManyTimesExecution"));
+        StepAvgDurationCol.setCellValueFactory(new PropertyValueFactory<>("averageDuration"));
+        stepNameCol.setCellValueFactory(new PropertyValueFactory<>("stepName"));
     }
     public TableView<FlowExecutionsStatistics> getFlowsStatiticsTable(){
         return flowsStatiticsTable;

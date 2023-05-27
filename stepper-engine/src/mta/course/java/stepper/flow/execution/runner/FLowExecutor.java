@@ -199,7 +199,8 @@ public class FLowExecutor {
         }
     }
     public FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Control> mandatoryInputsTXT, List<Control> optionalInputsTXT,
-                                                 List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList){
+                                                 List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList,
+                                                 Map<String,StepExecutionStatistics> stepExecutionStatisticsMap){
         List<InputWithStepName> mandatoryInputs = flowExecution.getFlowDefinition().getMandatoryInputs();
         List<InputWithStepName> optionalInputs = flowExecution.getFlowDefinition().getOptionalInputs();
         Instant executionStartTimeInstant = Instant.now();
@@ -257,6 +258,12 @@ public class FLowExecutor {
                 } else {
                     flowExecution.getStepExecutionStatisticsMap().put(stepUsageDeclaration.getFinalStepName(), new StepExecutionStatistics(totalTime));
                 }
+                if(stepExecutionStatisticsMap.containsKey(stepUsageDeclaration.getStepName())){
+                    stepExecutionStatisticsMap.get(stepUsageDeclaration.getStepName()).addStepExecutionStatistics(
+                            new StepExecutionStatistics(stepUsageDeclaration.getStepName(),totalTime));
+                } else {
+                    stepExecutionStatisticsMap.put(stepUsageDeclaration.getStepName(), new StepExecutionStatistics(stepUsageDeclaration.getStepName(),totalTime));
+                }
                 singleStepExecutionDataList.add(new SingleStepExecutionData(totalTime, stepResult,
                         context.getSummaryLine(stepUsageDeclaration.getFinalStepName()),
                         context.getLogs(stepUsageDeclaration.getFinalStepName()),
@@ -266,7 +273,7 @@ public class FLowExecutor {
             }
             flowExecution.setFlowExecutionResult(flowResult);
             Instant executionEndTime = Instant.now();
-            double totalTimeFlow = Duration.between(executionStartTimeInstant, executionEndTime).toMillis();
+            double totalTimeFlow = flowExecution.timeTakenForFlow();
             System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
             List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
             int i = 0;

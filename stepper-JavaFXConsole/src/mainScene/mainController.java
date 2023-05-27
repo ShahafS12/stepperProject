@@ -73,6 +73,7 @@ public class mainController {
         }
         try {
             statisticsController.populateFlowStatisticsTable();
+            statisticsController.populateStepStatisticsTable();
             AnchorPane view = statisticsController.getStatisticsAnchorPane();
             mainBorder.setCenter(view);
         } catch (Exception e) {

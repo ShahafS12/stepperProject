@@ -43,3 +43,7 @@ TextArea {
     -fx-background-position: center;
     -fx-position: center;
 }
+#executeButton:hover {
+    -fx-background-color: rgba(38, 185, 154, 0.73);
+    -fx-border-color: rgba(26, 136, 113, 0.73);
+}

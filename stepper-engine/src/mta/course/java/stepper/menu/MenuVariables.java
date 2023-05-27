@@ -4,11 +4,13 @@ import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.execution.FlowExecution;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
+import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import mta.course.java.stepper.stepper.StepperDefinition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MenuVariables
@@ -22,6 +24,7 @@ public class MenuVariables
     private Integer uniqueFlowExecutionIdCounter;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private Map<String, SingleStepExecutionData> singleStepExecutionDataMap;
+    private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
 
     public MenuVariables() {
         this.flowNames = new ArrayList<String>();
@@ -32,12 +35,23 @@ public class MenuVariables
         this.flowExecutionsStatisticsMap = new HashMap<String, FlowExecutionsStatistics>();
         this.singleStepExecutionDataMap = new HashMap<String, SingleStepExecutionData>();
         this.flowExecutionMapFromFlowName = new HashMap<String, FlowExecution>();
+        this.stepExecutionStatisticsMap = new HashMap<String, StepExecutionStatistics>();
     }
     public Map<String, FlowExecution> getFlowExecutionMapFromFlowName() {
         return flowExecutionMapFromFlowName;
     }
     public void putFlowExecutionMapFromFlowName(String key, FlowExecution value) {
         this.flowExecutionMapFromFlowName.put(key, value);
+    }
+    public Map<String, StepExecutionStatistics> getStepExecutionStatisticsMap() {
+        return stepExecutionStatisticsMap;
+    }
+    public void putStepExecutionStatisticsMap(String key, StepExecutionStatistics value) {
+        if(!this.stepExecutionStatisticsMap.containsKey(key))
+            this.stepExecutionStatisticsMap.put(key, value);
+        else{
+            this.stepExecutionStatisticsMap.get(key).addStepExecutionStatistics(value);
+        }
     }
 
     public StepperDefinition getStepper() {

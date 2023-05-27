@@ -162,7 +162,8 @@ public class executionController {
                 FLowExecutor fLowExecutor = new FLowExecutor();
                 mainController.getMenuVariables().getStats().put(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter(),
                         fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMapFromFlowName().get(chosenFlow.getName()),
-                                mandatoryInputs, optionalInputs, outputs, executionData));
+                                mandatoryInputs, optionalInputs, outputs, executionData,
+                                mainController.getMenuVariables().getStepExecutionStatisticsMap()));
                 mainController.getMenuVariables().upuniqueFlowExecutionIdCounter();
                 if(mainController.getMenuVariables().getFlowExecutionsStatisticsMap().containsKey(chosenFlow.getName()))
                 {

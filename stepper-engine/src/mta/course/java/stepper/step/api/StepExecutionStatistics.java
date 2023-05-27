@@ -2,16 +2,27 @@ package mta.course.java.stepper.step.api;
 
 public class StepExecutionStatistics
 {
+    private final String stepName;
     private int countHowManyTimesExecution;
     private double averageDuration;
     //TODO add details about steps
     public StepExecutionStatistics() {
         countHowManyTimesExecution = 0;
         averageDuration = 0;
+        stepName = "Null";
     }
     public StepExecutionStatistics(double duration) {
         countHowManyTimesExecution = 1;
         averageDuration = duration;
+        stepName = "Null";
+    }
+    public StepExecutionStatistics(String name, double duration) {
+        stepName = name;
+        countHowManyTimesExecution = 1;
+        averageDuration = duration;
+    }
+    public String getStepName() {
+        return stepName;
     }
     public void addStepExecutionStatistics(StepExecutionStatistics stepExecutionStatistics){
         averageDuration = (averageDuration * countHowManyTimesExecution + stepExecutionStatistics.getAverageDuration()) / (countHowManyTimesExecution + 1);
