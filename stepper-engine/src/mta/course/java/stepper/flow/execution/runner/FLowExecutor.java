@@ -273,7 +273,7 @@ public class FLowExecutor {
             }
             flowExecution.setFlowExecutionResult(flowResult);
             Instant executionEndTime = Instant.now();
-            double totalTimeFlow = flowExecution.timeTakenForFlow();
+            double totalTimeFlow = Duration.between(executionStartTimeInstant, executionEndTime).toMillis();
             System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
             List<String> flowFreeOutputs = flowExecution.getFlowDefinition().getFlowFreeOutputsString();
             int i = 0;
@@ -290,7 +290,7 @@ public class FLowExecutor {
         catch (RuntimeException e)
         {
             System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
-            double totalTimeFlow = flowExecution.timeTakenForFlow();
+            double totalTimeFlow = Duration.between(executionStartTimeInstant, Instant.now()).toMillis();
             System.out.println("Total Time: " + totalTimeFlow + " ms");
             FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime, flowExecution.getFlowDefinition().getName(), flowExecution.getUniqueId()
                     , flowResult, totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
