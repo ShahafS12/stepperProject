@@ -15,6 +15,7 @@ import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
+import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,8 +160,21 @@ public class executionController {
             @Override
             protected Void call() throws Exception {
                 FLowExecutor fLowExecutor = new FLowExecutor();
-                fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMapFromFlowName().get(chosenFlow.getName()),
-                        mandatoryInputs, optionalInputs, outputs, executionData);
+                mainController.getMenuVariables().getStats().put(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter(),
+                        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMapFromFlowName().get(chosenFlow.getName()),
+                                mandatoryInputs, optionalInputs, outputs, executionData));
+                mainController.getMenuVariables().upuniqueFlowExecutionIdCounter();
+                if(mainController.getMenuVariables().getFlowExecutionsStatisticsMap().containsKey(chosenFlow.getName()))
+                {
+                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().get(
+                            chosenFlow.getName()).addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1));
+                }
+                else
+                {
+                    FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
+                    flowExecutionsStatistics.addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1));
+                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().put(chosenFlow.getName(),flowExecutionsStatistics);
+                }
                 return null;
             }
         };

@@ -1,27 +1,40 @@
 package StatisticsScene;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
+import java.util.List;
+import java.util.Map;
+
 public class statisticsController {
     @FXML
     private AnchorPane statisticsAnchorPane;
     @FXML
-    private TableView<?> flowsStatiticsTable;
+    private TableView<FlowExecutionsStatistics> flowsStatiticsTable;
 
     @FXML
-    private TableColumn<?, ?> FlowNameCol;
+    private TableColumn<String, String> FlowNameCol;
 
     @FXML
-    private TableColumn<?, ?> FlowExecutionsCol;
+    private TableColumn<String, Integer> FlowExecutionsCol;
 
     @FXML
-    private TableColumn<?, ?> flowAvgDurationCol;
+    private TableColumn<String, Double> flowAvgDurationCol;
 
     @FXML
     private TableView<?> StepStatisticsTable;
@@ -35,7 +48,7 @@ public class statisticsController {
     @FXML
     private TableColumn<?, ?> StepAvgDurationCol;
     private mainScene.mainController mainController;
-    private FlowExecutionsStatistics flowExecutionsStatistics;
+    private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private FlowExecutionStatistics flowExecutionStatistics;
     public  void setMainController(mainController mainController) {
         this.mainController = mainController;
@@ -49,11 +62,35 @@ public class statisticsController {
     public AnchorPane getStatisticsAnchorPane(){
         return statisticsAnchorPane;
     }
-    public void setFlowExecutionsStatistics(FlowExecutionsStatistics flowExecutionsStatistics) {
-        this.flowExecutionsStatistics = flowExecutionsStatistics;
+    public void setFlowExecutionsStatistics(Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsList) {
+        this.flowExecutionsStatisticsMap = flowExecutionsStatisticsList;
     }
     public void setFlowExecutionStatistics(FlowExecutionStatistics flowExecutionStatistics) {
         this.flowExecutionStatistics = flowExecutionStatistics;
+    }
+    public void populateFlowStatisticsTable(){
+        // Create an ObservableList to hold the data
+        ObservableMap<String, FlowExecutionsStatistics> observableMap = FXCollections.observableMap(flowExecutionsStatisticsMap);
+        ObservableList<FlowExecutionsStatistics> rowData = FXCollections.observableArrayList();
+        // Add a listener to the observableMap
+        observableMap.addListener((MapChangeListener<String, FlowExecutionsStatistics>) change -> {
+            if (change.wasAdded()) {
+                rowData.add(change.getValueAdded());
+            } else if (change.wasRemoved()) {
+                rowData.remove(change.getValueRemoved());
+            }
+        });
+        // Set the data to the table
+        rowData.addAll(flowExecutionsStatisticsMap.values());
+        flowsStatiticsTable.setItems(rowData);
+        // Set the cell value factory to the table columns
+        FlowNameCol.setCellValueFactory(new PropertyValueFactory<>("flowName"));
+        FlowExecutionsCol.setCellValueFactory(new PropertyValueFactory<>("countHowManyTimesExecution"));
+        flowAvgDurationCol.setCellValueFactory(new PropertyValueFactory<>("averageDuration"));
+
+    }
+    public TableView<FlowExecutionsStatistics> getFlowsStatiticsTable(){
+        return flowsStatiticsTable;
     }
 
 }

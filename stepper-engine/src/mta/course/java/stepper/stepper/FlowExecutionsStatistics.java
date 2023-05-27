@@ -41,4 +41,13 @@ public class FlowExecutionsStatistics
             entry.getValue().printStatistics();
         }
     }
+    public String getFlowName() {
+        return flowName;
+    }
+    public int getCountHowManyTimesExecution() {
+        return countHowManyTimesExecution;
+    }
+    public double getAverageDuration() {
+        return averageDuration;
+    }
 }

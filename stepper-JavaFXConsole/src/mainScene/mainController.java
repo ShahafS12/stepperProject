@@ -50,6 +50,8 @@ public class mainController {
 
     public void setMenuVariables(MenuVariables variables){
         this.menuVariables = variables;
+        if(statisticsController != null)
+            statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
     }
 
     public FlowDefinition getFlowDefinition(String newValue)
@@ -63,12 +65,14 @@ public class mainController {
                 Parent statisticsRoot = loader.load();
                 statisticsController = loader.getController();
                 statisticsController.setMainController(this);
+                statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
                 //statisticsController.setFlowExecutionsStatistics(menuVariables.get);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
         try {
+            statisticsController.populateFlowStatisticsTable();
             AnchorPane view = statisticsController.getStatisticsAnchorPane();
             mainBorder.setCenter(view);
         } catch (Exception e) {

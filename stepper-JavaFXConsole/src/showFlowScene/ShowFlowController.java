@@ -10,7 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -109,12 +111,21 @@ public class ShowFlowController {
             chosenFlowData.getChildren().clear();
 
         // Append flow details to the outputTextArea
-        Text flowName = new Text("Flow Name: " + flow.getName() + "\n");
+        Text flowName = new Text("Flow Name: ");
         flowName.setStyle("-fx-font-weight: bold");
         chosenFlowData.getChildren().add(flowName);
-        chosenFlowData.getChildren().add(new Text("Description: " + flow.getDescription() + "\n"));
-        chosenFlowData.getChildren().add(new Text("Flow Formal Outputs: " + flow.getFlowFormalOutputs() + "\n"));
-        chosenFlowData.getChildren().add(new Text("read-only: " ));
+        chosenFlowData.getChildren().add(new Text(flow.getName() + "\n"));
+        Text description  = new Text("Description: ");
+        description.setStyle("-fx-font-weight: bold");
+        chosenFlowData.getChildren().add(description);
+        chosenFlowData.getChildren().add(new Text(flow.getDescription() + "\n"));
+        Text flowFormalInputs = new Text("Flow Formal Inputs: ");
+        flowFormalInputs.setStyle("-fx-font-weight: bold");
+        chosenFlowData.getChildren().add(flowFormalInputs);
+        chosenFlowData.getChildren().add(new Text(flow.getFlowFormalOutputs() + "\n"));
+        Text readOnly = new Text("Is readOnly: ");
+        readOnly.setStyle("-fx-font-weight: bold");
+        chosenFlowData.getChildren().add(readOnly);
         if (flow.isReadonly())
             chosenFlowData.getChildren().add(new Text("\u2713\n"));
         else
@@ -123,13 +134,23 @@ public class ShowFlowController {
         Text stepsText = new Text("\nSteps: \n");
         stepsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
         chosenFlowData.getChildren().add(stepsText);
+        HBox[] hBoxes = new HBox[steps.size()];
+        Button[] buttons = new Button[steps.size()];
         for (int i = 0; i < steps.size(); i++) {
             StepUsageDeclaration step = steps.get(i);
-            if (step.getStepName() != step.getFinalStepName())
-                chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName() + "\n"));
+            if (step.getStepName() != step.getFinalStepName()) {
+                chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName() + "\n\n\n"));
+                hBoxes[i] = new HBox();
+                buttons[i] = new Button("Show");
+                buttons[i].setOnAction(event -> {
+                    mainController.switchToHistoryScene(event);
+                });
+                hBoxes[i].getChildren().add(buttons[i]);
+                chosenFlowData.getChildren().add(hBoxes[i]);
+            }
             else
-                chosenFlowData.getChildren().add(new Text(step.getStepName() + "\n"));
-            chosenFlowData.getChildren().add(new Text("Is readOnly: " + step.getStepDefinition().isReadonly() + "\n\n"));
+                chosenFlowData.getChildren().add(new Text("\n" +step.getStepName() + "\n"));
+            chosenFlowData.getChildren().add(new Text("\nIs readOnly: " + step.getStepDefinition().isReadonly() + "\n\n"));
         }
         //TODO print flow free inputs and outputs
     }
