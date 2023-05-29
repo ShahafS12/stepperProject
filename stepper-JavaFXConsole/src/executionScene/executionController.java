@@ -1,6 +1,7 @@
 package executionScene;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
+import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
 import java.util.ArrayList;
@@ -99,6 +101,10 @@ public class executionController {
         for(InputWithStepName input : chosenFlow.getMandatoryInputs()){
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class)
                 mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0,100,0,1));
+            else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class){
+                //TODO: allow other enums that are not zip (check what is the type by step name)
+                mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
+            }
             else
                 mandatoryInputs.add(new javafx.scene.control.TextField());
         }
