@@ -5,16 +5,16 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
-import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
@@ -185,12 +185,20 @@ public class executionController {
                 return null;
             }
         };
-
         // Set up the completion handler when the task is finished
         task.setOnSucceeded(e -> {
             // This code will run on the JavaFX application thread
             timer.cancel();
             pupulateCurrentExecutionSteps();
+            if(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1).getFlowResult().equals(FlowExecutionResult.SUCCESS)) {
+                mainController.showGifForDuration("mainScene/giphy.gif", Duration.seconds(3));
+            }
+            else if(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1).getFlowResult().equals(FlowExecutionResult.FAILURE)
+            || mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1).getFlowResult() == null)
+            {
+                mainController.showGifForDuration("mainScene/complete-failure-failure.gif", Duration.seconds(1));
+            }
+
         });
 
         // Set up the exception handler if an exception occurs during the task

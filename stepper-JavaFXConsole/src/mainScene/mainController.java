@@ -1,9 +1,13 @@
 package mainScene;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
@@ -15,6 +19,7 @@ import executionScene.executionController;
 import historyScene.historySceneController;
 
 import java.io.IOException;
+import javafx.util.Duration;
 
 public class mainController {
     @FXML private topController topComponentController;
@@ -133,6 +138,32 @@ public class mainController {
             e.printStackTrace();
         }
     }
+    public void showGifForDuration(String gifPath, Duration duration) {
+        Image gifImage = new Image(gifPath);
+        ImageView gifImageView = new ImageView(gifImage);
+
+        // Adjust the properties of the ImageView if needed
+        double height = mainBorder.getHeight();
+        double width = mainBorder.getWidth();
+        gifImageView.setFitWidth(width);
+        gifImageView.setFitHeight(height);
+
+        mainBorder.getChildren().add(gifImageView);
+
+        Timeline gifTimeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> {
+                    // Start playing the GIF
+                    gifImageView.setVisible(true);
+                }),
+                new KeyFrame(duration, e -> {
+                    // Stop playing the GIF and remove it from the parentPane
+                    gifImageView.setVisible(false);
+                    mainBorder.getChildren().remove(gifImageView);
+                })
+        );
+
+        gifTimeline.play();
+    }
     public void switchToHistoryScene(ActionEvent event){
         if(historySceneController == null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../historyScene/historySceneBuilder.fxml"));
@@ -152,6 +183,7 @@ public class mainController {
             e.printStackTrace();
         }
     }
+
 
     public void setHistoryController(historyScene.historySceneController historySceneController) { this.historySceneController = historySceneController;}
 }

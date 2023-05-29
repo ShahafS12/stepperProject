@@ -1,8 +1,6 @@
 package mta.course.java.stepper.flow.execution.runner;
 
-import javafx.scene.control.Control;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import mta.course.java.stepper.dd.api.DataDefinition;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
@@ -302,6 +300,9 @@ public class FLowExecutor {
         }
         else if (c instanceof Spinner<?>){
             return ((Spinner<?>) c).getValue();
+        }
+        else if(c instanceof ChoiceBox<?>){
+            return ((ChoiceBox<?>) c).getValue().toString();
         }
         return  null;
     }
