@@ -7,12 +7,15 @@ import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class FlowExecutionStatistics
 {
     private final Time startTime;
+    private final String dateTime;
     private final String flowName;
     private final String flowId;
     private final FlowExecutionResult flowResult;
@@ -35,6 +38,8 @@ public class FlowExecutionStatistics
         this.context = context;
         this.singleStepExecutionDataMap = singleStepExecutionDataMap;
         this.stepExecutionStatisticsMap = stepExecutionStatisticsMap;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        this.dateTime = dateFormat.format(this.startTime);
         //TODO add details about free inputs and outputs
     }
     public void printStatistics(){
@@ -103,6 +108,9 @@ public class FlowExecutionStatistics
     }
     public Time getStartTime() {
         return startTime;
+    }
+    public String getDateTime() {
+        return dateTime;
     }
     public Map<String, SingleStepExecutionData> getSingleStepExecutionDataMap() {
         return singleStepExecutionDataMap;

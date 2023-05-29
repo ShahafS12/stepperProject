@@ -76,6 +76,26 @@ public class StepExecutionContextImpl implements StepExecutionContext {
                     return expectedDataType.cast(AutoMappingMap.get(autoMapping));
             }
         }
+
+        // In case of enum, we need to get the value from the enum class
+        if (theExpectedDataDefinition.getType().equals(Enum.class)){
+            Object aValue = dataValues.get(dataName);
+            if (aValue == null) {//if value is null, try to get it from auto mapping
+                String[] split = dataName.split("\\.");//to get actual output name for auto mapping
+                aValue = AutoMappingMap.get(new AutoMapping(expectedDataType,split[1]));
+                if(aValue == null) {
+                    System.out.println("Didnt find value for " + dataName + " in AutoMapping");
+                    return null;
+                }
+                else{
+                    System.out.println("Found value for " + dataName + " in AutoMapping");
+                    return expectedDataType.cast(aValue);
+                }
+            }
+
+            return expectedDataType.cast(aValue);
+        }
+
         if (expectedDataType.isAssignableFrom(theExpectedDataDefinition.getType())) {
             Object aValue = dataValues.get(dataName);
             if (aValue == null) {//if value is null, try to get it from auto mapping

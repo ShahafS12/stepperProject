@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class EnumeratorDataDefinition extends AbstractDataDefinition
 {
-    public EnumeratorDataDefinition()  {super("Enumerator", true, String.class);}
+    public EnumeratorDataDefinition()  {super("Enumerator", true, Enum.class);}
     public String getValue(String name){
         boolean validInput = false;
         String string = "";

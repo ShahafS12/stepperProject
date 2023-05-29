@@ -35,6 +35,8 @@ public class ZipperStep extends AbstractStepDefinition {
         String beforeStarting = "About to perform operation " + operationType + " on source" + folderName;
         context.addLogLine(finalStepName, beforeStarting);
 
+        String output;
+
         if (operationType.equals("UNZIP")) {
             try {
                 File sourceFile = new File(folderName);
@@ -44,6 +46,8 @@ public class ZipperStep extends AbstractStepDefinition {
             catch (Exception e ){
                 String failedFolder = "The provided path: "+ folderName + " is not able to be unzip";
                 context.addSummaryLine(finalStepName, failedFolder);
+                output = failedFolder;
+                context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT", String.class), output);
                 return StepResult.FAILURE;
             }
         } else if (operationType.equals("ZIP")) {
@@ -55,17 +59,23 @@ public class ZipperStep extends AbstractStepDefinition {
             catch (Exception e){
                 String failedFolder = "The provided path: "+ folderName + " is not able to be zip";
                 context.addSummaryLine(finalStepName, failedFolder);
+                output = failedFolder;
+                context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT", String.class), output);
                 return StepResult.FAILURE;
             }
         } else {
             String failedFolder = operationType + " is invalid operation type";
             context.addSummaryLine(finalStepName, failedFolder);
+            output = failedFolder;
+            context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT", String.class), output);
             return StepResult.FAILURE;
         }
 
         String successSum = "Finished the " + operationType + " successfully";
         context.addSummaryLine(finalStepName, successSum);
 
+        output = "SUCCESS";
+        context.storeDataValue(context.getAlias(finalStepName+"."+"RESULT", String.class), output);
         return StepResult.SUCCESS;
     }
 
