@@ -147,8 +147,11 @@ public class mainController {
         try {
             AnchorPane view = historySceneController.getHistoryAnchorPane();
             mainBorder.setCenter(view);
+            historySceneController.setTableInHistory();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public void setHistoryController(historyScene.historySceneController historySceneController) { this.historySceneController = historySceneController;}
 }

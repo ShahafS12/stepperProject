@@ -20,9 +20,9 @@
                      <content>
                         <TableView fx:id="tableHistory">
                           <columns>
-                            <TableColumn prefWidth="190.0" text="Flow Name" />
-                            <TableColumn prefWidth="218.0" text="Date" />
-                              <TableColumn maxWidth="300.0" minWidth="40.0" prefWidth="93.0" text="Result" />
+                            <TableColumn fx:id="flowNameCol" prefWidth="190.0" text="Flow Name" />
+                            <TableColumn fx:id="dateCol" prefWidth="218.0" text="Date" />
+                              <TableColumn fx:id="resultCol" maxWidth="300.0" minWidth="40.0" prefWidth="93.0" text="Result" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
