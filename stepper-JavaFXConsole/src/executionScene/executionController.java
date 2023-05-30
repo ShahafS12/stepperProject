@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import java.util.concurrent.CountDownLatch;
+
+
 public class executionController {
     @FXML
     private AnchorPane executionAnchorPane;
@@ -138,7 +141,7 @@ public class executionController {
         //inputsGridPane.add(executeButton, 2, row);
         //executeButton.setDisable(true);//TODO: change to false when all mandatory inputs are filled
     }
-    public void pupulateCurrentExecutionSteps(){
+    public synchronized void pupulateCurrentExecutionSteps(){
         currentExecutionSteps.getItems().clear();
         for(SingleStepExecutionData step : executionData){
             currentExecutionSteps.getItems().add(step.getStepName());
@@ -165,38 +168,45 @@ public class executionController {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                FLowExecutor fLowExecutor = new FLowExecutor();
-                mainController.getMenuVariables().getStats().put(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter(),
-                        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMapFromFlowName().get(chosenFlow.getName()),
-                                mandatoryInputs, optionalInputs, outputs, executionData,
-                                mainController.getMenuVariables().getStepExecutionStatisticsMap()));
-                mainController.getMenuVariables().upuniqueFlowExecutionIdCounter();
-                if(mainController.getMenuVariables().getFlowExecutionsStatisticsMap().containsKey(chosenFlow.getName()))
-                {
-                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().get(
-                            chosenFlow.getName()).addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1));
+                CountDownLatch latch = new CountDownLatch(1);
+                mainController.getMenuVariables().executeFlow(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch);
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                else
-                {
-                    FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
-                    flowExecutionsStatistics.addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1));
-                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().put(chosenFlow.getName(),flowExecutionsStatistics);
+                finally{
+                    timer.cancel();
                 }
+//                FLowExecutor fLowExecutor = new FLowExecutor();
+//                mainController.getMenuVariables().getStats().put(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter(),
+//                        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMapFromFlowName().get(chosenFlow.getName()),
+//                                mandatoryInputs, optionalInputs, outputs, executionData,
+//                                mainController.getMenuVariables().getStepExecutionStatisticsMap()));
+//                mainController.getMenuVariables().upuniqueFlowExecutionIdCounter();
+//                if (mainController.getMenuVariables().getFlowExecutionsStatisticsMap().containsKey(chosenFlow.getName())) {
+//                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().get(
+//                            chosenFlow.getName()).addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1));
+//                } else {
+//                    FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
+//                    flowExecutionsStatistics.addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1));
+//                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().put(chosenFlow.getName(), flowExecutionsStatistics);
+//
+//                }
                 return null;
             }
         };
         // Set up the completion handler when the task is finished
         task.setOnSucceeded(e -> {
             // This code will run on the JavaFX application thread
-            timer.cancel();
+            //timer.cancel();
             pupulateCurrentExecutionSteps();
-            if(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1).getFlowResult().equals(FlowExecutionResult.SUCCESS)) {
+
+            if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.SUCCESS)) {
                 mainController.showGifForDuration("mainScene/giphy.gif", Duration.seconds(3));
-            }
-            else if(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1).getFlowResult().equals(FlowExecutionResult.FAILURE)
-            || mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter()-1).getFlowResult() == null)
-            {
-                mainController.showGifForDuration("mainScene/complete-failure-failure.gif", Duration.seconds(1));
+            } else if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.FAILURE)
+                    || mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult() == null) {
+                mainController.showGifForDuration("mainScene/complete-failure-failure.gif", Duration.seconds(2.30));
             }
 
         });

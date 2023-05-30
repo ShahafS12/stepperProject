@@ -147,6 +147,8 @@ public class mainController {
         double width = mainBorder.getWidth();
         gifImageView.setFitWidth(width);
         gifImageView.setFitHeight(height);
+        //gifImageView.setLayoutX(width / 2 - 75);
+        //gifImageView.setLayoutY(height / 2 - 75);
 
         mainBorder.getChildren().add(gifImageView);
 

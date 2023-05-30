@@ -12,6 +12,7 @@ import java.util.List;
 public class StepperDefinitionImpl implements StepperDefinition
 {
     private ArrayList<FlowDefinition> flows;
+    private int maxThreads;
 
     public StepperDefinitionImpl(ArrayList<FlowDefinition> flows)
     {
@@ -22,6 +23,7 @@ public class StepperDefinitionImpl implements StepperDefinition
     }
     public StepperDefinitionImpl(STStepper stepper){
         try {
+            maxThreads = stepper.getSTThreadPool();
             flows = new ArrayList<>();
             STFlows stFlows = stepper.getSTFlows();
             //check if there are multiple flows with same name
@@ -79,6 +81,11 @@ public class StepperDefinitionImpl implements StepperDefinition
             }
         }
         return null;
+    }
+
+    @Override
+    public int getMaxThreads(){
+        return maxThreads;
     }
 
 }

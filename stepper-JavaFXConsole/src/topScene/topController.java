@@ -52,6 +52,7 @@ public class topController {
             LoadXMLFile loadXMLFile = new LoadXMLFile();
             StepperDefinition newStepper = (loadXMLFile.loadXMLFile(file));
             newMenuVariables.setStepper(newStepper);
+            newMenuVariables.setExecutorService();
             ArrayList<String> newFlowNames = new ArrayList<>();
             newFlowNames.addAll(newStepper.getFlowNames());//add the latest names of the flows
             newMenuVariables.setFlowNames(newFlowNames);

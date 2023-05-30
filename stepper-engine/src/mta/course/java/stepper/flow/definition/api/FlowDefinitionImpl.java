@@ -85,6 +85,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         customMapping = new HashMap<>();
         innitialDataValues = new HashMap<>();
         ContinuationMap = new HashMap<>();
+
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for (int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++) {
             StepUsageDeclaration stepUsageDeclaration = new StepUsageDeclarationImpl(stStepsInFlow.getSTStepInFlow().get(i));

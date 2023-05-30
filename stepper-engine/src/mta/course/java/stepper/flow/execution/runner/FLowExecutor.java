@@ -30,7 +30,7 @@ public class FLowExecutor {
         Map<String, DataDefinition> dataDefinitions = new HashMap<>();
         FlowExecutionResult flowResult = FlowExecutionResult.SUCCESS;
 
-        StepExecutionContext context = new StepExecutionContextImpl(); // actual object goes here...
+        StepExecutionContext context = new StepExecutionContextImpl(flowExecution.getFlowDefinition()); // actual object goes here...
         List<StepUsageDeclaration> steps = flowExecution.getFlowDefinition().getFlowSteps();
         boolean finishedEnteringInputs = false;
         List<String> flowFreeInputsString = flowExecution.getFlowDefinition().getPreAliasFlowFreeInputs();
@@ -195,7 +195,7 @@ public class FLowExecutor {
             i++;
         }
     }
-    public FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Control> mandatoryInputsTXT, List<Control> optionalInputsTXT,
+    public synchronized FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Control> mandatoryInputsTXT, List<Control> optionalInputsTXT,
                                                  List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList,
                                                  Map<String, StepExecutionStatistics> stepExecutionStatisticsMap){
         List<InputWithStepName> mandatoryInputs = flowExecution.getFlowDefinition().getMandatoryInputs();
@@ -203,7 +203,7 @@ public class FLowExecutor {
         Instant executionStartTimeInstant = Instant.now();
         Time executionStartTime = new Time(System.currentTimeMillis());
         FlowExecutionResult flowResult = FlowExecutionResult.SUCCESS;
-        StepExecutionContext context = new StepExecutionContextImpl();
+        StepExecutionContext context = new StepExecutionContextImpl(flowExecution.getFlowDefinition());
         Map<String, Object> dataValues = new HashMap<>();
         Map<String, DataDefinition> dataDefinitions = new HashMap<>();
         for (int i=0; i<mandatoryInputs.size(); i++){
@@ -286,6 +286,7 @@ public class FLowExecutor {
         }
         catch (RuntimeException e)
         {
+            flowResult = FlowExecutionResult.FAILURE;
             System.out.println("End execution of flow " + flowExecution.getFlowDefinition().getName() + " [ID: " + flowExecution.getFlowDefinition().getUniqueId() + "]. Status: " + flowExecution.getFlowExecutionResult());
             double totalTimeFlow = Duration.between(executionStartTimeInstant, Instant.now()).toMillis();
             System.out.println("Total Time: " + totalTimeFlow + " ms");

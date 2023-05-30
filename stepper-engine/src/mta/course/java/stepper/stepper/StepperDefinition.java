@@ -13,4 +13,6 @@ public interface StepperDefinition
     List<String> getFlowFormalOutputs(String flowName);
     void addFlow(FlowDefinition flowName);
     FlowDefinition getFlowDefinition(String flowName);
+
+    int getMaxThreads();
 }

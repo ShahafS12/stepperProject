@@ -19,9 +19,10 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     private final Map<AutoMapping,Object> AutoMappingMap;
     private final Map<String, Queue<stepAliasing>> stepAliases;
     private final Map<String,String> flowFreeInputs;
+    private final FlowDefinition flowDef;
 
 
-    public StepExecutionContextImpl() {
+    public StepExecutionContextImpl(FlowDefinition flowDefinition) {
         dataValues = new HashMap<>();
         dataDefinitions = new HashMap<>();
         logs = new HashMap<>();
@@ -31,6 +32,7 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         AutoMappingMap = new HashMap<>();
         stepAliases = new HashMap<>();
         flowFreeInputs = new HashMap<>();
+        flowDef = flowDefinition;
     }
 
     @Override
@@ -187,8 +189,17 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         }
         for(AutoMapping autoMapping : AutoMappingMap.keySet())
         {
+            boolean flag = true;
             String tmp[] = key.split("\\.");
-            if(autoMapping.getName().equals(tmp[1])&&autoMapping.getType().equals(expectedDataType))
+            /*for (String str : flowDef.getFlowFreeOutputsString()){
+                String tmp2[] = str.split("\\.");
+                if(tmp2[0].equals(tmp[0])){
+                    if (FlowLevelAliases.get(key) == str) // Check if it is free output that means he doesnt need aliasing
+                        flag = false;
+                }
+
+            }*/
+            if(autoMapping.getName().equals(tmp[1])&&autoMapping.getType().equals(expectedDataType) && flag)
                 return key;
         }
         if(FlowLevelAliases.containsKey(key))
