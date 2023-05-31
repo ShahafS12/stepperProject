@@ -11,10 +11,8 @@ import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import mta.course.java.stepper.stepper.StepperDefinition;
 
 import javafx.scene.control.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +35,8 @@ public class MenuVariables
         this.flowNames = new ArrayList<String>();
         this.uniqueFlowIdCounter = 0;
         this.flowExecutionMap = new HashMap<Integer, FlowExecution>();
-        this.stats = new HashMap<Integer, FlowExecutionStatistics>();
+        this.stats = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());
+        //this.stats = new HashMap<Integer, FlowExecutionStatistics>();
         this.uniqueFlowExecutionIdCounter = 1;
         this.flowExecutionsStatisticsMap = new HashMap<String, FlowExecutionsStatistics>();
         this.singleStepExecutionDataMap = new HashMap<String, SingleStepExecutionData>();
@@ -78,7 +77,7 @@ public class MenuVariables
     public void putFlowExecutionMap(Integer key, FlowExecution value) {
         this.flowExecutionMap.put(key, value);
     }
-    public void upuniqueFlowExecutionIdCounter() {
+    public synchronized void upuniqueFlowExecutionIdCounter() {
         this.uniqueFlowExecutionIdCounter++;
     }
     public ArrayList<String> getFlowNames() {
@@ -105,10 +104,10 @@ public class MenuVariables
     public void setStats(Map<Integer, FlowExecutionStatistics> stats) {
         this.stats = stats;
     }
-    public Integer getUniqueFlowExecutionIdCounter() {
+    public synchronized Integer getUniqueFlowExecutionIdCounter() {
         return uniqueFlowExecutionIdCounter;
     }
-    public void setUniqueFlowExecutionIdCounter(Integer uniqueFlowExecutionIdCounter) {
+    public synchronized void setUniqueFlowExecutionIdCounter(Integer uniqueFlowExecutionIdCounter) {
         this.uniqueFlowExecutionIdCounter = uniqueFlowExecutionIdCounter;
     }
     public Map<String, FlowExecutionsStatistics> getFlowExecutionsStatisticsMap() {
@@ -152,26 +151,36 @@ public class MenuVariables
         }
 
         @Override
-        public synchronized void run()
-        {
-            FLowExecutor fLowExecutor = new FLowExecutor();
-            stats.put(getUniqueFlowExecutionIdCounter(),
-                    fLowExecutor.executeFlowUI(flowExecutionMapFromFlowName.get(chosenFlow.getName()),
-                            mandatoryInputs, optionalInputs, outputs, executionData,
-                            stepExecutionStatisticsMap));
+        public void run() {
+            int currentFlowExecutionIdCounter;
 
-            upuniqueFlowExecutionIdCounter();
-            if (flowExecutionsStatisticsMap.containsKey(chosenFlow.getName())) {
-                flowExecutionsStatisticsMap.get(
-                        chosenFlow.getName()).addFlowExecutionStatistics(stats.get(getUniqueFlowExecutionIdCounter() - 1));
-            } else {
-                FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
-                flowExecutionsStatistics.addFlowExecutionStatistics(stats.get(getUniqueFlowExecutionIdCounter() - 1));
-                flowExecutionsStatisticsMap.put(chosenFlow.getName(), flowExecutionsStatistics);
-
+            synchronized (this) {
+                currentFlowExecutionIdCounter = getUniqueFlowExecutionIdCounter();
+                upuniqueFlowExecutionIdCounter();
             }
+
+            FLowExecutor fLowExecutor = new FLowExecutor();
+            FlowExecutionStatistics currentStats = fLowExecutor.executeFlowUI(flowExecutionMapFromFlowName.get(chosenFlow.getName()),
+                    mandatoryInputs, optionalInputs, outputs, executionData,
+                    stepExecutionStatisticsMap);
+
+            synchronized (this) {
+                stats.put(currentFlowExecutionIdCounter, currentStats);
+            }
+
+            synchronized (this) {
+                if (flowExecutionsStatisticsMap.containsKey(chosenFlow.getName())) {
+                    flowExecutionsStatisticsMap.get(chosenFlow.getName()).addFlowExecutionStatistics(currentStats);
+                } else {
+                    FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
+                    flowExecutionsStatistics.addFlowExecutionStatistics(currentStats);
+                    flowExecutionsStatisticsMap.put(chosenFlow.getName(), flowExecutionsStatistics);
+                }
+            }
+
             latch.countDown(); // finished the task
         }
+
     }
 
 }

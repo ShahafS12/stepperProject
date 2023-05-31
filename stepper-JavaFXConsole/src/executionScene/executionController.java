@@ -2,6 +2,7 @@ package executionScene;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,10 +20,7 @@ import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -50,10 +48,12 @@ public class executionController {
     private mainScene.mainController mainController;
     private FlowDefinition chosenFlow;
     private List<SingleStepExecutionData> executionData;
+    private Map<String, String> initialVal;
     private int currentAmountOfMandatoryInputs;
     public AnchorPane getExecutionAnchorPane(){
         return executionAnchorPane;
     }
+
     public void Initialize(FlowDefinition chosenFlow){
         this.chosenFlow = chosenFlow;
         populateInputsGridPane();
@@ -98,18 +98,42 @@ public class executionController {
         int row = 0;
         mandatoryInputs = new ArrayList<>();
         optionalInputs = new ArrayList<>();
+        initialVal = new HashMap<>();
+        initialVal = chosenFlow.getInnitialDataValues();
         this.outputs = chosenFlow.getOutputs();
         int currentMandatoryInputs = 0;
         int currentOptionalInputs = 0;
         for(InputWithStepName input : chosenFlow.getMandatoryInputs()){
-            if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class)
-                mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0,100,0,1));
-            else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class){
-                //TODO: allow other enums that are not zip (check what is the type by step name)
-                mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
+            if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class) {
+                // TODO : initial Val if number is has problem cause it shows as string - FIX IT
+                if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                    TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                    textField.setEditable(false);
+                    mandatoryInputs.add(textField);
+                } else {
+                    mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
+                }
             }
-            else
-                mandatoryInputs.add(new javafx.scene.control.TextField());
+            else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class) {
+                //TODO: allow other enums that are not zip (check what is the type by step name)
+                    if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                            TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                            textField.setEditable(false);
+                            mandatoryInputs.add(textField);
+                        }
+                     else {
+                         mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
+                         }
+            }
+            else{
+                if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                    TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                    textField.setEditable(false);
+                    mandatoryInputs.add(textField);
+                }
+                else
+                    mandatoryInputs.add(new javafx.scene.control.TextField());
+            }
         }
         for(InputWithStepName input : chosenFlow.getOptionalInputs()){
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Integer.class)
@@ -202,13 +226,14 @@ public class executionController {
             //timer.cancel();
             pupulateCurrentExecutionSteps();
 
-            if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.SUCCESS)) {
-                mainController.showGifForDuration("mainScene/giphy.gif", Duration.seconds(3));
-            } else if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.FAILURE)
-                    || mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult() == null) {
-                mainController.showGifForDuration("mainScene/complete-failure-failure.gif", Duration.seconds(2.30));
-            }
-
+//            synchronized (this) {
+//                if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.SUCCESS)) {
+//                    mainController.showGifForDuration("mainScene/giphy.gif", Duration.seconds(3));
+//                } else if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.FAILURE)
+//                        || mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult() == null) {
+//                    mainController.showGifForDuration("mainScene/complete-failure-failure.gif", Duration.seconds(2.30));
+//                }
+//            }
         });
 
         // Set up the exception handler if an exception occurs during the task
@@ -222,16 +247,16 @@ public class executionController {
         Thread thread = new Thread(task);
         thread.start();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run()
-            {
-                // This code will run on the background thread
-                Platform.runLater(() -> {
-                    pupulateCurrentExecutionSteps();
-                });
-            }
-        }, interval, interval);
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run()
+//            {
+//                // This code will run on the background thread
+//                Platform.runLater(() -> {
+//                    pupulateCurrentExecutionSteps();
+//                });
+//            }
+//        }, interval, interval);
     }
 
     public void continuation(ActionEvent event)
