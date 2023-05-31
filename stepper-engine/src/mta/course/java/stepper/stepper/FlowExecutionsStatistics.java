@@ -19,7 +19,7 @@ public class FlowExecutionsStatistics
         stepExecutionStatisticsMap = new HashMap<>();
         this.flowName = flowName;
     }
-    public void addFlowExecutionStatistics(FlowExecutionStatistics flowExecutionStatistics){
+    public synchronized void addFlowExecutionStatistics(FlowExecutionStatistics flowExecutionStatistics){
         averageDuration = (averageDuration * countHowManyTimesExecution + flowExecutionStatistics.getDuration()) / (countHowManyTimesExecution + 1);
         countHowManyTimesExecution++;
         for(String step:flowExecutionStatistics.getStepExecutionStatisticsMap().keySet()){

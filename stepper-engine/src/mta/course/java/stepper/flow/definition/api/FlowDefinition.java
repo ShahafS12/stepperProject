@@ -17,6 +17,8 @@ public interface FlowDefinition {
 
     List<InputWithStepName> getMandatoryInputs();
 
+    Map<String, String> getInnitialDataValues();
+
     List<InputWithStepName> getOptionalInputs();
 
     void addFlowOutput(String outputName);
@@ -43,4 +45,6 @@ public interface FlowDefinition {
 
 
         String getFlowLevelCustomMapping(String name);
+
+    boolean isNumeric(String str);
 }

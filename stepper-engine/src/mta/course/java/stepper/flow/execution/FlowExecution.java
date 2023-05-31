@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class FlowExecution {
 
@@ -25,7 +26,7 @@ public class FlowExecution {
     // lots more data that needed to be stored while flow is being executed...
 
     public FlowExecution(String uniqueId, FlowDefinition flowDefinition) {
-        this.uniqueId = flowDefinition.getUniqueId();
+        this.uniqueId = UUID.randomUUID().toString();
         this.flowDefinition = flowDefinition;
         start = Instant.now();
         singleStepExecutionDataMap = new HashMap<>();

@@ -94,7 +94,6 @@ public class StepExecutionContextImpl implements StepExecutionContext {
                     return expectedDataType.cast(aValue);
                 }
             }
-
             return expectedDataType.cast(aValue);
         }
 
@@ -191,14 +190,14 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         {
             boolean flag = true;
             String tmp[] = key.split("\\.");
-            /*for (String str : flowDef.getFlowFreeOutputsString()){
+            for (String str : flowDef.getFlowFreeOutputsString()){
                 String tmp2[] = str.split("\\.");
                 if(tmp2[0].equals(tmp[0])){
                     if (FlowLevelAliases.get(key) == str) // Check if it is free output that means he doesnt need aliasing
                         flag = false;
                 }
 
-            }*/
+            }
             if(autoMapping.getName().equals(tmp[1])&&autoMapping.getType().equals(expectedDataType) && flag)
                 return key;
         }
