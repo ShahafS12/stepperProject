@@ -50,6 +50,9 @@
 				<ST-StepInFlow name="Spend Some Time"/>
 				<ST-StepInFlow name="Files Deleter"/>
 			</ST-StepsInFlow>
+			<ST-InitialInputValues>
+				<ST-InitialInputValue input-name="TIME_TO_SPEND" initial-value="4"/>
+			</ST-InitialInputValues>
 		</ST-Flow>
 		<ST-Flow name="Store Command Result">
 			<ST-FlowDescription>Invoke a command line and plots its output to a file. The file is then zipped</ST-FlowDescription>				

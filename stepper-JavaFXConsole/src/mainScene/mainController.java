@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -20,6 +21,8 @@ import historyScene.historySceneController;
 
 import java.io.IOException;
 import javafx.util.Duration;
+
+import static com.sun.deploy.ui.UIFactory.showErrorDialog;
 
 public class mainController {
     @FXML private topController topComponentController;
@@ -64,25 +67,34 @@ public class mainController {
         return menuVariables.getStepper().getFlowDefinition(newValue);
     }
     public void switchToStatisticsScene(ActionEvent event){
-        if(statisticsController == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../StatisticsScene/statisticsSceme.fxml"));
-            try {
-                Parent statisticsRoot = loader.load();
-                statisticsController = loader.getController();
-                statisticsController.setMainController(this);
-                statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
-                //statisticsController.setFlowExecutionsStatistics(menuVariables.get);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if(menuVariables == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("Please load a stepper first!");
+            alert.showAndWait();
         }
-        try {
-            statisticsController.populateFlowStatisticsTable();
-            statisticsController.populateStepStatisticsTable();
-            AnchorPane view = statisticsController.getStatisticsAnchorPane();
-            mainBorder.setCenter(view);
-        } catch (Exception e) {
-            e.printStackTrace();
+        else {
+            if (statisticsController == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../StatisticsScene/statisticsSceme.fxml"));
+                try {
+                    Parent statisticsRoot = loader.load();
+                    statisticsController = loader.getController();
+                    statisticsController.setMainController(this);
+                    statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
+                    //statisticsController.setFlowExecutionsStatistics(menuVariables.get);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                statisticsController.populateFlowStatisticsTable();
+                statisticsController.populateStepStatisticsTable();
+                AnchorPane view = statisticsController.getStatisticsAnchorPane();
+                mainBorder.setCenter(view);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     public void switchToShowFlowScene(ActionEvent event){
@@ -167,22 +179,31 @@ public class mainController {
         gifTimeline.play();
     }
     public void switchToHistoryScene(ActionEvent event){
-        if(historySceneController == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../historyScene/historySceneBuilder.fxml"));
-            try {
-                Parent executionRoot = loader.load();
-                historySceneController = loader.getController();
-                historySceneController.setMainController(this);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if(menuVariables == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("Please load a stepper first!");
+            alert.showAndWait();
         }
-        try {
-            AnchorPane view = historySceneController.getHistoryAnchorPane();
-            mainBorder.setCenter(view);
-            historySceneController.setTableInHistory();
-        } catch (Exception e) {
-            e.printStackTrace();
+        else {
+            if (historySceneController == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../historyScene/historySceneBuilder.fxml"));
+                try {
+                    Parent executionRoot = loader.load();
+                    historySceneController = loader.getController();
+                    historySceneController.setMainController(this);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                AnchorPane view = historySceneController.getHistoryAnchorPane();
+                mainBorder.setCenter(view);
+                historySceneController.setTableInHistory();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -49,6 +49,7 @@ public class executionController {
     private FlowDefinition chosenFlow;
     private List<SingleStepExecutionData> executionData;
     private Map<String, String> initialVal;
+    private int currentFilledMandatoryInputs;
     private int currentAmountOfMandatoryInputs;
     public AnchorPane getExecutionAnchorPane(){
         return executionAnchorPane;
@@ -95,21 +96,26 @@ public class executionController {
     }
     private void populateInputsGridPane(){
         inputsGridPane.getChildren().clear();
+        executeButton.setDisable(true);
+        int CurrenLisetenerIndex = 0;
         int row = 0;
         mandatoryInputs = new ArrayList<>();
+        currentAmountOfMandatoryInputs = chosenFlow.getMandatoryInputs().size();
         optionalInputs = new ArrayList<>();
         initialVal = new HashMap<>();
         initialVal = chosenFlow.getInnitialDataValues();
         this.outputs = chosenFlow.getOutputs();
         int currentMandatoryInputs = 0;
+        currentFilledMandatoryInputs = 0;
         int currentOptionalInputs = 0;
         for(InputWithStepName input : chosenFlow.getMandatoryInputs()){
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class) {
-                // TODO : initial Val if number is has problem cause it shows as string - FIX IT
                 if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
-                    TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                    int initialValInt = Integer.parseInt(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
                     textField.setEditable(false);
                     mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
                 } else {
                     mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
                 }
@@ -120,6 +126,7 @@ public class executionController {
                             TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
                             textField.setEditable(false);
                             mandatoryInputs.add(textField);
+                            currentFilledMandatoryInputs++;
                         }
                      else {
                          mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
@@ -130,10 +137,56 @@ public class executionController {
                     TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
                     textField.setEditable(false);
                     mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
                 }
                 else
                     mandatoryInputs.add(new javafx.scene.control.TextField());
             }
+            //add a listener to check if all mandatory inputs are filled
+
+                if(mandatoryInputs.get(currentMandatoryInputs) instanceof javafx.scene.control.Spinner){
+                ((javafx.scene.control.Spinner) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue != null){
+                        currentFilledMandatoryInputs++;
+                        if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
+                            executeButton.setDisable(false);
+                        }
+                    }
+                    else {
+                        currentFilledMandatoryInputs--;
+                        executeButton.setDisable(true);
+                    }
+                });
+            }
+            else if(mandatoryInputs.get(currentMandatoryInputs) instanceof javafx.scene.control.ChoiceBox){
+                ((javafx.scene.control.ChoiceBox) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue != null){
+                        currentFilledMandatoryInputs++;
+                        if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
+                            executeButton.setDisable(false);
+                        }
+                    }
+                    else {
+                        currentFilledMandatoryInputs--;
+                        executeButton.setDisable(true);
+                    }
+                });
+            }
+            else{
+                ((javafx.scene.control.TextField) mandatoryInputs.get(CurrenLisetenerIndex)).textProperty().addListener((observable, oldValue, newValue) -> {
+                    if(newValue != null && !newValue.equals("")){
+                        currentFilledMandatoryInputs++;
+                        if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
+                            executeButton.setDisable(false);
+                        }
+                    }
+                    if(newValue == null || newValue.equals("")){
+                        currentFilledMandatoryInputs--;
+                        executeButton.setDisable(true);
+                    }
+                });
+            }
+            CurrenLisetenerIndex++;
         }
         for(InputWithStepName input : chosenFlow.getOptionalInputs()){
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Integer.class)
@@ -181,10 +234,8 @@ public class executionController {
 
     @FXML
     public void executeFlow(ActionEvent event) {
-        if (executionData != null)
-            executionData.clear();
-        else
             executionData = new ArrayList<>();
+            pupulateCurrentExecutionSteps();
 
         // Create a Task to execute the executeFlowUI() method
         Timer timer = new Timer();
@@ -225,15 +276,6 @@ public class executionController {
             // This code will run on the JavaFX application thread
             //timer.cancel();
             pupulateCurrentExecutionSteps();
-
-//            synchronized (this) {
-//                if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.SUCCESS)) {
-//                    mainController.showGifForDuration("mainScene/giphy.gif", Duration.seconds(3));
-//                } else if (mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult().equals(FlowExecutionResult.FAILURE)
-//                        || mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1).getFlowResult() == null) {
-//                    mainController.showGifForDuration("mainScene/complete-failure-failure.gif", Duration.seconds(2.30));
-//                }
-//            }
         });
 
         // Set up the exception handler if an exception occurs during the task
