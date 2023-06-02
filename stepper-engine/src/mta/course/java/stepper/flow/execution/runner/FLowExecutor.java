@@ -281,7 +281,8 @@ public class FLowExecutor {
             }
             System.out.println("Total Time: " + totalTimeFlow + " ms");
             FlowExecutionStatistics result = new FlowExecutionStatistics(executionStartTime, flowExecution.getFlowDefinition().getName(), flowExecution.getUniqueId()
-                    , flowResult, totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap());
+                    , flowResult, totalTimeFlow, flowExecution.getFlowDefinition(), context, flowExecution.getSingleStepExecutionDataMap(), flowExecution.getStepExecutionStatisticsMap(),
+                    singleStepExecutionDataList);
             return result;
         }
         catch (RuntimeException e)

@@ -28,7 +28,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final Map<String, String> flowLevelAlias;
     private final Map<String, String> customMapping;
     private final Map<String, String> AutoMappingMap;
-    private final Map<String, String> ContinuationMap;
+    private final  List<Continuation> ContinuationList;
     private final List<InputWithStepName> mandatoryInputs;
     private final List<InputWithStepName> optionalInputs;
     private final List<InputWithStepName> outputs;
@@ -55,9 +55,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
         finalStepNames = new ArrayList<>();
         AutoMappingMap = new HashMap<>();
         preAliasFlowFreeInputs = new ArrayList<>();
-        ContinuationMap = new HashMap<>();
         uniqueId = UUID.randomUUID().toString();
         outputs = new ArrayList<>();
+        ContinuationList = new ArrayList<>();
     }
 
     public FlowDefinitionImpl(STFlow stFlow) {
@@ -83,7 +83,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         flowLevelAlias = new HashMap<>();
         customMapping = new HashMap<>();
         innitialDataValues = new HashMap<>();
-        ContinuationMap = new HashMap<>();
+        ContinuationList = new ArrayList<>();
 
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for (int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++) {
@@ -118,11 +118,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
         if (stContinuationsMap != null) {
             List<STContinuation> stFlowContinuationList = stContinuationsMap.getSTContinuation();
             for (STContinuation stContinuation : stFlowContinuationList) {
-                List<STContinuationMapping> stContinueMap = stContinuation.getSTContinuationMapping();
-                for (STContinuationMapping i : stContinueMap) {
-                    ContinuationMap.put(name + "." + stContinuation.getTargetFlow(),
-                            i.getSourceData() + "." + i.getTargetData());
-                }
+                ContinuationList.add(new Continuation(stContinuation));
             }
         }
         for (int i = 0; i < steps.size(); i++) {
@@ -465,6 +461,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
     @Override
     public boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
+    @Override
+    public List<Continuation> getContinuations() {
+        return ContinuationList;
     }
 }
 

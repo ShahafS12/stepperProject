@@ -24,6 +24,7 @@ public class FlowExecutionStatistics
     private Map<String, SingleStepExecutionData> singleStepExecutionDataMap;
     private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
     private StepExecutionContext context;
+    private List<SingleStepExecutionData> singleStepExecutionDataList;
 
 
     public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowExecutionResult FlowExecutionResult, double duration,FlowDefinition flow,
@@ -38,6 +39,23 @@ public class FlowExecutionStatistics
         this.context = context;
         this.singleStepExecutionDataMap = singleStepExecutionDataMap;
         this.stepExecutionStatisticsMap = stepExecutionStatisticsMap;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        this.dateTime = dateFormat.format(this.startTime);
+        //TODO add details about free inputs and outputs
+    }
+    public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowExecutionResult FlowExecutionResult, double duration,FlowDefinition flow,
+                                   StepExecutionContext context,Map<String, SingleStepExecutionData> singleStepExecutionDataMap,
+                                   Map<String,StepExecutionStatistics> stepExecutionStatisticsMap, List<SingleStepExecutionData> singleStepExecutionDataList){
+        this.startTime = startTime;
+        this.flowName = flowName;
+        this.flowId = flowId;
+        this.flowResult = FlowExecutionResult;
+        this.duration = duration;
+        this.flow = flow;
+        this.context = context;
+        this.singleStepExecutionDataMap = singleStepExecutionDataMap;
+        this.stepExecutionStatisticsMap = stepExecutionStatisticsMap;
+        this.singleStepExecutionDataList = singleStepExecutionDataList;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         this.dateTime = dateFormat.format(this.startTime);
         //TODO add details about free inputs and outputs
@@ -99,6 +117,9 @@ public class FlowExecutionStatistics
     }
     public FlowExecutionResult getFlowResult() {
         return flowResult;
+    }
+    public List<SingleStepExecutionData> getSingleStepExecutionDataList() {
+        return singleStepExecutionDataList;
     }
     public double getDuration() {
         return duration;
