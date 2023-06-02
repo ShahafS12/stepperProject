@@ -174,7 +174,7 @@ public class executionController {
             }
             else{
                 ((javafx.scene.control.TextField) mandatoryInputs.get(CurrenLisetenerIndex)).textProperty().addListener((observable, oldValue, newValue) -> {
-                    if(newValue != null && !newValue.equals("")){
+                    if(newValue != null && !newValue.equals("") && oldValue.equals("")){
                         currentFilledMandatoryInputs++;
                         if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
                             executeButton.setDisable(false);
