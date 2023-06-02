@@ -144,7 +144,7 @@ public class executionController {
             }
             //add a listener to check if all mandatory inputs are filled
 
-                if(mandatoryInputs.get(currentMandatoryInputs) instanceof javafx.scene.control.Spinner){
+                if(mandatoryInputs.get(CurrenLisetenerIndex) instanceof javafx.scene.control.Spinner){
                 ((javafx.scene.control.Spinner) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
                     if(newValue != null){
                         currentFilledMandatoryInputs++;
@@ -158,7 +158,7 @@ public class executionController {
                     }
                 });
             }
-            else if(mandatoryInputs.get(currentMandatoryInputs) instanceof javafx.scene.control.ChoiceBox){
+            else if(mandatoryInputs.get(CurrenLisetenerIndex) instanceof javafx.scene.control.ChoiceBox){
                 ((javafx.scene.control.ChoiceBox) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
                     if(newValue != null){
                         currentFilledMandatoryInputs++;
