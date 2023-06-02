@@ -5,14 +5,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import mta.course.java.stepper.flow.InputWithStepName;
+import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
@@ -33,6 +36,9 @@ public class executionController {
     private GridPane inputsGridPane;
 
     @FXML
+    private VBox continuationVbox;
+
+    @FXML
     private Button executeButton;
 
     @FXML
@@ -43,6 +49,7 @@ public class executionController {
     @FXML
     private TextFlow stepDetails;
     private List<Control> mandatoryInputs;
+    private Map<String,Object> continuationMap;
     private List<Control> optionalInputs;
     private List<InputWithStepName> outputs;
     private mainScene.mainController mainController;
@@ -92,11 +99,18 @@ public class executionController {
     }
     public void setChosenFlow(FlowDefinition chosenFlow){
         this.chosenFlow = chosenFlow;
+        continuationMap = new HashMap<>();//to not crash when searching for continuation key
+        populateInputsGridPane();
+    }
+    public void setChosenFlow(FlowDefinition chosenFlow, Map<String,Object> continuationMap){
+        this.chosenFlow = chosenFlow;
+        this.continuationMap = continuationMap;
         populateInputsGridPane();
     }
     private void populateInputsGridPane(){
         inputsGridPane.getChildren().clear();
-        executeButton.setDisable(true);
+        continuationVbox.getChildren().clear();
+        //executeButton.setDisable(true);
         int CurrenLisetenerIndex = 0;
         int row = 0;
         mandatoryInputs = new ArrayList<>();
@@ -109,7 +123,24 @@ public class executionController {
         currentFilledMandatoryInputs = 0;
         int currentOptionalInputs = 0;
         for(InputWithStepName input : chosenFlow.getMandatoryInputs()){
+            //NUMBER
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class) {
+                if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
+                    int initialValInt = Integer.parseInt(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString());
+                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
+                    textField.setEditable(true);
+                    mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
+                }
+                else if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                    int initialValInt = Integer.parseInt(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
+                    textField.setEditable(false);
+                    mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
+                } else {
+                    mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
+                }
                 if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
                     int initialValInt = Integer.parseInt(initialVal.get(input.getDataDefinitionDeclaration().getName()));
                     Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
@@ -120,8 +151,15 @@ public class executionController {
                     mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
                 }
             }
+            //ENUM
             else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class) {
                 //TODO: allow other enums that are not zip (check what is the type by step name)
+                if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
+                    ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(ZipperEnumerator.values()));
+                    choiceBox.getSelectionModel().select(ZipperEnumerator.valueOf(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString()));
+                    mandatoryInputs.add(choiceBox);
+                    currentFilledMandatoryInputs++;
+                }
                     if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
                             TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
                             textField.setEditable(false);
@@ -132,7 +170,15 @@ public class executionController {
                          mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
                          }
             }
+            //TEXT
             else{
+                if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
+                    TextField textField = new TextField(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString());
+                    textField.setEditable(true);
+                    mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
+                }
+                else
                 if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
                     TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
                     textField.setEditable(false);
@@ -215,8 +261,6 @@ public class executionController {
             row++;
             currentOptionalInputs++;
         }
-        //inputsGridPane.add(executeButton, 2, row);
-        //executeButton.setDisable(true);//TODO: change to false when all mandatory inputs are filled
     }
     public synchronized void pupulateCurrentExecutionSteps(){
         currentExecutionSteps.getItems().clear();
@@ -236,7 +280,7 @@ public class executionController {
     public void executeFlow(ActionEvent event) {
             executionData = new ArrayList<>();
             pupulateCurrentExecutionSteps();
-
+            continuationVbox.getChildren().clear();
         // Create a Task to execute the executeFlowUI() method
         Timer timer = new Timer();
         int interval = 100; // Interval in milliseconds
@@ -276,6 +320,7 @@ public class executionController {
             // This code will run on the JavaFX application thread
             //timer.cancel();
             pupulateCurrentExecutionSteps();
+            populateContinuation();
         });
 
         // Set up the exception handler if an exception occurs during the task
@@ -299,6 +344,29 @@ public class executionController {
 //                });
 //            }
 //        }, interval, interval);
+    }
+
+    private void populateContinuation()
+    {
+        continuationVbox.getChildren().clear();
+        Label continuationLabel = new Label("Continuations:");
+        continuationLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        continuationVbox.getChildren().add(continuationLabel);
+        Button[] buttons = new Button[chosenFlow.getContinuations().size()];
+        int i = 0;
+        for(Continuation continuation : chosenFlow.getContinuations())
+        {
+            buttons[i] = new Button(continuation.getTargetFlow());
+            buttons[i].setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    FlowDefinition flow = mainController.getFlowDefinition(continuation.getTargetFlow());
+                    mainController.switchToExecutionScene(event, flow);
+                }
+            });
+            continuationVbox.getChildren().add(buttons[i]);
+            i++;
+        }
     }
 
     public void continuation(ActionEvent event)

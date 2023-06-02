@@ -47,4 +47,6 @@ public interface FlowDefinition {
         String getFlowLevelCustomMapping(String name);
 
     boolean isNumeric(String str);
+
+    List<Continuation> getContinuations();
 }

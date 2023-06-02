@@ -20,6 +20,8 @@ import executionScene.executionController;
 import historyScene.historySceneController;
 
 import java.io.IOException;
+import java.util.Map;
+
 import javafx.util.Duration;
 
 import static com.sun.deploy.ui.UIFactory.showErrorDialog;
@@ -132,6 +134,9 @@ public class mainController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String,String> continuation){
+        //dont need to check if executionController is null because it is not null when we get here
     }
     public void switchToExecutionScene(ActionEvent event){
         if(executionController == null) {
