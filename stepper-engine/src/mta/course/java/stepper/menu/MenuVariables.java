@@ -119,8 +119,8 @@ public class MenuVariables
     public Map<String, SingleStepExecutionData> getSingleStepExecutionDataMap() {
         return singleStepExecutionDataMap;
     }
-    public void setSingleStepExecutionDataMap(Map<String, SingleStepExecutionData> singleStepExecutionDataMap) {
-        this.singleStepExecutionDataMap = singleStepExecutionDataMap;
+    public void setSingleStepExecutionDataMap(String stepName, SingleStepExecutionData singleStepExecutionData) {
+        this.singleStepExecutionDataMap.put(stepName, singleStepExecutionData);
     }
     public int getMaxThreads() {
         return stepper.getMaxThreads();

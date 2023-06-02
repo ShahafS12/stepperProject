@@ -36,14 +36,14 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <ListView fx:id="oldFlowsListView" layoutX="-36.0" layoutY="-8.0" prefHeight="348.0" prefWidth="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <ListView fx:id="stepsHistoryInFlow" layoutX="-36.0" layoutY="-8.0" prefHeight="348.0" prefWidth="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
                                     <ScrollPane prefHeight="348.0" prefWidth="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <content>
-                                          <TextFlow fx:id="detailsPerExecution" prefHeight="290.0" prefWidth="388.0" />
+                                          <TextFlow fx:id="stepDetails" prefHeight="290.0" prefWidth="388.0" />
                                        </content>
                                     </ScrollPane>
                                     <FlowPane alignment="BOTTOM_RIGHT" layoutX="297.0" layoutY="309.0" prefHeight="348.0" prefWidth="388.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
