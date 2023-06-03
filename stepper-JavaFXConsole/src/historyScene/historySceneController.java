@@ -28,6 +28,7 @@ import java.util.Map;
 public class historySceneController {
 
     private mainController mainController;
+    private FlowExecutionStatistics currentFlow;
 
     public void initialize() {
         if (mainController != null) {
@@ -37,6 +38,8 @@ public class historySceneController {
             if (event.getClickCount() == 1) {
                 FlowExecutionStatistics selectedExecution = tableHistory.getSelectionModel().getSelectedItem();
                 if (selectedExecution != null) {
+                    currentFlow = selectedExecution;
+                    stepDetails.getChildren().clear();
                     displayExecutionDetails(selectedExecution);
                 }
             }
@@ -47,37 +50,22 @@ public class historySceneController {
                 String selectedStep = stepsHistoryInFlow.getSelectionModel().getSelectedItem();
                 if (selectedStep != null)
                 {
-                    mainController.getMenuVariables().getFlowExecutionMap();
-
-                    //displayStepDetails(singleStepExecutionDataMap.get(selectedStep));
+                    currentFlow.getSingleStepExecutionDataList().forEach(singleStepExecutionData -> {
+                        if(singleStepExecutionData.getStepName().equals(selectedStep))
+                            displayStepDetails(singleStepExecutionData);
+                    });
                 }
             }
         });
+
+        // Map<String, Object> userInputsMap = currentFlow.getUserInputsMap();
+        // TODO: use shahaf function to display them after clicking on the return flow button.
+
+//        returnFlowButton.setOnMouseClicked(event -> {
+//            mainController.switchToExecutionScene(); //
+//        });
     }
 
-    private void displayStepDetails(SingleStepExecutionData newValue){
-        stepDetails.getChildren().clear();
-        stepDetails.getChildren().add(new Text("Duration: " + String.format("%.2f", newValue.getDuration()) + " ms\n"));
-        stepDetails.getChildren().add(new Text("Status: " + newValue.getSuccess() + "\n"));
-        stepDetails.getChildren().add(new Text("Summary Line: " + newValue.getSummaryLine()));
-        stepDetails.getChildren().add(new Text("\n"));
-        Text logsText = new Text("Logs: \n");
-        logsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
-        stepDetails.getChildren().add(logsText);
-        for (String log : newValue.getLogs()) {
-            String[] logParts = log.split("\\|");
-            for(String logPart : logParts)
-                stepDetails.getChildren().add(new Text(logPart+"\n"));
-        }
-    }
-
-    private void displayExecutionDetails(FlowExecutionStatistics selectedExecution) {
-        stepsHistoryInFlow.getItems().clear();
-        Map<String,StepExecutionStatistics> steps = selectedExecution.getStepExecutionStatisticsMap();
-        for (String key : steps.keySet()){
-            stepsHistoryInFlow.getItems().add(key);
-        }
-    }
 
     @FXML
     private AnchorPane historyAnchorPane;
@@ -135,4 +123,30 @@ public class historySceneController {
         dateCol.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         resultCol.setCellValueFactory(new PropertyValueFactory<>("flowResult"));
     }
+
+
+    private void displayStepDetails(SingleStepExecutionData newValue){
+        stepDetails.getChildren().clear();
+        stepDetails.getChildren().add(new Text("Duration: " + String.format("%.2f", newValue.getDuration()) + " ms\n"));
+        stepDetails.getChildren().add(new Text("Status: " + newValue.getSuccess() + "\n"));
+        stepDetails.getChildren().add(new Text("Summary Line: " + newValue.getSummaryLine()));
+        stepDetails.getChildren().add(new Text("\n"));
+        Text logsText = new Text("Logs: \n");
+        logsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        stepDetails.getChildren().add(logsText);
+        for (String log : newValue.getLogs()) {
+            String[] logParts = log.split("\\|");
+            for(String logPart : logParts)
+                stepDetails.getChildren().add(new Text(logPart+"\n"));
+        }
+    }
+
+    private void displayExecutionDetails(FlowExecutionStatistics selectedExecution) {
+        stepsHistoryInFlow.getItems().clear();
+        Map<String,StepExecutionStatistics> steps = selectedExecution.getStepExecutionStatisticsMap();
+        for (String key : steps.keySet()){
+            stepsHistoryInFlow.getItems().add(key);
+        }
+    }
+
 }

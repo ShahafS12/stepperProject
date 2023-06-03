@@ -9,6 +9,7 @@ import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -138,5 +139,13 @@ public class FlowExecutionStatistics
     }
     public Map<String,StepExecutionStatistics> getStepExecutionStatisticsMap() {
         return stepExecutionStatisticsMap;
+    }
+    public Map<String, Object> getUserInputsMap(){
+        Map<String, Object> userInputsMap = new HashMap<>();
+        List<String> inputString =flow.getFlowFreeInputsString();
+        for (String i : inputString){
+            userInputsMap.put(i,context.getDataValue(i, Object.class));
+        }
+        return userInputsMap;
     }
 }
