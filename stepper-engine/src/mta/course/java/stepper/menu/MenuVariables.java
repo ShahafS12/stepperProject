@@ -30,6 +30,7 @@ public class MenuVariables
     private Map<String, SingleStepExecutionData> singleStepExecutionDataMap;
     private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
     private ExecutorService executorService;
+    private FlowExecutionStatistics currentStatsFlowExecuted;
 
     public MenuVariables() {
         this.flowNames = new ArrayList<String>();
@@ -43,6 +44,7 @@ public class MenuVariables
         this.flowExecutionMapFromFlowName = new HashMap<String, FlowExecution>();
         this.stepExecutionStatisticsMap = new HashMap<String, StepExecutionStatistics>();
         this.executorService = null;
+        this.currentStatsFlowExecuted = null;
     }
     public Map<String, FlowExecution> getFlowExecutionMapFromFlowName() {
         return flowExecutionMapFromFlowName;
@@ -63,6 +65,11 @@ public class MenuVariables
             this.stepExecutionStatisticsMap.get(key).addStepExecutionStatistics(value);
         }
     }
+
+    public FlowExecutionStatistics getCurrentStatsFlowExecuted() {
+        return currentStatsFlowExecuted;
+    }
+
 
     public StepperDefinition getStepper() {
         return stepper;
@@ -119,8 +126,8 @@ public class MenuVariables
     public Map<String, SingleStepExecutionData> getSingleStepExecutionDataMap() {
         return singleStepExecutionDataMap;
     }
-    public void setSingleStepExecutionDataMap(Map<String, SingleStepExecutionData> singleStepExecutionDataMap) {
-        this.singleStepExecutionDataMap = singleStepExecutionDataMap;
+    public void setSingleStepExecutionDataMap(String stepName, SingleStepExecutionData singleStepExecutionData) {
+        this.singleStepExecutionDataMap.put(stepName, singleStepExecutionData);
     }
     public int getMaxThreads() {
         return stepper.getMaxThreads();
@@ -165,6 +172,7 @@ public class MenuVariables
                     stepExecutionStatisticsMap);
 
             synchronized (this) {
+                currentStatsFlowExecuted = currentStats;
                 stats.put(currentFlowExecutionIdCounter, currentStats);
             }
 

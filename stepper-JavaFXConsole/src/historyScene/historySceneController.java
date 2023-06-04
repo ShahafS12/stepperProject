@@ -11,34 +11,70 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
+import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
+import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import javafx.scene.control.TableColumn;
 
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class historySceneController {
 
     private mainController mainController;
+    private FlowExecutionStatistics currentFlow;
 
     public void initialize() {
         if (mainController != null) {
             mainController.setHistoryController(this);
         }
+        tableHistory.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                FlowExecutionStatistics selectedExecution = tableHistory.getSelectionModel().getSelectedItem();
+                if (selectedExecution != null) {
+                    currentFlow = selectedExecution;
+                    stepDetails.getChildren().clear();
+                    displayExecutionDetails(selectedExecution);
+                }
+            }
+        });
+
+        stepsHistoryInFlow.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                String selectedStep = stepsHistoryInFlow.getSelectionModel().getSelectedItem();
+                if (selectedStep != null)
+                {
+                    currentFlow.getSingleStepExecutionDataList().forEach(singleStepExecutionData -> {
+                        if(singleStepExecutionData.getStepName().equals(selectedStep))
+                            displayStepDetails(singleStepExecutionData);
+                    });
+                }
+            }
+        });
+
+        // Map<String, Object> userInputsMap = currentFlow.getUserInputsMap();
+        // TODO: use shahaf function to display them after clicking on the return flow button.
+
+//        returnFlowButton.setOnMouseClicked(event -> {
+//            mainController.switchToExecutionScene(); //
+//        });
     }
+
 
     @FXML
     private AnchorPane historyAnchorPane;
 
     @FXML
-    private TextFlow detailsPerExecution;
+    private TextFlow stepDetails;
 
     @FXML
-    private ListView<?> oldFlowsListView;
+    private ListView<String> stepsHistoryInFlow;
 
     @FXML
     private Button returnFlowButton;
@@ -87,4 +123,30 @@ public class historySceneController {
         dateCol.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         resultCol.setCellValueFactory(new PropertyValueFactory<>("flowResult"));
     }
+
+
+    private void displayStepDetails(SingleStepExecutionData newValue){
+        stepDetails.getChildren().clear();
+        stepDetails.getChildren().add(new Text("Duration: " + String.format("%.2f", newValue.getDuration()) + " ms\n"));
+        stepDetails.getChildren().add(new Text("Status: " + newValue.getSuccess() + "\n"));
+        stepDetails.getChildren().add(new Text("Summary Line: " + newValue.getSummaryLine()));
+        stepDetails.getChildren().add(new Text("\n"));
+        Text logsText = new Text("Logs: \n");
+        logsText.setStyle("-fx-font-weight: bold; -fx-font-size: 16");
+        stepDetails.getChildren().add(logsText);
+        for (String log : newValue.getLogs()) {
+            String[] logParts = log.split("\\|");
+            for(String logPart : logParts)
+                stepDetails.getChildren().add(new Text(logPart+"\n"));
+        }
+    }
+
+    private void displayExecutionDetails(FlowExecutionStatistics selectedExecution) {
+        stepsHistoryInFlow.getItems().clear();
+        Map<String,StepExecutionStatistics> steps = selectedExecution.getStepExecutionStatisticsMap();
+        for (String key : steps.keySet()){
+            stepsHistoryInFlow.getItems().add(key);
+        }
+    }
+
 }
