@@ -278,9 +278,10 @@ public class executionController {
 
     @FXML
     public void executeFlow(ActionEvent event) {
-            executionData = new ArrayList<>();
-            pupulateCurrentExecutionSteps();
-            continuationVbox.getChildren().clear();
+        executionData = new ArrayList<>();
+        pupulateCurrentExecutionSteps();
+        continuationVbox.getChildren().clear();
+        int id = mainController.getMenuVariables().getUniqueFlowExecutionIdCounter();
         // Create a Task to execute the executeFlowUI() method
         Timer timer = new Timer();
         int interval = 100; // Interval in milliseconds
@@ -321,6 +322,18 @@ public class executionController {
             //timer.cancel();
             pupulateCurrentExecutionSteps();
             populateContinuation();
+            //show gif according to result
+            if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.SUCCESS){
+                mainController.showGifForDuration("mainScene/giphy.gif", new Duration(2000));
+            }
+            else if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.FAILURE){
+                mainController.showGifForDuration("mainScene/complete-failure-failure.gif", new Duration(2000));
+            }
+            //warning
+            else{
+                mainController.showGifForDuration("mainScene/error-img.gif", new Duration(2000));
+                //TODO: add warning gif
+            }
         });
 
         // Set up the exception handler if an exception occurs during the task
@@ -368,7 +381,7 @@ public class executionController {
             i++;
         }
     }
-    public void fillContinuationMap(Map<String, List<String>> continuationMapping){
+    public void fillContinuationMap(Map<String, List<String>> continuationMapping){//todo: this should be done in the engine
         this.continuationMap = new HashMap<>();
         Map<String,Object> inputs = mainController.getMenuVariables().getCurrentStatsFlowExecuted().getUserInputsMap();
         for(String key : inputs.keySet()){
