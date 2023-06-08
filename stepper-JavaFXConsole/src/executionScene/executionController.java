@@ -102,9 +102,9 @@ public class executionController {
         continuationMap = new HashMap<>();//to not crash when searching for continuation key
         populateInputsGridPane();
     }
-    public void setChosenFlow(FlowDefinition chosenFlow, Map<String,Object> continuationMap){
+    public void setChosenFlow(FlowDefinition chosenFlow, Map<String,List<String>> continuationMap){
         this.chosenFlow = chosenFlow;
-        this.continuationMap = continuationMap;
+        fillContinuationMap(continuationMap);
         populateInputsGridPane();
     }
     private void populateInputsGridPane(){
@@ -127,7 +127,7 @@ public class executionController {
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class) {
                 if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
                     int initialValInt = Integer.parseInt(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString());
-                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
+                    Spinner textField = new Spinner(0, 100,initialValInt ,1);
                     textField.setEditable(true);
                     mandatoryInputs.add(textField);
                     currentFilledMandatoryInputs++;
@@ -361,11 +361,26 @@ public class executionController {
                 @Override
                 public void handle(ActionEvent event) {
                     FlowDefinition flow = mainController.getFlowDefinition(continuation.getTargetFlow());
-                    mainController.switchToExecutionScene(event, flow);
+                    mainController.switchToExecutionSceneWithContinuation(event, flow, continuation.getContinuationMapping());
                 }
             });
             continuationVbox.getChildren().add(buttons[i]);
             i++;
+        }
+    }
+    public void fillContinuationMap(Map<String, List<String>> continuationMapping){
+        this.continuationMap = new HashMap<>();
+        Map<String,Object> inputs = mainController.getMenuVariables().getCurrentStatsFlowExecuted().getUserInputsMap();
+        for(String key : inputs.keySet()){
+            this.continuationMap.put(key, inputs.get(key));
+        }
+        //add the continuation mapping
+        for(String key : continuationMapping.keySet()){
+            List<String> values = continuationMapping.get(key);
+            for(String value : values){
+                if (inputs.get(key)!=null)
+                    this.continuationMap.put(value, inputs.get(key));
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import executionScene.executionController;
 import historyScene.historySceneController;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javafx.util.Duration;
@@ -135,8 +136,16 @@ public class mainController {
             e.printStackTrace();
         }
     }
-    public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String,String> continuation){
-        //dont need to check if executionController is null because it is not null when we get here
+    public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String, List<String>> continuation){
+        //don't need to check if executionController is null because it is not null when we get here
+        try {
+            executionController.setChosenFlow(chosenFlow, continuation);
+            AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void switchToExecutionScene(ActionEvent event){
         if(executionController == null) {

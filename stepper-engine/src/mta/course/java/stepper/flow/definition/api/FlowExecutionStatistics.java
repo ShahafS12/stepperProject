@@ -144,7 +144,24 @@ public class FlowExecutionStatistics
         Map<String, Object> userInputsMap = new HashMap<>();
         List<String> inputString =flow.getFlowFreeInputsString();
         for (String i : inputString){
-            userInputsMap.put(i,context.getDataValue(i, Object.class));
+            //get the value after the last dot
+            String[] freeInput = i.split("\\.");
+            //put the value in the map
+            userInputsMap.put(freeInput[1],context.getDataValue(i, Object.class));
+        }
+        List<String> outputString =flow.getFlowFreeOutputsString();
+        for (String i : outputString){
+            //get the value after the last dot
+            String[] freeOutput = i.split("\\.");
+            //check if actual value is null, if so put "" in the map
+            if (context.getDataValue(i, Object.class).toString().equals("class java.lang.Number")
+            || context.getDataValue(i, Object.class).toString().equals("class java.lang.String")){
+                //userInputsMap.put(freeOutput[1], "");
+                System.out.println("Null value in output");
+            }
+            else
+            //put the value in the map
+                userInputsMap.put(freeOutput[1],context.getDataValue(i, Object.class));
         }
         return userInputsMap;
     }
