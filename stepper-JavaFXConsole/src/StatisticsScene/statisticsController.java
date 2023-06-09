@@ -10,10 +10,14 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.chart.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import mainScene.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
@@ -48,6 +52,14 @@ public class statisticsController {
 
     @FXML
     private TableColumn<String, Double> StepAvgDurationCol;
+
+    @FXML
+    private Button showChartButton;
+
+    @FXML
+    private Button showChartButtonSteps;
+
+
     private mainScene.mainController mainController;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private FlowExecutionStatistics flowExecutionStatistics;
@@ -59,6 +71,9 @@ public class statisticsController {
         if (mainController != null) {
             mainController.setStatisticsController(this);
         }
+
+        showChartButton.setOnAction(e -> showBarChart());
+        showChartButtonSteps.setOnAction(e -> showBarChartSteps());
     }
     public AnchorPane getStatisticsAnchorPane(){
         return statisticsAnchorPane;
@@ -113,6 +128,55 @@ public class statisticsController {
     public TableView<FlowExecutionsStatistics> getFlowsStatiticsTable(){
         return flowsStatiticsTable;
     }
+
+    public BarChart<String, Number> tableViewInGraph (){
+
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        for (FlowExecutionsStatistics data : flowsStatiticsTable.getItems()) {
+            series.getData().add(new XYChart.Data<>(data.getFlowName(), data.getCountHowManyTimesExecution()));
+        }
+
+        barChart.getData().add(series);
+
+        return barChart;
+    }
+
+    private void showBarChart() {
+        Stage stage = new Stage();
+        Scene scene = new Scene(tableViewInGraph(), 400, 400);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public BarChart<String, Number> tableViewInGraphSteps (){
+
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        for (StepExecutionStatistics data : StepStatisticsTable.getItems()) {
+            series.getData().add(new XYChart.Data<>(data.getStepName(), data.getCountHowManyTimesExecution()));
+        }
+
+        barChart.getData().add(series);
+
+        return barChart;
+    }
+
+    private void showBarChartSteps() {
+        Stage stage = new Stage();
+        Scene scene = new Scene(tableViewInGraphSteps(), 400, 400);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
 }
 
