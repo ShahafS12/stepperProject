@@ -147,7 +147,7 @@ public class FlowExecutionStatistics
             //get the value after the last dot
             String[] freeInput = i.split("\\.");
             //put the value in the map
-            userInputsMap.put(freeInput[1],context.getDataValue(i, Object.class));
+            userInputsMap.put(i,context.getDataValue(i, Object.class));
         }
         List<String> outputString =flow.getFlowFreeOutputsString();
         for (String i : outputString){
@@ -161,7 +161,7 @@ public class FlowExecutionStatistics
             }
             else
             //put the value in the map
-                userInputsMap.put(freeOutput[1],context.getDataValue(i, Object.class));
+                userInputsMap.put(i,context.getDataValue(i, Object.class));
         }
         return userInputsMap;
     }

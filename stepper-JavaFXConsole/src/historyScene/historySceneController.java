@@ -30,6 +30,7 @@ public class historySceneController {
     private mainController mainController;
     private FlowExecutionStatistics currentFlow;
 
+
     public void initialize() {
         if (mainController != null) {
             mainController.setHistoryController(this);
@@ -57,8 +58,6 @@ public class historySceneController {
                 }
             }
         });
-
-        // Map<String, Object> userInputsMap = currentFlow.getUserInputsMap();
         // TODO: use shahaf function to display them after clicking on the return flow button.
 
 //        returnFlowButton.setOnMouseClicked(event -> {
@@ -93,7 +92,10 @@ public class historySceneController {
 
     @FXML
     void returnFlowAgain(ActionEvent event) {
-
+        if(currentFlow!=null) {
+            Map<String, Object> userInputsMap = currentFlow.getUserInputsMap();
+            mainController.setReRunFlow(event, currentFlow.getFlow(), userInputsMap);
+        }
     }
 
     public AnchorPane getHistoryAnchorPane() {

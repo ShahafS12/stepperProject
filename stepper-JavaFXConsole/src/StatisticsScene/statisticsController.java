@@ -90,6 +90,10 @@ public class statisticsController {
         flowAvgDurationCol.setCellValueFactory(new PropertyValueFactory<>("averageDuration"));
 
     }
+    public void refreshTables(){
+        StepStatisticsTable.refresh();
+        flowsStatiticsTable.refresh();
+    }
     public void populateStepStatisticsTable(){
         // Create an ObservableList to hold the data
         ObservableMap<String, StepExecutionStatistics> observableMap = FXCollections.observableMap(mainController.getMenuVariables().getStepExecutionStatisticsMap());

@@ -107,6 +107,11 @@ public class executionController {
         fillContinuationMap(continuationMap);
         populateInputsGridPane();
     }
+    public void setReRunFlow(FlowDefinition chosenFlow,Map<String, Object> userInputsMap){
+        this.chosenFlow = chosenFlow;
+        this.continuationMap = userInputsMap;
+        populateInputsGridPane();
+    }
     private void populateInputsGridPane(){
         inputsGridPane.getChildren().clear();
         continuationVbox.getChildren().clear();
@@ -123,65 +128,59 @@ public class executionController {
         currentFilledMandatoryInputs = 0;
         int currentOptionalInputs = 0;
         for(InputWithStepName input : chosenFlow.getMandatoryInputs()){
+            String inputWithStepName = chosenFlow.getAllFlowLevelAlias().get(input.getStepName() + "." + input.getDataDefinitionDeclaration().getName());
+            if(inputWithStepName == null)//if no alias
+                inputWithStepName = input.getStepName() + "." + input.getDataDefinitionDeclaration().getName();
             //NUMBER
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class) {
-                if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
-                    int initialValInt = Integer.parseInt(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString());
+                if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                    int initialValInt = Integer.parseInt(initialVal.get(inputWithStepName));
+                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
+                    textField.setEditable(false);
+                    mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
+                }
+                else if(continuationMap.containsKey(inputWithStepName)){
+                    int initialValInt = Integer.parseInt(continuationMap.get(inputWithStepName).toString());
                     Spinner textField = new Spinner(0, 100,initialValInt ,1);
                     textField.setEditable(true);
                     mandatoryInputs.add(textField);
                     currentFilledMandatoryInputs++;
                 }
-                else if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
-                    int initialValInt = Integer.parseInt(initialVal.get(input.getDataDefinitionDeclaration().getName()));
-                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
-                    textField.setEditable(false);
-                    mandatoryInputs.add(textField);
-                    currentFilledMandatoryInputs++;
-                } else {
-                    mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
-                }
-                if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
-                    int initialValInt = Integer.parseInt(initialVal.get(input.getDataDefinitionDeclaration().getName()));
-                    Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
-                    textField.setEditable(false);
-                    mandatoryInputs.add(textField);
-                    currentFilledMandatoryInputs++;
-                } else {
+                else {
                     mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
                 }
             }
             //ENUM
             else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class) {
                 //TODO: allow other enums that are not zip (check what is the type by step name)
-                if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
-                    ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(ZipperEnumerator.values()));
-                    choiceBox.getSelectionModel().select(ZipperEnumerator.valueOf(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString()));
-                    mandatoryInputs.add(choiceBox);
-                    currentFilledMandatoryInputs++;
-                }
-                    if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
-                            TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
-                            textField.setEditable(false);
-                            mandatoryInputs.add(textField);
-                            currentFilledMandatoryInputs++;
-                        }
-                     else {
-                         mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
-                         }
-            }
-            //TEXT
-            else{
-                if(continuationMap.containsKey(input.getDataDefinitionDeclaration().getName())){
-                    TextField textField = new TextField(continuationMap.get(input.getDataDefinitionDeclaration().getName()).toString());
-                    textField.setEditable(true);
-                    mandatoryInputs.add(textField);
-                    currentFilledMandatoryInputs++;
-                }
-                else
                 if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
                     TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
                     textField.setEditable(false);
+                    mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
+                }
+                else if(continuationMap.containsKey(inputWithStepName)){
+                    ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(ZipperEnumerator.values()));
+                    choiceBox.getSelectionModel().select(ZipperEnumerator.valueOf(continuationMap.get(inputWithStepName).toString()));
+                    mandatoryInputs.add(choiceBox);
+                    currentFilledMandatoryInputs++;
+                }
+                else {
+                    mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
+                }
+            }
+            //TEXT
+            else{
+                if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                    TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                    textField.setEditable(false);
+                    mandatoryInputs.add(textField);
+                    currentFilledMandatoryInputs++;
+                }
+                else if(continuationMap.containsKey(inputWithStepName)){
+                    TextField textField = new TextField(continuationMap.get(inputWithStepName).toString());
+                    textField.setEditable(true);
                     mandatoryInputs.add(textField);
                     currentFilledMandatoryInputs++;
                 }
@@ -235,10 +234,29 @@ public class executionController {
             CurrenLisetenerIndex++;
         }
         for(InputWithStepName input : chosenFlow.getOptionalInputs()){
-            if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Integer.class)
-                optionalInputs.add(new javafx.scene.control.Spinner<Integer>(0,100,0,1));
-            else
-                optionalInputs.add(new javafx.scene.control.TextField());
+            String inputWithStepName = chosenFlow.getAllFlowLevelAlias().get(input.getStepName() + "." + input.getDataDefinitionDeclaration().getName());
+            if(inputWithStepName == null)//if no alias
+                inputWithStepName = input.getStepName() + "." + input.getDataDefinitionDeclaration().getName();
+            //NUMBER
+            if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Integer.class) {
+                if(continuationMap.containsKey(inputWithStepName)){
+                    int initialValInt = Integer.parseInt(continuationMap.get(inputWithStepName).toString());
+                    Spinner textField = new Spinner(0, 100,initialValInt ,1);
+                    textField.setEditable(true);
+                    optionalInputs.add(textField);
+                } else {
+                    optionalInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
+                }
+            }
+            else {//TEXT
+                if(continuationMap.containsKey(inputWithStepName)){
+                    TextField textField = new TextField(continuationMap.get(inputWithStepName).toString());
+                    textField.setEditable(true);
+                    optionalInputs.add(textField);
+                }
+                else
+                    optionalInputs.add(new javafx.scene.control.TextField());
+            }
 
         }
         Label mandatoryInputsLabel = new Label("Mandatory Inputs:");
@@ -298,21 +316,6 @@ public class executionController {
                 finally{
                     timer.cancel();
                 }
-//                FLowExecutor fLowExecutor = new FLowExecutor();
-//                mainController.getMenuVariables().getStats().put(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter(),
-//                        fLowExecutor.executeFlowUI(mainController.getMenuVariables().getFlowExecutionMapFromFlowName().get(chosenFlow.getName()),
-//                                mandatoryInputs, optionalInputs, outputs, executionData,
-//                                mainController.getMenuVariables().getStepExecutionStatisticsMap()));
-//                mainController.getMenuVariables().upuniqueFlowExecutionIdCounter();
-//                if (mainController.getMenuVariables().getFlowExecutionsStatisticsMap().containsKey(chosenFlow.getName())) {
-//                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().get(
-//                            chosenFlow.getName()).addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1));
-//                } else {
-//                    FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
-//                    flowExecutionsStatistics.addFlowExecutionStatistics(mainController.getMenuVariables().getStats().get(mainController.getMenuVariables().getUniqueFlowExecutionIdCounter() - 1));
-//                    mainController.getMenuVariables().getFlowExecutionsStatisticsMap().put(chosenFlow.getName(), flowExecutionsStatistics);
-//
-//                }
                 return null;
             }
         };
@@ -322,6 +325,9 @@ public class executionController {
             //timer.cancel();
             pupulateCurrentExecutionSteps();
             populateContinuation();
+            mainController.refreshStatisticsScene();
+//            if(mainController.populateStepStatisticsTable().)
+//            mainController.populateStepStatisticsTable();
             //show gif according to result
             if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.SUCCESS){
                 mainController.showGifForDuration("mainScene/giphy.gif", new Duration(2000));
@@ -329,8 +335,7 @@ public class executionController {
             else if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.FAILURE){
                 mainController.showGifForDuration("mainScene/complete-failure-failure.gif", new Duration(2000));
             }
-            //warning
-            else{
+            else{//warning
                 mainController.showGifForDuration("mainScene/error-img.gif", new Duration(2000));
                 //TODO: add warning gif
             }
@@ -395,9 +400,5 @@ public class executionController {
                     this.continuationMap.put(value, inputs.get(key));
             }
         }
-    }
-
-    public void continuation(ActionEvent event)
-    {
     }
 }

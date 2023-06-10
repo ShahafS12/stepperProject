@@ -30,6 +30,7 @@ public class FlowExecutionsStatistics
                 stepExecutionStatisticsMap.put(step,flowExecutionStatistics.getStepExecutionStatisticsMap().get(step));
             }
         }
+
     }
     public void printStatistics(){
         System.out.println("Flow name: " + flowName);

@@ -88,9 +88,6 @@
                                                          </content>
                                                       </ScrollPane>
                                                       <FlowPane alignment="BOTTOM_RIGHT" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="335.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="30.0">
-                                                         <children>
-                                                            <Button fx:id="flowContinuationButton" mnemonicParsing="false" onAction="#continuation" text="Continue" />
-                                                         </children>
                                                       </FlowPane>
                                                    </children>
                                                 </AnchorPane>

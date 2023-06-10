@@ -1,34 +1,9 @@
-/* ShowFlowStyle.css */
-
-/* SplitPane styling */
-SplitPane {
-    -fx-background-color: linear-gradient(to bottom, #0f254f, #4f3680);
-}
-.mainComponent{
+* {
     -fx-dark-header-color: #202225;
     -fx-dark-body-color: #36393f;
 }
-
-/* AnchorPane styling */
-AnchorPane {
-    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f2f2f2);
-    -fx-alignment: center;
-}
-
-/* ListView styling */
-ListView {
-    -fx-control-inner-background: #ffffff;
-    -fx-font-family: Arial, sans-serif;
-    -fx-font-size: 14px;
-    -fx-text-fill: #0f254f;
-}
-
-/* TextArea styling */
-TextArea {
-    -fx-control-inner-background: #ffffff;
-    -fx-font-family: Arial, sans-serif;
-    -fx-font-size: 14px;
-    -fx-text-fill: #0f254f;
+#mainComponent {
+    -fx-background-color: -fx-dark-body-color;
 }
 .button {
     -fx-font-size: 12px;

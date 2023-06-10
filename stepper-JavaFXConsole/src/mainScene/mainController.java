@@ -100,6 +100,10 @@ public class mainController {
             }
         }
     }
+    public void refreshStatisticsScene(){
+        if(statisticsController != null)
+            statisticsController.refreshTables();
+    }
     public void switchToShowFlowScene(ActionEvent event){
         try {
             AnchorPane view = ShowFlowComponentController.getShowFlowAnchorPane();
@@ -140,6 +144,16 @@ public class mainController {
         //don't need to check if executionController is null because it is not null when we get here
         try {
             executionController.setChosenFlow(chosenFlow, continuation);
+            AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void setReRunFlow(ActionEvent event, FlowDefinition chosenFlow, Map<String, Object> userInputsMap){
+        try {
+            executionController.setReRunFlow(chosenFlow, userInputsMap);
             AnchorPane view = executionController.getExecutionAnchorPane();
             mainBorder.setCenter(view);
         }
@@ -191,6 +205,9 @@ public class mainController {
         );
 
         gifTimeline.play();
+    }
+    public void populateStepStatisticsTable(){
+        statisticsController.populateStepStatisticsTable();
     }
     public void switchToHistoryScene(ActionEvent event){
         if(menuVariables == null) {

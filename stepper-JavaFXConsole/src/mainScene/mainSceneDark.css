@@ -1,0 +1,8 @@
+/*create dark css theme*/
+* {
+    -fx-dark-header-color: #202225;
+    -fx-dark-body-color: #36393f;
+}
+#mainBorderPane {
+    -fx-background-color: -fx-dark-body-color;
+}
