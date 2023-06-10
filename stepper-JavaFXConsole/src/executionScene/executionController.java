@@ -389,6 +389,9 @@ public class executionController {
 //            }
 //        }, interval, interval);
     }
+    public void shutdownExecutorService() {
+        executorService.shutdown();
+    }
 
     private void populateContinuation()
     {

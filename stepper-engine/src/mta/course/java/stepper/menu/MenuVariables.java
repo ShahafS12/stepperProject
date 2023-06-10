@@ -137,6 +137,10 @@ public class MenuVariables
     {
         executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch));
     }
+    public void shutdownExecutorService()
+    {
+        executorService.shutdown();
+    }
 
     class MyRunnable implements Runnable
     {

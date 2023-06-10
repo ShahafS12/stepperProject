@@ -26,5 +26,8 @@ public class UIRunner extends Application
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new javafx.scene.image.Image("mainScene/imagez.png"));
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> {
+            mainController.close();
+        });
     }
 }

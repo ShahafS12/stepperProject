@@ -257,4 +257,10 @@ public class mainController {
     {
         this.animationToggle = !this.animationToggle;
     }
+
+    public void close()
+    {
+        menuVariables.shutdownExecutorService();
+        executionController.shutdownExecutorService();
+    }
 }
