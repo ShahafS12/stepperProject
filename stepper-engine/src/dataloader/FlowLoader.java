@@ -47,7 +47,6 @@ public class FlowLoader
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             STStepper stepperDefinition = (STStepper) jaxbUnmarshaller.unmarshal(new File(filePath));
             StepperDefinition stepper = new StepperDefinitionImpl(stepperDefinition);
-            System.out.println("Flows loaded successfully");
             return stepper;
 
         } catch (JAXBException e) {

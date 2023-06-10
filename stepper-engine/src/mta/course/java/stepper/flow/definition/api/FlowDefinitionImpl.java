@@ -169,6 +169,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
         }
         initializeOutputs();
     }
+    public Map<String, String> getInitialValues() {
+        return innitialDataValues;
+    }
 
     private void initializeOutputs() {
         for (StepUsageDeclaration step : steps) {

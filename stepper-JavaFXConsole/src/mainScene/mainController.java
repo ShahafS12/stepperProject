@@ -81,7 +81,7 @@ public class mainController {
         }
         else {
             if (statisticsController == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../StatisticsScene/statisticsSceme.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/StatisticsScene/StatisticsSceme.fxml"));
                 try {
                     Parent statisticsRoot = loader.load();
                     statisticsController = loader.getController();
@@ -125,7 +125,7 @@ public class mainController {
     }
     public void switchToExecutionScene(ActionEvent event, FlowDefinition chosenFlow){
         if(executionController == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../executionScene/executionScene.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/executionScene/executionScene.fxml"));
             try {
                 Parent executionRoot = loader.load();
                 executionController = loader.getController();
@@ -231,7 +231,7 @@ public class mainController {
         }
         else {
             if (historySceneController == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../historyScene/historySceneBuilder.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/historyScene/historySceneBuilder.fxml"));
                 try {
                     Parent executionRoot = loader.load();
                     historySceneController = loader.getController();

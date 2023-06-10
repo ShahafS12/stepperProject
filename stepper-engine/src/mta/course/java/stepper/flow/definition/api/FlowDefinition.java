@@ -52,4 +52,6 @@ public interface FlowDefinition {
     boolean isNumeric(String str);
 
     List<Continuation> getContinuations();
+
+    Map<String, String> getInitialValues();
 }

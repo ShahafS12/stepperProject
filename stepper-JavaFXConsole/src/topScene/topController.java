@@ -10,12 +10,17 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import mainScene.mainController;
+import mta.course.java.stepper.flow.definition.api.Continuation;
+import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.FlowExecution;
 import mta.course.java.stepper.menu.MenuVariables;
 import mta.course.java.stepper.stepper.StepperDefinition;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.sun.deploy.ui.UIFactory.showErrorDialog;
 
@@ -65,6 +70,42 @@ public class topController {
                 newMenuVariables.putFlowExecutionMap(newMenuVariables.getUniqueFlowIdCounter(), flowExecution);
                 newMenuVariables.putFlowExecutionMapFromFlowName(newMenuVariables.getFlowNames().get(i), flowExecution);
                 newMenuVariables.upuniqueFlowIdCounter();
+            }
+            for(String flowName: newMenuVariables.getFlowNames()){
+                FlowDefinition flowDefinition = newStepper.getFlowDefinition(flowName);
+                for(Continuation continuation: flowDefinition.getContinuations()){
+                    if(!newMenuVariables.getFlowNames().contains(continuation.getTargetFlow())){
+                        throw new Exception("Invalid XML file");
+                    }
+                    for(String sourceData: continuation.getContinuationMapping().keySet()){
+                        Set<String> allFlowInputs = flowDefinition.getAllInputs().keySet();
+                        Set<String> allFlowOutputs = flowDefinition.getAllOutputs().keySet();
+                        Set<String> allFlowInputsAndOutputsSplitted = new HashSet<>();
+                        for(String input: allFlowInputs){
+                            allFlowInputsAndOutputsSplitted.add(input.split("\\.")[1]);
+                        }
+                        for(String output: allFlowOutputs){
+                            allFlowInputsAndOutputsSplitted.add(output.split("\\.")[1]);
+                        }
+                        if(!allFlowInputsAndOutputsSplitted.contains(sourceData)){
+                            throw new Exception("Invalid XML file");
+                        }
+                        for(String targetData: continuation.getContinuationMapping().get(sourceData)){
+                            Set<String> allTargetFlowInputs = newStepper.getFlowDefinition(continuation.getTargetFlow()).getAllInputs().keySet();
+                            Set<String> allTargetFlowOutputs = newStepper.getFlowDefinition(continuation.getTargetFlow()).getAllOutputs().keySet();
+                            Set<String> allTargetFlowInputsAndOutputsSplitted = new HashSet<>();
+                            for(String input: allTargetFlowInputs){
+                                allTargetFlowInputsAndOutputsSplitted.add(input.split("\\.")[1]);
+                            }
+                            for(String output: allTargetFlowOutputs){
+                                allTargetFlowInputsAndOutputsSplitted.add(output.split("\\.")[1]);
+                            }
+                            if(!allTargetFlowInputsAndOutputsSplitted.contains(targetData)){
+                                throw new Exception("Invalid XML file");
+                            }
+                        }
+                    }
+                }
             }
             this.menuVariables = newMenuVariables;
             currentXMLLabel.setText(file.getAbsolutePath());

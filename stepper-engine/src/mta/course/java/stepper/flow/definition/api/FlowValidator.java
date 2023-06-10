@@ -17,7 +17,8 @@ public class FlowValidator
 
     public boolean validate(){
         //validate the flow
-        if(nonExistingStep() || duplicateOutputNames() || hasNonUserFriendlyMandatoryInputs() || invalidCustomMapping()||invalidAlias()||invalidManualInputs()){
+        if(nonExistingStep() || duplicateOutputNames() || hasNonUserFriendlyMandatoryInputs() || invalidCustomMapping()||invalidAlias()||invalidManualInputs()
+        ||invalidInitialValues()){
             return false;
         }
         return true;
@@ -131,6 +132,23 @@ public class FlowValidator
                     System.out.println("The flow contains multiple inputs with the same name but different types");
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+    private boolean invalidInitialValues(){
+        //initial values that dont exist in the flow
+        Map<String,String> initialValues = flowDefinition.getInitialValues();
+        List<String> flowFreeDDNames = flowDefinition.getFlowFreeInputsString();
+        List<String> splittedFlowFreeDDNames = new ArrayList<>();
+        for(String name : flowFreeDDNames){
+            String[] parts = name.split("\\.");
+            splittedFlowFreeDDNames.add(parts[1]);
+        }
+        for(String key : initialValues.keySet()){
+            if(!splittedFlowFreeDDNames.contains(key)){
+                System.out.println("The flow contains initial values that don't exist in the flow");
+                return true;
             }
         }
         return false;

@@ -111,6 +111,9 @@ public class executionController {
         this.chosenFlow = chosenFlow;
         fillContinuationMap(continuationMap);
         populateInputsGridPane();
+        if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
+            executeButton.setDisable(false);
+        }
     }
     public void setReRunFlow(FlowDefinition chosenFlow,Map<String, Object> userInputsMap){
         refresh();
