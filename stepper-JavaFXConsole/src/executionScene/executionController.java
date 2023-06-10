@@ -115,7 +115,7 @@ public class executionController {
     private void populateInputsGridPane(){
         inputsGridPane.getChildren().clear();
         continuationVbox.getChildren().clear();
-        //executeButton.setDisable(true);
+        executeButton.setDisable(true);
         int CurrenLisetenerIndex = 0;
         int row = 0;
         mandatoryInputs = new ArrayList<>();
@@ -133,22 +133,24 @@ public class executionController {
                 inputWithStepName = input.getStepName() + "." + input.getDataDefinitionDeclaration().getName();
             //NUMBER
             if(input.getDataDefinitionDeclaration().dataDefinition().getType()==Number.class) {
+                currentAmountOfMandatoryInputs--;//a number is a spinner so it is always filled
                 if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
                     int initialValInt = Integer.parseInt(initialVal.get(inputWithStepName));
                     Spinner textField = new Spinner(initialValInt, initialValInt, initialValInt);
                     textField.setEditable(false);
                     mandatoryInputs.add(textField);
-                    currentFilledMandatoryInputs++;
+                    //currentFilledMandatoryInputs++;
                 }
                 else if(continuationMap.containsKey(inputWithStepName)){
                     int initialValInt = Integer.parseInt(continuationMap.get(inputWithStepName).toString());
                     Spinner textField = new Spinner(0, 100,initialValInt ,1);
                     textField.setEditable(true);
                     mandatoryInputs.add(textField);
-                    currentFilledMandatoryInputs++;
+                    //currentFilledMandatoryInputs++;
                 }
                 else {
                     mandatoryInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
+                    //currentFilledMandatoryInputs++;
                 }
             }
             //ENUM
@@ -190,30 +192,30 @@ public class executionController {
             //add a listener to check if all mandatory inputs are filled
 
                 if(mandatoryInputs.get(CurrenLisetenerIndex) instanceof javafx.scene.control.Spinner){
-                ((javafx.scene.control.Spinner) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
-                    if(newValue != null){
-                        currentFilledMandatoryInputs++;
-                        if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
-                            executeButton.setDisable(false);
-                        }
-                    }
-                    else {
-                        currentFilledMandatoryInputs--;
-                        executeButton.setDisable(true);
-                    }
-                });
+//                ((javafx.scene.control.Spinner) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
+//                    if(newValue != null){
+//                        currentFilledMandatoryInputs++;
+//                        if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
+//                            executeButton.setDisable(false);
+//                        }
+//                    }
+//                    else {
+//                        currentFilledMandatoryInputs--;
+//                        executeButton.setDisable(true);
+//                    }
+//                });
             }
             else if(mandatoryInputs.get(CurrenLisetenerIndex) instanceof javafx.scene.control.ChoiceBox){
                 ((javafx.scene.control.ChoiceBox) mandatoryInputs.get(CurrenLisetenerIndex)).valueProperty().addListener((observable, oldValue, newValue) -> {
-                    if(newValue != null){
+                    if(newValue != null && oldValue == null){
                         currentFilledMandatoryInputs++;
                         if(currentFilledMandatoryInputs == currentAmountOfMandatoryInputs){
                             executeButton.setDisable(false);
                         }
                     }
-                    else {
-                        currentFilledMandatoryInputs--;
-                        executeButton.setDisable(true);
+                    else {//can never be unfilled once filled
+                        //currentFilledMandatoryInputs--;
+                        //executeButton.setDisable(true);
                     }
                 });
             }

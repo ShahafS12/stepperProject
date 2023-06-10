@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import mainScene.mainController;
@@ -24,6 +25,8 @@ public class topController {
 
     @FXML
     private Button LoadXMLButton;
+    @FXML
+    private MenuItem annimationToggle;
 
     @FXML
     private Label currentXMLLabel;
@@ -69,6 +72,21 @@ public class topController {
             mainController.setShowFlowComponentController();
         } catch (Exception e) {
             showErrorDialog("Invalid XML file" , e.getMessage());
+        }
+    }
+
+    @FXML
+    void handleAnimationsToggle(ActionEvent event) {
+        if (mainController != null) {
+            mainController.handleAnimationsToggle(event);
+        }
+        if(mainController.getAnimationToggle()==true)
+        {
+            annimationToggle.setText("Turn off animations");
+        }
+        else
+        {
+            annimationToggle.setText("Turn on animations");
         }
     }
 

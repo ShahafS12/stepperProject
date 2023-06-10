@@ -16,6 +16,28 @@
     -fx-pref-width: 468.0;
     -fx-wrap-text: true;
 }
+#menuBar {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-color: #e33f3f;
+    -fx-border-color: #000000;
+}
+#menuBar:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+.menu-button .label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-wrap-text: false;
+    -fx-background-color: transparent;
+    -fx-border-radius: 0px;
+    -fx-padding: 0px;
+}
 
 /* Apply styles to the second HBox */
 .button {

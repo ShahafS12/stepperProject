@@ -36,6 +36,7 @@ public class mainController {
     private executionController executionController;
     private MenuVariables menuVariables;
     private historySceneController historySceneController;
+    private boolean animationToggle = true;
 
     @FXML
     public void initialize() {
@@ -43,6 +44,7 @@ public class mainController {
             topComponentController.setMainController(this);
             ShowFlowComponentController.setMainController(this);
         }
+        this.animationToggle = true;
     }
 
     @FXML
@@ -140,6 +142,9 @@ public class mainController {
             e.printStackTrace();
         }
     }
+    public boolean getAnimationToggle(){
+        return this.animationToggle;
+    }
     public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String, List<String>> continuation){
         //don't need to check if executionController is null because it is not null when we get here
         try {
@@ -179,6 +184,8 @@ public class mainController {
         }
     }
     public void showGifForDuration(String gifPath, Duration duration) {
+        if(!animationToggle)//if animation is off
+            return;
         Image gifImage = new Image(gifPath);
         ImageView gifImageView = new ImageView(gifImage);
 
@@ -240,4 +247,9 @@ public class mainController {
 
 
     public void setHistoryController(historyScene.historySceneController historySceneController) { this.historySceneController = historySceneController;}
+
+    public void handleAnimationsToggle(ActionEvent event)
+    {
+        this.animationToggle = !this.animationToggle;
+    }
 }
