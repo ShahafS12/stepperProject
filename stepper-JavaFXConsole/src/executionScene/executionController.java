@@ -25,7 +25,7 @@ import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
 import java.util.*;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.*;
 
 
 public class executionController {
@@ -57,6 +57,8 @@ public class executionController {
     private List<SingleStepExecutionData> executionData;
     private Map<String, String> initialVal;
     private int currentFilledMandatoryInputs;
+    private ScheduledFuture<?> currentExecutionUpdater;
+    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private int currentAmountOfMandatoryInputs;
     public AnchorPane getExecutionAnchorPane(){
         return executionAnchorPane;
@@ -72,6 +74,7 @@ public class executionController {
                 }
             });
         }
+        currentExecutionUpdater = null;
         currentAmountOfMandatoryInputs = chosenFlow.getFlowFreeInputs().size();
     }
     public void setMainController(mainScene.mainController mainController){
@@ -98,19 +101,30 @@ public class executionController {
         }
     }
     public void setChosenFlow(FlowDefinition chosenFlow){
+        refresh();
         this.chosenFlow = chosenFlow;
         continuationMap = new HashMap<>();//to not crash when searching for continuation key
         populateInputsGridPane();
     }
     public void setChosenFlow(FlowDefinition chosenFlow, Map<String,List<String>> continuationMap){
+        refresh();
         this.chosenFlow = chosenFlow;
         fillContinuationMap(continuationMap);
         populateInputsGridPane();
     }
     public void setReRunFlow(FlowDefinition chosenFlow,Map<String, Object> userInputsMap){
+        refresh();
         this.chosenFlow = chosenFlow;
         this.continuationMap = userInputsMap;
         populateInputsGridPane();
+        executeButton.setDisable(false);
+    }
+    public void refresh(){//clears all the data from the previous flow in ui
+        inputsGridPane.getChildren().clear();
+        continuationVbox.getChildren().clear();
+        executeButton.setDisable(true);
+        currentExecutionSteps.getItems().clear();
+        stepDetails.getChildren().clear();
     }
     private void populateInputsGridPane(){
         inputsGridPane.getChildren().clear();
@@ -309,8 +323,14 @@ public class executionController {
             @Override
             protected Void call() throws Exception {
                 CountDownLatch latch = new CountDownLatch(1);
+                if (currentExecutionUpdater != null && !currentExecutionUpdater.isDone()) {
+                    currentExecutionUpdater.cancel(false);
+                }
                 mainController.getMenuVariables().executeFlow(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch);
                 try {
+                    currentExecutionUpdater = executorService.scheduleAtFixedRate(() -> Platform.runLater(() -> {
+                        pupulateCurrentExecutionSteps();
+                    }), 0, interval, TimeUnit.MILLISECONDS);
                     latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -325,6 +345,7 @@ public class executionController {
         task.setOnSucceeded(e -> {
             // This code will run on the JavaFX application thread
             //timer.cancel();
+            currentExecutionUpdater.cancel(false);
             pupulateCurrentExecutionSteps();
             populateContinuation();
             mainController.refreshStatisticsScene();

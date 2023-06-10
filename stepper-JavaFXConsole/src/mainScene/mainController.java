@@ -142,6 +142,11 @@ public class mainController {
             e.printStackTrace();
         }
     }
+    public void refreshExecutionScene(){
+        if(executionController != null) {
+            executionController.refresh();
+        }
+    }
     public boolean getAnimationToggle(){
         return this.animationToggle;
     }

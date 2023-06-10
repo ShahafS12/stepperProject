@@ -70,6 +70,8 @@ public class topController {
             currentXMLLabel.setText(file.getAbsolutePath());
             mainController.setMenuVariables(menuVariables);
             mainController.setShowFlowComponentController();
+            mainController.refreshStatisticsScene();
+            mainController.refreshExecutionScene();
         } catch (Exception e) {
             showErrorDialog("Invalid XML file" , e.getMessage());
         }
