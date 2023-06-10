@@ -14,11 +14,16 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import mainScene.mainController;
+import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.DataDefinitionDeclarationImpl;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ShowFlowController {
     private mainScene.mainController mainController;
@@ -145,6 +150,63 @@ public class ShowFlowController {
             buttons[i].setOnAction(event -> {
                 chosenFlowData.getChildren().clear();
                 chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName()));
+                chosenFlowData.getChildren().add(new Text("\n" + "Inputs (Name, Necessity/Connected to output):" + "\n"));
+                Map<String, String> allInputs = flow.getAllFlowInputsWithNeccecity();
+                Map<String, String> flowAlias = flow.getAllFlowLevelAlias();
+                Map<String, String> customMap = flow.getCustomMapping();
+
+                for (Map.Entry<String, String> entry : allInputs.entrySet()) {
+                    boolean flag = false;
+
+                    String key = entry.getKey(); // Step name + "." + input name
+                    String value = entry.getValue(); // neccecity
+
+                    String[] stepNamePlusInputName = key.split("\\.");
+
+                    if (stepNamePlusInputName[0].equals(step.getFinalStepName())){
+                        // run on all values in customMap
+                        for (Map.Entry<String, String> entry2 : customMap.entrySet()) {
+                            String keyCustom = entry2.getKey();
+                            String valueCustom = entry2.getValue();
+                            if (valueCustom.equals(stepNamePlusInputName[0] + "." + stepNamePlusInputName[1])){
+                                flag = true;
+                                String[] tmp = keyCustom.split("\\.");
+                                chosenFlowData.getChildren().add(new Text( stepNamePlusInputName[1] + ", Output step: " + tmp[0] + ", Output: " + tmp[1] + "\n"));
+                            }
+                        }
+                        if (!flag && flowAlias.containsKey(stepNamePlusInputName[0] + "." + stepNamePlusInputName[1])){
+                            String aliasInput  =  flowAlias.get(stepNamePlusInputName[0] + "." + stepNamePlusInputName[1]);
+                            String[] tmp = aliasInput.split("\\.");
+                            chosenFlowData.getChildren().add(new Text( stepNamePlusInputName[1] + ", alias: " + tmp[1] + ", " + value + "\n"));
+                        }
+                        else if (!flag){
+                        chosenFlowData.getChildren().add(new Text( stepNamePlusInputName[1] + ", " + value +  "\n"));
+                        }
+                    }
+                }
+                chosenFlowData.getChildren().add(new Text("\n" + "Outputs (Connected to Input step):" + "\n"));
+                for (InputWithStepName output : flow.getOutputs()){
+                    boolean flagOutput = false;
+                    if (output.getStepName().equals(step.getFinalStepName())){
+                        for (Map.Entry<String, String> entry2 : customMap.entrySet()) {
+                            String keyCustom = entry2.getKey();
+                            String valueCustom = entry2.getValue();
+                            if (keyCustom.equals(output.getStepName() + "." + output.getDataDefinitionDeclaration().getName())){
+                                flagOutput = true;
+                                String[] tmp = valueCustom.split("\\.");
+                                chosenFlowData.getChildren().add(new Text( output.getDataDefinitionDeclaration().getName() + ", Input step: " + tmp[0] + ", Input: " + tmp[1] + "\n"));
+                            }
+                        }
+                        if (!flagOutput && flowAlias.containsKey(output.getStepName() + "." + output.getDataDefinitionDeclaration().getName())){
+                            String aliasInput  =  flowAlias.get(output.getStepName() + "." + output.getDataDefinitionDeclaration().getName());
+                            String[] tmp = aliasInput.split("\\.");
+                            chosenFlowData.getChildren().add(new Text( output.getDataDefinitionDeclaration().getName() + ", alias: " + tmp[1] + "\n"));
+                        }
+                        else if (!flagOutput){
+                            chosenFlowData.getChildren().add(new Text( output.getDataDefinitionDeclaration().getName() + "\n"));
+                        }
+                    }
+                }
                 flowsList.getSelectionModel().clearSelection();
             });
             hBoxes[i].getChildren().add(buttons[i]);
@@ -152,6 +214,5 @@ public class ShowFlowController {
             chosenFlowData.getChildren().add(hBoxes[i]);
             chosenFlowData.getChildren().add(new Text("\n"));
         }
-        //TODO print flow free inputs and outputs
     }
 }

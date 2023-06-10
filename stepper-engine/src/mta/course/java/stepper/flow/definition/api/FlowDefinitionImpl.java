@@ -32,6 +32,8 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final List<InputWithStepName> mandatoryInputs;
     private final List<InputWithStepName> optionalInputs;
     private final List<InputWithStepName> outputs;
+    private final Map<String, String> allFlowInputsWithNeccecity;
+    private final Map<String, String> allFlowOutputsWithNeccecity;
 
     private boolean readonly;
 
@@ -58,6 +60,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
         uniqueId = UUID.randomUUID().toString();
         outputs = new ArrayList<>();
         ContinuationList = new ArrayList<>();
+        allFlowInputsWithNeccecity = new HashMap<>();
+        allFlowOutputsWithNeccecity = new HashMap<>();
+
     }
 
     public FlowDefinitionImpl(STFlow stFlow) {
@@ -84,6 +89,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
         customMapping = new HashMap<>();
         innitialDataValues = new HashMap<>();
         ContinuationList = new ArrayList<>();
+        allFlowInputsWithNeccecity = new HashMap<>();
+        allFlowOutputsWithNeccecity = new HashMap<>();
+
 
         STStepsInFlow stStepsInFlow = stFlow.getSTStepsInFlow();
         for (int i = 0; i < stStepsInFlow.getSTStepInFlow().size(); i++) {
@@ -129,6 +137,9 @@ public class FlowDefinitionImpl implements FlowDefinition {
                 if (inputToAdd == null)
                     inputToAdd = steps.get(i).getFinalStepName() + "." + dataInput.getName();
                 allFlowInputs.put(inputToAdd, dataInput.dataDefinition().getType());
+                DataNecessity necessity = dataInput.necessity();
+                String dataNecessity = necessity.toString();
+                allFlowInputsWithNeccecity.put(inputToAdd, dataNecessity);
                 if (allFlowOutputs.containsKey(inputToAdd) && !AutoMappingMap.containsKey(steps.get(i).getFinalStepName() + "." + inputToAdd))
                     AutoMappingMap.put(steps.get(i).getFinalStepName() + "." + inputToAdd, inputToAdd);
 
@@ -212,6 +223,11 @@ public class FlowDefinitionImpl implements FlowDefinition {
     @Override
     public List<String> getFinalStepNames() {
         return finalStepNames;
+    }
+
+    @Override
+    public Map<String, String> getAllFlowInputsWithNeccecity() {
+        return allFlowInputsWithNeccecity;
     }
 
     @Override

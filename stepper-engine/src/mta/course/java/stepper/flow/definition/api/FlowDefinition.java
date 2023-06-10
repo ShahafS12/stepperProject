@@ -22,6 +22,9 @@ public interface FlowDefinition {
     List<InputWithStepName> getOptionalInputs();
 
     void addFlowOutput(String outputName);
+
+    Map<String, String> getAllFlowInputsWithNeccecity();
+
     void addFlowStep(StepUsageDeclaration stepUsageDeclaration);
     String getFlowLevelAlias(String sourceDataName);
     boolean isDataDefEquals(String stepName, String outputName,String dataDefName);
