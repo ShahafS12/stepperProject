@@ -1,0 +1,81 @@
+/* Apply styles to the root VBox */
+.VBox {
+    -fx-pref-height: 108.0;
+    -fx-pref-width: 600.0;
+    -fx-background-color: #fcfcfc;
+}
+
+/* Apply general settings to all Labels */
+.Label {
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #000000;
+}
+
+/* Styling for the Labels that display the info (clientName, isManager) */
+#clientName, #isManager ,#assignedRoles{
+    -fx-text-fill: #005c9a;
+}
+#clientNameLabel, #isManagerLabel ,#assignedRolesLabel{
+    -fx-font-weight: bold;
+}
+
+/* Styling for the MenuButton */
+#menuBar {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+
+/* Styling for MenuButton when hovered */
+#menuBar:hover {
+    -fx-background-color: #d7d7d7;
+}
+
+/* Apply general settings to all MenuItems */
+.MenuItem {
+    -fx-font-size: 12px;
+}
+
+/* Styling for all Buttons */
+.Button {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+
+/* Styling for Buttons when hovered */
+.Button:hover {
+    -fx-background-color: #d7d7d7;
+}
+
+/* Styling for the HBox */
+.HBox {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+    -fx-alignment: center;
+    -fx-spacing: 15.0;
+    -fx-padding: 5px;
+}
+
+
+.button:hover {
+    -fx-background-color: #d7d7d7;
+    -fx-color: #fcfcfc;
+    -fx-border-color: #000000;
+}
+.button {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-background-color: #fcfcfc;
+    -fx-color: #e33f3f;
+    -fx-border-color: #000000;
+}

@@ -1,0 +1,45 @@
+/* General style for the entire Scene */
+.ScrollPane {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Style for the Welcome label */
+#welcomeLabel {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0077cc;
+    -fx-alignment: center;
+}
+
+/* Style for the Label and TextField in the center */
+#userNameLabel {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+}
+
+#userNameTextField {
+    -fx-font-size: 16px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Style for the HBox in the center */
+#midSectionHbox {
+    -fx-spacing: 10px;
+}
+
+/* Style for the Login Button */
+#loginButton {
+    -fx-font-size: 16px;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0077cc;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+}
+
+/* Style for the Login Button when hovered */
+#loginButton:hover {
+    -fx-background-color: #005999;
+}

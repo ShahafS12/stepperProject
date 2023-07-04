@@ -318,6 +318,7 @@ public class executionController {
         executionData = new ArrayList<>();
         pupulateCurrentExecutionSteps();
         continuationVbox.getChildren().clear();
+        stepDetails.getChildren().clear();
         int id = mainController.getMenuVariables().getUniqueFlowExecutionIdCounter();
         // Create a Task to execute the executeFlowUI() method
         Timer timer = new Timer();

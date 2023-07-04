@@ -157,7 +157,7 @@ public class FlowExecutionStatistics
             if (context.getDataValue(i, Object.class).toString().equals("class java.lang.Number")
             || context.getDataValue(i, Object.class).toString().equals("class java.lang.String")){
                 //userInputsMap.put(freeOutput[1], "");
-                System.out.println("Null value in output");
+                //System.out.println("Null value in output");
             }
             else
             //put the value in the map

@@ -173,7 +173,7 @@ public class mainController {
     }
     public void switchToExecutionScene(ActionEvent event){
         if(executionController == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../executionScene/executionScene.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/executionScene/executionScene.fxml"));
             try {
                 Parent executionRoot = loader.load();
                 executionController = loader.getController();
@@ -260,7 +260,9 @@ public class mainController {
 
     public void close()
     {
-        menuVariables.shutdownExecutorService();
-        executionController.shutdownExecutorService();
+        if(menuVariables != null)
+            menuVariables.shutdownExecutorService();
+        if(executionController != null)
+            executionController.shutdownExecutorService();
     }
 }
