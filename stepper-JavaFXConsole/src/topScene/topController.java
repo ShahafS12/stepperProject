@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import mainScene.mainController;
+import mainSceneAdmin.mainController;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.FlowExecution;
@@ -19,7 +19,6 @@ import mta.course.java.stepper.stepper.StepperDefinition;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.sun.deploy.ui.UIFactory.showErrorDialog;

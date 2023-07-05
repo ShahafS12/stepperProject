@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox prefHeight="108.0" prefWidth="600.0" stylesheets="@topClientStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="topClientScene.topClientController">
    <children>
       <HBox alignment="CENTER" prefHeight="62.0" prefWidth="600.0" spacing="15.0">
@@ -26,14 +25,14 @@
             <Label fx:id="assignedRoles" text="Unknown" />
             <MenuButton fx:id="menuBar" alignment="CENTER_RIGHT" mnemonicParsing="false">
               <items>
-                <MenuItem mnemonicParsing="false" text="Turn off animations" />
+                <MenuItem fx:id="annimationToggle" mnemonicParsing="false" onAction="#handleAnimationsToggle" text="Turn off animations" />
               </items>
             </MenuButton>
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="524.0" spacing="15.0">
          <children>
-            <Button fx:id="flowsDefButton" mnemonicParsing="false" text="Flows Definition">
+            <Button fx:id="flowsDefButton" mnemonicParsing="false" onAction="#switchToShowFlowScene" text="Flows Definition">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -42,7 +41,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="flowsExecutionButton" mnemonicParsing="false" text="Execute Flow">
+            <Button fx:id="flowsExecutionButton" mnemonicParsing="false" onAction="#switchToExecutionScene" text="Execute Flow">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -51,7 +50,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="executionsHistoryButton" mnemonicParsing="false" text="Executions History">
+            <Button fx:id="executionsHistoryButton" mnemonicParsing="false" onAction="#switchToHistoryScene" text="Executions History">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>

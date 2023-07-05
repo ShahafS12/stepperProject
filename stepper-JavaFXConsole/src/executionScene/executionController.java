@@ -2,7 +2,6 @@ package executionScene;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,10 +17,8 @@ import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.FlowExecutionResult;
-import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
-import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
 import java.util.*;
 
@@ -52,7 +49,7 @@ public class executionController {
     private Map<String,Object> continuationMap;
     private List<Control> optionalInputs;
     private List<InputWithStepName> outputs;
-    private mainScene.mainController mainController;
+    private mainSceneAdmin.mainController mainController;
     private FlowDefinition chosenFlow;
     private List<SingleStepExecutionData> executionData;
     private Map<String, String> initialVal;
@@ -77,7 +74,7 @@ public class executionController {
         currentExecutionUpdater = null;
         currentAmountOfMandatoryInputs = chosenFlow.getFlowFreeInputs().size();
     }
-    public void setMainController(mainScene.mainController mainController){
+    public void setMainController(mainSceneAdmin.mainController mainController){
         this.mainController = mainController;
     }
     private void handleStepSelection(String newValue)
@@ -357,13 +354,13 @@ public class executionController {
 //            mainController.populateStepStatisticsTable();
             //show gif according to result
             if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.SUCCESS){
-                mainController.showGifForDuration("mainScene/giphy.gif", new Duration(2000));
+                mainController.showGifForDuration("mainSceneAdmin/giphy.gif", new Duration(2000));
             }
             else if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.FAILURE){
-                mainController.showGifForDuration("mainScene/complete-failure-failure.gif", new Duration(2000));
+                mainController.showGifForDuration("mainSceneAdmin/complete-failure-failure.gif", new Duration(2000));
             }
             else{//warning
-                mainController.showGifForDuration("mainScene/error-img.gif", new Duration(2000));
+                mainController.showGifForDuration("mainSceneAdmin/error-img.gif", new Duration(2000));
                 //TODO: add warning gif
             }
         });

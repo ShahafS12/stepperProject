@@ -13,16 +13,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import mainScene.mainController;
+import mainSceneAdmin.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
-import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
-import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import javafx.scene.control.TableColumn;
 
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class historySceneController {

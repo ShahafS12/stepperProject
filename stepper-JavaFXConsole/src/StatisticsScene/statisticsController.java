@@ -1,10 +1,5 @@
 package StatisticsScene;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -18,12 +13,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import mainScene.mainController;
+import mainSceneAdmin.mainController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 
-import java.util.List;
 import java.util.Map;
 
 public class statisticsController {
@@ -60,7 +54,7 @@ public class statisticsController {
     private Button showChartButtonSteps;
 
 
-    private mainScene.mainController mainController;
+    private mainSceneAdmin.mainController mainController;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private FlowExecutionStatistics flowExecutionStatistics;
     public  void setMainController(mainController mainController) {

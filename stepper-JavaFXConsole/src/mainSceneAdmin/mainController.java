@@ -1,4 +1,4 @@
-package mainScene;
+package mainSceneAdmin;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
