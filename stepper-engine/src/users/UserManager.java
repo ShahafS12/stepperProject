@@ -1,4 +1,5 @@
 package users;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class UserManager {
     public UserManager() {
         usersSet = new HashSet<>();
     }
+
 
     public synchronized void addUser(String username) {
         usersSet.add(username);

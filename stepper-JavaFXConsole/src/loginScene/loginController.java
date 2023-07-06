@@ -1,6 +1,8 @@
 package loginScene;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
+
+import static util.Constants.*;
 
 public class loginController {
     private Stage stage;
@@ -37,13 +41,14 @@ public class loginController {
 
     @FXML
     private Button loginButton;
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
     public void setStage(Stage stage)
     {
         this.stage = stage;
     }
     public void loginOnClick()throws IOException
     {
-        String finalURL = HttpUrl.parse("http://localhost:8080/web_Web_exploded/login")
+        String finalURL = HttpUrl.parse(LOGIN_PAGE)
                 .newBuilder()
                 .addQueryParameter("username", userNameTextField.getText())
                 .build().toString();
@@ -63,29 +68,36 @@ public class loginController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
             {
-                Platform.runLater(() ->{
-                    System.out.println("Login successful");
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    URL url = getClass().getResource("/mainSceneClient/mainSceneClient.fxml");
-                    fxmlLoader.setLocation(url);
-                    Parent root = null;
-                    try {
-                        root = fxmlLoader.load();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Scene scene = new Scene(root);
-                    stage.setScene(scene);
-                    // Optionally, you can resize your new window here
-                    stage.setWidth(700);
-                    stage.setHeight(600);
-                    mainController mainController = fxmlLoader.getController();
-                    stage.setOnCloseRequest(event -> {
-                        mainController.close();
-                    });
-                        }
-                );
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong: " + responseBody)
+                    );
+                } else {
+                    Platform.runLater(() -> {
+                                System.out.println("Login successful");
+                                FXMLLoader fxmlLoader = new FXMLLoader();
+                                URL url = getClass().getResource(MAIN_PAGE_CLIENT_FXML_RESOURCE_LOCATION);
+                                fxmlLoader.setLocation(url);
+                                Parent root = null;
+                                try {
+                                    root = fxmlLoader.load();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                Scene scene = new Scene(root);
+                                stage.setScene(scene);
+                                // Optionally, you can resize your new window here
+                                stage.setWidth(700);
+                                stage.setHeight(600);
+                                mainController mainController = fxmlLoader.getController();
+                                stage.setOnCloseRequest(event -> {
+                                    mainController.close();
+                                });
+                            }
+                    );
 
+                }
             }
         });
 //        FXMLLoader fxmlLoader = new FXMLLoader();

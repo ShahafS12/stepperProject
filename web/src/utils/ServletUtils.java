@@ -1,9 +1,9 @@
 package utils;
 
-import users.UserManager;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import users.UserManager;
 
 
 public class ServletUtils {
@@ -22,7 +22,8 @@ public class ServletUtils {
 
         synchronized (userManagerLock) {
             if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
-                servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new UserManager());
+                UserManager userManager = new UserManager();
+                servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, userManager);
             }
         }
         return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
