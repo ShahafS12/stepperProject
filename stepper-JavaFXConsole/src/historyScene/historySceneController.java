@@ -14,6 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import mainSceneAdmin.mainController;
+import mainSceneClient.mainSceneClientController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class historySceneController {
 
     private mainController mainController;
+    private mainSceneClientController mainControllerClient;
     private FlowExecutionStatistics currentFlow;
 
 

@@ -11,7 +11,7 @@ of the user of this class to handle the synchronization of isUserExists with oth
  */
 public class UserManager {
 
-    private final Set<String> usersSet;
+    private final Set<UserDefinition> usersSet;
 
     public UserManager() {
         usersSet = new HashSet<>();
@@ -19,14 +19,15 @@ public class UserManager {
 
 
     public synchronized void addUser(String username) {
-        usersSet.add(username);
+        UserDefinition user = new UserImpl(username, false);
+        usersSet.add(user);
     }
 
     public synchronized void removeUser(String username) {
         usersSet.remove(username);
     }
 
-    public synchronized Set<String> getUsers() {
+    public synchronized Set<UserDefinition> getUsers() {
         return Collections.unmodifiableSet(usersSet);
     }
 

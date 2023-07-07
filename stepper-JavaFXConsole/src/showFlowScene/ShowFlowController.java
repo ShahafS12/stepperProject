@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import mainSceneAdmin.mainController;
+import mainSceneClient.mainSceneClientController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class ShowFlowController {
     private mainSceneAdmin.mainController mainController;
+    private mainSceneClient.mainSceneClientController mainClientController;
     @FXML
     private AnchorPane showFlowAnchorPane;
 
@@ -209,5 +211,10 @@ public class ShowFlowController {
             chosenFlowData.getChildren().add(hBoxes[i]);
             chosenFlowData.getChildren().add(new Text("\n"));
         }
+    }
+
+    public void setMainSceneClientController(mainSceneClientController mainSceneClientController)
+    {
+        this.mainClientController = mainSceneClientController;
     }
 }

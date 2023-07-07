@@ -7,10 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import mainSceneAdmin.mainController;
+import mainSceneClient.mainSceneClientController;
 import mta.course.java.stepper.menu.MenuVariables;
 
 public class topClientController {
-    private mainSceneAdmin.mainController mainController;
+    private mainSceneClientController mainClientController;
     private MenuVariables menuVariables;
 
     @FXML
@@ -44,23 +45,6 @@ public class topClientController {
 
     @FXML
     private Button executionsHistoryButton;
-    @FXML
-    void handleAnimationsToggle(ActionEvent event) {
-        if (mainController != null) {
-            mainController.handleAnimationsToggle(event);
-        }
-        if(mainController.getAnimationToggle()==true)
-        {
-            annimationToggle.setText("Turn off animations");
-        }
-        else
-        {
-            annimationToggle.setText("Turn on animations");
-        }
-    }
-    public void setMainController(mainController mainController) {
-        this.mainController = mainController;
-    }
     public void setMenuVariables(MenuVariables menuVariables) {
         this.menuVariables = menuVariables;
     }
@@ -75,20 +59,25 @@ public class topClientController {
     }
     @FXML
     public void switchToShowFlowScene(ActionEvent event) {
-        if (mainController != null) {
-            mainController.switchToShowFlowScene(event);
+        if (mainClientController != null) {
+            mainClientController.switchToShowFlowScene(event);
         }
     }
     @FXML
     public void switchToExecutionScene(ActionEvent event) {
-        if (mainController != null) {
-            mainController.switchToExecutionScene(event);
+        if (mainClientController != null) {
+            mainClientController.switchToExecutionScene(event);
         }
     }
     @FXML
     public void switchToHistoryScene(ActionEvent event) {
-        if (mainController != null) {
-            mainController.switchToHistoryScene(event);
+        if (mainClientController != null) {
+            mainClientController.switchToHistoryScene(event);
         }
+    }
+
+    public void setMainSceneClientController(mainSceneClientController mainSceneClientController)
+    {
+        this.mainClientController = mainSceneClientController;
     }
 }

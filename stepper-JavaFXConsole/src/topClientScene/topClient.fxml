@@ -3,8 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -23,11 +21,6 @@
             <Label fx:id="isManager" text="Unknown" />
             <Label fx:id="assignedRolesLabel" text="Assigned Roles" />
             <Label fx:id="assignedRoles" text="Unknown" />
-            <MenuButton fx:id="menuBar" alignment="CENTER_RIGHT" mnemonicParsing="false">
-              <items>
-                <MenuItem fx:id="annimationToggle" mnemonicParsing="false" onAction="#handleAnimationsToggle" text="Turn off animations" />
-              </items>
-            </MenuButton>
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="524.0" spacing="15.0">

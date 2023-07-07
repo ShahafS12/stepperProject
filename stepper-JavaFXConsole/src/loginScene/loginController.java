@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import mainSceneAdmin.mainController;
+import mainSceneClient.mainSceneClientController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,9 +91,10 @@ public class loginController {
                                 // Optionally, you can resize your new window here
                                 stage.setWidth(700);
                                 stage.setHeight(600);
-                                mainController mainController = fxmlLoader.getController();
+                                mainSceneClientController mainClientController = fxmlLoader.getController();
+                                mainClientController.updateUserName(userNameTextField.getText());
                                 stage.setOnCloseRequest(event -> {
-                                    mainController.close();
+                                    mainClientController.close();
                                 });
                             }
                     );

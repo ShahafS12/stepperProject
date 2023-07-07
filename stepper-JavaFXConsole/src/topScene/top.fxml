@@ -3,8 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -16,11 +14,6 @@
          <children>
             <Button fx:id="LoadXMLButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadStepperFromXml" text="Load XML file" />
             <Label fx:id="currentXMLLabel" prefHeight="30.0" prefWidth="297.0" text="No XML file is currently loaded" wrapText="true" />
-            <MenuButton fx:id="menuBar" mnemonicParsing="false">
-              <items>
-                <MenuItem fx:id="annimationToggle" mnemonicParsing="false" onAction="#handleAnimationsToggle" text="Turn off animations" />
-              </items>
-            </MenuButton>
          </children>
          <VBox.margin>
             <Insets />

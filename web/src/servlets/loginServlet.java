@@ -19,8 +19,7 @@ public class loginServlet extends HttpServlet
         response.setContentType("text/plain;charset=UTF-8");
 
         String usernameFromSession = SessionUtils.getUsername(request);
-        //UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        UserManager userManager = new UserManager();
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         if (usernameFromSession == null) { //user is not logged in yet
 
