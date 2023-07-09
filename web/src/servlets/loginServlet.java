@@ -51,7 +51,7 @@ public class loginServlet extends HttpServlet
 
                         // stands for unauthorized as there is already such user with this name
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getOutputStream().print(errorMessage);
+                        response.getOutputStream().print(errorMessage);//todo check how to print to the screen
                     }
                     else {
                         //add the new user to the users list

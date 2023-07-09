@@ -1,59 +1,46 @@
-package topScene;
+package mta.course.java.stepper.flow.manager;
 
 import dataloader.LoadXMLFile;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
-import mainSceneAdmin.mainController;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.FlowExecution;
 import mta.course.java.stepper.menu.MenuVariables;
 import mta.course.java.stepper.stepper.StepperDefinition;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static com.sun.deploy.ui.UIFactory.showErrorDialog;
 
-public class topController {
-    private mainController mainController;
-    private MenuVariables menuVariables;
+public class FlowManager
+{
+    private static Set<FlowDefinition> flowsSet;
+    //private Integer uniqueFlowExecutionIdCounter;//todo add all menuVariables and flowDefinition functions and variables
+    //private Integer uniqueFlowIdCounter;
 
-    @FXML
-    private Button LoadXMLButton;
-    @FXML
-    private MenuItem annimationToggle;
-
-    @FXML
-    private Label currentXMLLabel;
-
-    @FXML
-    private Button flowsDefButton;
-    @FXML
-    private HBox mostTopBox;
-
-    @FXML
-    private Button flowsExecutionButton;
-
-    @FXML
-    private Button executionsHistoryButton;
-
-    @FXML
-    private Button statisticsButton;
-
-    @FXML
-    public void loadStepperFromXml(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose XML file");
-        File file = fileChooser.showOpenDialog(LoadXMLButton.getScene().getWindow());
+    public FlowManager() {flowsSet = new HashSet<>();}
+    public void addFlow(FlowDefinition flowDefinition)
+    {
+        flowsSet.add(flowDefinition);
+    }
+    public static Set<FlowDefinition> getFlows()
+    {
+        return flowsSet;
+    }
+    public void addFlows(StepperDefinition stepper){
+        for (FlowDefinition flowDefinition : stepper.getFlows())
+        {
+            flowsSet.add(flowDefinition);//todo: check if it adds the same flow twice
+        }
+    }
+    public void addFlow(File file){
         try {
             MenuVariables newMenuVariables = new MenuVariables();
             LoadXMLFile loadXMLFile = new LoadXMLFile();
@@ -70,7 +57,7 @@ public class topController {
                 newMenuVariables.putFlowExecutionMapFromFlowName(newMenuVariables.getFlowNames().get(i), flowExecution);
                 newMenuVariables.upuniqueFlowIdCounter();
             }
-            for(String flowName: newMenuVariables.getFlowNames()){
+            for(String flowName: newMenuVariables.getFlowNames()){//check if the flow has a continuation to a flow that doesn't exist
                 FlowDefinition flowDefinition = newStepper.getFlowDefinition(flowName);
                 for(Continuation continuation: flowDefinition.getContinuations()){
                     if(!newMenuVariables.getFlowNames().contains(continuation.getTargetFlow())){
@@ -106,54 +93,39 @@ public class topController {
                     }
                 }
             }
-            this.menuVariables = newMenuVariables;
-            currentXMLLabel.setText(file.getAbsolutePath());
-            mainController.setMenuVariables(menuVariables);
-            mainController.setShowFlowComponentController();
-            mainController.refreshStatisticsScene();
-            mainController.refreshExecutionScene();
+            addFlows(newStepper);
+            //currentXMLLabel.setText(file.getAbsolutePath());
+            //mainController.setMenuVariables(menuVariables);
+            //mainController.setShowFlowComponentController();
+
         } catch (Exception e) {
-            showErrorDialog("Invalid XML file" , e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error loading XML file");
+            alert.setContentText("Error loading XML file");
+            alert.showAndWait();
         }
     }
 
-    @FXML
-    void handleAnimationsToggle(ActionEvent event) {
-        if (mainController != null) {
-            mainController.handleAnimationsToggle(event);
-        }
-        if(mainController.getAnimationToggle()==true)
-        {
-            annimationToggle.setText("Turn off animations");
-        }
-        else
-        {
-            annimationToggle.setText("Turn on animations");
-        }
-    }
 
-    private void showErrorDialog( String title, String message)
+    public FlowDefinition getFlowDefinition(String flowName)
     {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        for (FlowDefinition flowDefinition : flowsSet)
+        {
+            if (flowDefinition.getName().equals(flowName))
+            {
+                return flowDefinition;
+            }
+        }
+        throw new RuntimeException("Flow" + flowName +"not found");
     }
-
-    public void setMainController(mainController mainController) {
-        this.mainController = mainController;
+    public static Set<String> getFlowNames()
+    {
+        Set<String> flowNames = new HashSet<>();
+        for (FlowDefinition flowDefinition : flowsSet)
+        {
+            flowNames.add(flowDefinition.getName());
+        }
+        return flowNames;
     }
-    @FXML
-    public void switchToStatisticsScene(ActionEvent event) {
-        mainController.switchToStatisticsScene( event);
-    }
-    @FXML
-    public void switchToShowFlowScene(ActionEvent event) {
-        mainController.switchToShowFlowScene( event);
-    }
-    @FXML
-    public void switchToExecutionScene(ActionEvent event) { mainController.switchToExecutionScene(event);}
-    @FXML
-    public void switchToHistoryScene(ActionEvent event) { mainController.switchToHistoryScene(event); }
 }

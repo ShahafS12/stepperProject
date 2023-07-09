@@ -1,5 +1,6 @@
 package mainSceneAdmin;
 
+import api.HttpStatusUpdate;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -14,21 +15,24 @@ import javafx.scene.layout.BorderPane;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.menu.MenuVariables;
 import showFlowScene.ShowFlowController;
-import topScene.topController;
+import topScene.topAdminController;
 import StatisticsScene.statisticsController;
 import executionScene.executionController;
 import historyScene.historySceneController;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Map;
 
 import javafx.util.Duration;
 
 import static com.sun.deploy.ui.UIFactory.showErrorDialog;
+import static util.Constants.*;
 
-public class mainController {
-    @FXML private topController topComponentController;
+public class mainAdminController implements HttpStatusUpdate
+{
+    @FXML private topAdminController topComponentController;
     @FXML private ShowFlowController ShowFlowComponentController;
 
     @FXML private BorderPane mainBorder;
@@ -43,8 +47,12 @@ public class mainController {
         if (topComponentController != null && ShowFlowComponentController != null) {
             topComponentController.setMainController(this);
             ShowFlowComponentController.setMainController(this);
+            ShowFlowComponentController.setHttpStatusUpdate(this);
         }
-        this.animationToggle = true;
+        ShowFlowComponentController.autoUpdatesProperty().bind(topComponentController.autoUpdatesProperty());
+    }
+    public void setActive(){
+        ShowFlowComponentController.startListRefresher();
     }
 
     @FXML
@@ -173,7 +181,7 @@ public class mainController {
     }
     public void switchToExecutionScene(ActionEvent event){
         if(executionController == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/executionScene/executionScene.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(EXECUTION_PAGE_FXML_RESOURCE_LOCATION));
             try {
                 Parent executionRoot = loader.load();
                 executionController = loader.getController();
@@ -231,7 +239,7 @@ public class mainController {
         }
         else {
             if (historySceneController == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/historyScene/historySceneBuilder.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(HISTORY_PAGE_FXML_RESOURCE_LOCATION));
                 try {
                     Parent executionRoot = loader.load();
                     historySceneController = loader.getController();
@@ -264,5 +272,11 @@ public class mainController {
             menuVariables.shutdownExecutorService();
         if(executionController != null)
             executionController.shutdownExecutorService();
+    }
+
+    public void updateHttpLine(String data)
+    {
+        System.out.println("updateHttpLine");
+        //todo - check if this is actually needed
     }
 }

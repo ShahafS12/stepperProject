@@ -1,8 +1,7 @@
 package mainSceneClient;
 
-import StatisticsScene.statisticsController;
+import api.HttpStatusUpdate;
 import executionScene.executionController;
-import historyScene.historySceneController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class mainSceneClientController
+public class mainClientController implements HttpStatusUpdate
 {
     @FXML private topClientController topClientComponentController;
 
@@ -36,7 +35,9 @@ public class mainSceneClientController
         {
             topClientComponentController.setMainSceneClientController(this);
             ShowFlowComponentController.setMainSceneClientController(this);
+            ShowFlowComponentController.setHttpStatusUpdate(this);
         }
+        setActive();
     }
     public void updateUserName(String userName)
     {
@@ -130,6 +131,9 @@ public class mainSceneClientController
     public void setShowFlowComponentController(){
         ShowFlowComponentController.setFlowsList(menuVariables.getFlowNames());
     }
+    public void setActive(){
+        ShowFlowComponentController.startListRefresher();
+    }
 
     public void close()
     {
@@ -140,5 +144,12 @@ public class mainSceneClientController
             if(executionController != null)
                 executionController.shutdownExecutorService();
         }
+    }
+
+    @Override
+    public void updateHttpLine(String line)
+    {
+        System.out.println("updateHttpLine");
+        //todo - check if this is actually needed
     }
 }

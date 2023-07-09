@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
+import mainSceneAdmin.mainAdminController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
@@ -49,7 +50,7 @@ public class executionController {
     private Map<String,Object> continuationMap;
     private List<Control> optionalInputs;
     private List<InputWithStepName> outputs;
-    private mainSceneAdmin.mainController mainController;
+    private mainAdminController mainController;
     private FlowDefinition chosenFlow;
     private List<SingleStepExecutionData> executionData;
     private Map<String, String> initialVal;
@@ -74,7 +75,7 @@ public class executionController {
         currentExecutionUpdater = null;
         currentAmountOfMandatoryInputs = chosenFlow.getFlowFreeInputs().size();
     }
-    public void setMainController(mainSceneAdmin.mainController mainController){
+    public void setMainController(mainAdminController mainController){
         this.mainController = mainController;
     }
     private void handleStepSelection(String newValue)

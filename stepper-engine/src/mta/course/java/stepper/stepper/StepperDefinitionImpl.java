@@ -68,7 +68,7 @@ public class StepperDefinitionImpl implements StepperDefinition
     public List<String> getFlowFormalOutputs(String flowName)
     {
         return null;
-    }
+    }//TODO check if needed
 
     @Override
     public FlowDefinition getFlowDefinition(String flowName)
@@ -81,6 +81,9 @@ public class StepperDefinitionImpl implements StepperDefinition
             }
         }
         return null;
+    }
+    public ArrayList<FlowDefinition> getFlows(){
+        return flows;
     }
 
     @Override

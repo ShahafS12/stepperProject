@@ -9,6 +9,7 @@ import java.util.List;
 public interface StepperDefinition
 {
     ArrayList<String> getFlowNames();
+    ArrayList<FlowDefinition> getFlows();
     List<String> getFlowFormalInputs(String flowName);
     List<String> getFlowFormalOutputs(String flowName);
     void addFlow(FlowDefinition flowName);

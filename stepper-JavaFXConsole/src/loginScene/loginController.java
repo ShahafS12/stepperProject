@@ -13,13 +13,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import mainSceneAdmin.mainController;
-import mainSceneClient.mainSceneClientController;
+import mainSceneClient.mainClientController;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import static util.Constants.*;
 
@@ -53,12 +54,7 @@ public class loginController {
                 .newBuilder()
                 .addQueryParameter("username", userNameTextField.getText())
                 .build().toString();
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(finalURL)
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback()
+        HttpClientUtil.runAsync(finalURL, new Callback()
         {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e)
@@ -72,7 +68,7 @@ public class loginController {
                 if (response.code() != 200) {
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)
+                            errorMessageProperty.set("Something went wrong: " + responseBody)//todo check how to print the error message to screen
                     );
                 } else {
                     Platform.runLater(() -> {
@@ -91,7 +87,7 @@ public class loginController {
                                 // Optionally, you can resize your new window here
                                 stage.setWidth(700);
                                 stage.setHeight(600);
-                                mainSceneClientController mainClientController = fxmlLoader.getController();
+                                mainClientController mainClientController = fxmlLoader.getController();
                                 mainClientController.updateUserName(userNameTextField.getText());
                                 stage.setOnCloseRequest(event -> {
                                     mainClientController.close();
@@ -102,18 +98,5 @@ public class loginController {
                 }
             }
         });
-//        FXMLLoader fxmlLoader = new FXMLLoader();
-//        URL url = getClass().getResource("/mainSceneClient/mainSceneClient.fxml");
-//        fxmlLoader.setLocation(url);
-//        Parent root = fxmlLoader.load();
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        // Optionally, you can resize your new window here
-//        stage.setWidth(700);
-//        stage.setHeight(600);
-//        mainController mainController = fxmlLoader.getController();
-//        stage.setOnCloseRequest(event -> {
-//            mainController.close();
-//        });
     }
 }

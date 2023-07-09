@@ -12,6 +12,7 @@ of the user of this class to handle the synchronization of isUserExists with oth
 public class UserManager {
 
     private final Set<UserDefinition> usersSet;
+    private boolean hasAdmin;
 
     public UserManager() {
         usersSet = new HashSet<>();
@@ -21,6 +22,16 @@ public class UserManager {
     public synchronized void addUser(String username) {
         UserDefinition user = new UserImpl(username, false);
         usersSet.add(user);
+    }
+    public synchronized void addAdmin() {
+        if(!hasAdmin) {
+            UserDefinition user = new UserImpl("admin", true);
+            usersSet.add(user);
+            hasAdmin = true;
+        }
+        else {
+            throw new RuntimeException("Admin already exists");
+        }
     }
 
     public synchronized void removeUser(String username) {
@@ -32,6 +43,11 @@ public class UserManager {
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.contains(username);
+        for(UserDefinition user : usersSet) {
+            if(user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

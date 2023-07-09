@@ -13,8 +13,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import mainSceneAdmin.mainController;
-import mainSceneClient.mainSceneClientController;
+import mainSceneAdmin.mainAdminController;
+import mainSceneClient.mainClientController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
@@ -25,8 +25,8 @@ import java.util.Map;
 
 public class historySceneController {
 
-    private mainController mainController;
-    private mainSceneClientController mainControllerClient;
+    private mainAdminController mainController;
+    private mainClientController mainControllerClient;
     private FlowExecutionStatistics currentFlow;
 
 
@@ -101,7 +101,7 @@ public class historySceneController {
         return historyAnchorPane;
     }
 
-    public void setMainController(mainController mainController) {
+    public void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
     }
 

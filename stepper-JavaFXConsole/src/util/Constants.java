@@ -14,6 +14,8 @@ public class Constants
     //TODO: change this to the correct location
     //public final static String MAIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/main/chat-app-main.fxml";
     public final static String MAIN_PAGE_CLIENT_FXML_RESOURCE_LOCATION = "/mainSceneClient/mainSceneClient.fxml";
+    public final static String HISTORY_PAGE_FXML_RESOURCE_LOCATION = "/historyScene/historySceneBuilder.fxml";
+    public final static String EXECUTION_PAGE_FXML_RESOURCE_LOCATION = "/executionScene/executionScene.fxml";
     //public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/login/login.fxml";
     //public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/chat/client/component/chatroom/chat-room-main.fxml";
 
@@ -25,7 +27,8 @@ public class Constants
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
-    public final static String USERS_LIST = FULL_SERVER_PATH + "/usersList";
+    public final static String ADD_XML_PAGE = FULL_SERVER_PATH + "/addXML";
+    public final static String FLOW_LIST = FULL_SERVER_PATH + "/flowList";
     public final static String LOGOUT = FULL_SERVER_PATH + "/logout";
 
     // GSON instance

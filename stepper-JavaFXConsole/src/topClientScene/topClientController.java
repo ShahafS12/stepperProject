@@ -6,12 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import mainSceneAdmin.mainController;
-import mainSceneClient.mainSceneClientController;
 import mta.course.java.stepper.menu.MenuVariables;
 
 public class topClientController {
-    private mainSceneClientController mainClientController;
+    private mainSceneClient.mainClientController mainClientController;
     private MenuVariables menuVariables;
 
     @FXML
@@ -76,7 +74,7 @@ public class topClientController {
         }
     }
 
-    public void setMainSceneClientController(mainSceneClientController mainSceneClientController)
+    public void setMainSceneClientController(mainSceneClient.mainClientController mainSceneClientController)
     {
         this.mainClientController = mainSceneClientController;
     }

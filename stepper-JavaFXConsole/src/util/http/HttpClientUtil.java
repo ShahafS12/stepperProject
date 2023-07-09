@@ -4,6 +4,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class HttpClientUtil {
@@ -13,6 +14,9 @@ public class HttpClientUtil {
             new OkHttpClient.Builder()
                     .cookieJar(simpleCookieManager)
                     .followRedirects(false)
+                    .readTimeout(30, TimeUnit.MINUTES)
+                    .connectTimeout(10, TimeUnit.MINUTES)//todo change when submitting
+                    .writeTimeout(10, TimeUnit.MINUTES)
                     .build();
 
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {

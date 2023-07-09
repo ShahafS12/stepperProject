@@ -20,7 +20,7 @@ public class UIRunnerAdmin extends Application
         URL url = getClass().getResource("mainScene.fxml");
         fxmlLoader.setLocation(url);
         javafx.scene.Parent root = fxmlLoader.load();
-        mainController mainController = fxmlLoader.getController();
+        mainAdminController mainController = fxmlLoader.getController();
         //topController.setModel(model);
         javafx.scene.Scene scene = new javafx.scene.Scene(root, 700, 600);
         primaryStage.setScene(scene);

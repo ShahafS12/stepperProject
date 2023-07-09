@@ -3,13 +3,14 @@ package utils;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import mta.course.java.stepper.flow.manager.FlowManager;
 import users.UserManager;
 
 
 public class ServletUtils {
 
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
-    private static final String CHAT_MANAGER_ATTRIBUTE_NAME = "chatManager";
+    private static final String FLOW_MANAGER_ATTRIBUTE_NAME = "flowManager";
 
     /*
     Note how the synchronization is done only on the question and\or creation of the relevant managers and once they exists -
@@ -27,6 +28,16 @@ public class ServletUtils {
             }
         }
         return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+    }
+    public static FlowManager getFlowManager(ServletContext servletContext) {
+
+        synchronized (chatManagerLock) {
+            if (servletContext.getAttribute(FLOW_MANAGER_ATTRIBUTE_NAME) == null) {
+                FlowManager flowManager = new FlowManager();
+                servletContext.setAttribute(FLOW_MANAGER_ATTRIBUTE_NAME, flowManager);
+            }
+        }
+        return (FlowManager) servletContext.getAttribute(FLOW_MANAGER_ATTRIBUTE_NAME);
     }
 
     public static int getIntParameter(HttpServletRequest request, String name) {

@@ -13,7 +13,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import mainSceneAdmin.mainController;
+import mainSceneAdmin.mainAdminController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
@@ -54,10 +54,10 @@ public class statisticsController {
     private Button showChartButtonSteps;
 
 
-    private mainSceneAdmin.mainController mainController;
+    private mainAdminController mainController;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private FlowExecutionStatistics flowExecutionStatistics;
-    public  void setMainController(mainController mainController) {
+    public  void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
     }
     @FXML

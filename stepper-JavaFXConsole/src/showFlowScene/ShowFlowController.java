@@ -1,5 +1,8 @@
 package showFlowScene;
 
+import api.HttpStatusUpdate;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import mainSceneAdmin.mainController;
-import mainSceneClient.mainSceneClientController;
+import mainSceneAdmin.mainAdminController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
@@ -20,10 +22,17 @@ import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static util.Constants.REFRESH_RATE;
 
 public class ShowFlowController {
-    private mainSceneAdmin.mainController mainController;
-    private mainSceneClient.mainSceneClientController mainClientController;
+    private mainAdminController mainController;
+    private Timer timer;
+    private TimerTask listRefresher;
+    private mainSceneClient.mainClientController mainClientController;
+    private final BooleanProperty autoUpdate;
     @FXML
     private AnchorPane showFlowAnchorPane;
 
@@ -37,6 +46,15 @@ public class ShowFlowController {
     private Parent root;
     private Scene scene;
     private Stage stage;
+    private HttpStatusUpdate httpStatusUpdate;
+
+    public ShowFlowController()
+    {
+        autoUpdate = new SimpleBooleanProperty();
+    }
+    public BooleanProperty autoUpdatesProperty() {
+        return autoUpdate;
+    }
 
     public void initialize() {
         if (flowsList != null) {
@@ -66,7 +84,7 @@ public class ShowFlowController {
     public AnchorPane getShowFlowAnchorPane(){
         return showFlowAnchorPane;
     }
-    public void setMainController(mainController mainController) {
+    public void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
     }
 
@@ -88,6 +106,7 @@ public class ShowFlowController {
         FlowDefinition flow = mainController.getFlowDefinition(newValue);
         setChosenFlowData(flow);
     }
+
     public void switchToStatisticsScene(ActionEvent event){
         try {
             URL url = getClass().getResource("statisticsSceme.fxml");
@@ -212,8 +231,19 @@ public class ShowFlowController {
             chosenFlowData.getChildren().add(new Text("\n"));
         }
     }
+    public void setHttpStatusUpdate(HttpStatusUpdate httpStatusUpdate) {
+        this.httpStatusUpdate = httpStatusUpdate;
+    }
+    public void startListRefresher() {
+        listRefresher = new FlowListRefresher(
+                autoUpdate,
+                httpStatusUpdate::updateHttpLine,
+                this::setFlowsList);
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
 
-    public void setMainSceneClientController(mainSceneClientController mainSceneClientController)
+    public void setMainSceneClientController(mainSceneClient.mainClientController mainSceneClientController)
     {
         this.mainClientController = mainSceneClientController;
     }
