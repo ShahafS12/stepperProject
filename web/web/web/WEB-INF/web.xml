@@ -5,6 +5,10 @@
         <servlet-class>servlets.loginServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getFlowDefinitionServlet</servlet-name>
+        <servlet-class>servlets.getFlowDefinitionServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AddFlowServlet</servlet-name>
         <servlet-class>servlets.AddFlowServlet</servlet-class>
     </servlet>
@@ -23,5 +27,9 @@
     <servlet-mapping>
         <servlet-name>FlowListServlet</servlet-name>
         <url-pattern>/flowList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getFlowDefinitionServlet</servlet-name>
+        <url-pattern>/getFlowDefinition</url-pattern>
     </servlet-mapping>
 </web-app>

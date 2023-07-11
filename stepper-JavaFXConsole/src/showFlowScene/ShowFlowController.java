@@ -1,8 +1,14 @@
 package showFlowScene;
 
+import adapters.*;
 import api.HttpStatusUpdate;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,14 +23,25 @@ import javafx.stage.Stage;
 import mainSceneAdmin.mainAdminController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.StepDefinition;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+import util.http.HttpClientUtil;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static util.Constants.GET_FLOW_DEFINITION;
 import static util.Constants.REFRESH_RATE;
 
 public class ShowFlowController {
@@ -47,6 +64,7 @@ public class ShowFlowController {
     private Scene scene;
     private Stage stage;
     private HttpStatusUpdate httpStatusUpdate;
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
     public ShowFlowController()
     {
@@ -103,8 +121,49 @@ public class ShowFlowController {
 
     private void handleFlowSelection(String newValue)
     {
-        FlowDefinition flow = mainController.getFlowDefinition(newValue);
-        setChosenFlowData(flow);
+        String finalUrl = HttpUrl.parse(GET_FLOW_DEFINITION)
+                .newBuilder()
+                .addQueryParameter("flowName", newValue)
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(finalUrl, new Callback(){
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e)
+            {
+                System.out.println("Failed to get flow definition");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+            {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong: " + responseBody)//todo check how to print the error message to screen
+                    );
+                }
+                else {
+                    Platform.runLater(() -> {
+                        System.out.println("Got flow definition");//todo should this be a log?
+                        try {
+                            String flowDefinitionFromServer = response.body().string();
+                            Gson gson = new GsonBuilder()
+                                    .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                                    .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                                    .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
+                                    .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                                    .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
+                                    .create();
+                            FlowDefinitionImpl flow = gson.fromJson(flowDefinitionFromServer, FlowDefinitionImpl.class);
+                            setChosenFlowData(flow);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
+
+        }
+    });
     }
 
     public void switchToStatisticsScene(ActionEvent event){

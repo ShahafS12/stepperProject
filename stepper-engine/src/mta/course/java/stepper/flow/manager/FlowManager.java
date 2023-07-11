@@ -108,7 +108,7 @@ public class FlowManager
     }
 
 
-    public FlowDefinition getFlowDefinition(String flowName)
+    public static FlowDefinition getFlowDefinition(String flowName)
     {
         for (FlowDefinition flowDefinition : flowsSet)
         {
