@@ -1,8 +1,14 @@
 package mainSceneAdmin;
 
+import adapters.*;
 import api.HttpStatusUpdate;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,12 +19,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
+import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.menu.MenuVariables;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.StepDefinition;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import showFlowScene.ShowFlowController;
 import topScene.topAdminController;
 import StatisticsScene.statisticsController;
 import executionScene.executionController;
 import historyScene.historySceneController;
+import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.sql.SQLOutput;
@@ -37,9 +53,11 @@ public class mainAdminController implements HttpStatusUpdate
 
     @FXML private BorderPane mainBorder;
     private statisticsController statisticsController;
+    private FlowDefinition toReturn;
     private executionController executionController;
     private MenuVariables menuVariables;
     private historySceneController historySceneController;
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
     private boolean animationToggle = true;
 
     @FXML
@@ -77,7 +95,50 @@ public class mainAdminController implements HttpStatusUpdate
 
     public FlowDefinition getFlowDefinition(String newValue)
     {
-        return menuVariables.getStepper().getFlowDefinition(newValue);
+        String finalUrl = HttpUrl.parse(GET_FLOW_DEFINITION)
+                .newBuilder()
+                .addQueryParameter("flowName", newValue)
+                .build()
+                .toString();
+        updateHttpLine("Getting flow definition from server for" + newValue);
+        HttpClientUtil.runAsync(finalUrl, new Callback(){
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        errorMessageProperty.set("Something went wrong: " + e.getMessage()
+                        ));
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+            {
+                String responseBody = response.body().string();
+                if(response.code() != 200){
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong: " + responseBody)
+                    );
+                }
+                else {
+                    //Platform.runLater(() -> {
+                        System.out.println("Got flow definition");//todo should this be a log?
+                        try {
+                            Gson gson = new GsonBuilder()
+                                    .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                                    .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                                    .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
+                                    .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                                    .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                                    .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
+                                    .create();
+                            FlowDefinitionImpl flow = gson.fromJson(responseBody, FlowDefinitionImpl.class);
+                            toReturn = flow;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    //});
+                }
+            }
+        });
+        return toReturn;
     }
     public void switchToStatisticsScene(ActionEvent event){
         if(menuVariables == null) {

@@ -57,6 +57,7 @@ public class ShowFlowController {
     private ListView<String> flowsList;
     @FXML
     private Button executeButton;
+    private String lastSelectedFlow;
 
     @FXML
     private VBox chosenFlowData;
@@ -114,6 +115,21 @@ public class ShowFlowController {
                 handleFlowSelection(newValue);
             }
         });
+        if(lastSelectedFlow!=null){
+            flowsList.getSelectionModel().select(lastSelectedFlow);
+        }
+    }
+    public void setFlowsList(List<String> flowsNames,String selectedFlow) {
+        flowsList.getItems().clear();
+        flowsList.getItems().addAll(flowsNames);
+        flowsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                handleFlowSelection(newValue);
+            }
+        });
+        if(selectedFlow!=null){
+            flowsList.getSelectionModel().select(selectedFlow);
+        }
     }
     public void switchToStatisticsScene(){
 
@@ -121,6 +137,7 @@ public class ShowFlowController {
 
     private void handleFlowSelection(String newValue)
     {
+        lastSelectedFlow = newValue;
         String finalUrl = HttpUrl.parse(GET_FLOW_DEFINITION)
                 .newBuilder()
                 .addQueryParameter("flowName", newValue)
@@ -153,6 +170,7 @@ public class ShowFlowController {
                                     .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
                                     .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
                                     .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
+                                    .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
                                     .create();
                             FlowDefinitionImpl flow = gson.fromJson(flowDefinitionFromServer, FlowDefinitionImpl.class);
                             setChosenFlowData(flow);

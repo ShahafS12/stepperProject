@@ -1,6 +1,6 @@
 package mta.course.java.stepper.dd.api;
 
-public abstract class AbstractDataDefinition implements DataDefinition {
+public abstract class  AbstractDataDefinition implements DataDefinition {
 
     private final String name;
     private final boolean userFriendly;

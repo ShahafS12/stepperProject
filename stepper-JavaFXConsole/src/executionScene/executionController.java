@@ -128,6 +128,8 @@ public class executionController {
         stepDetails.getChildren().clear();
     }
     private void populateInputsGridPane(){
+        if(chosenFlow==null)
+            return;
         inputsGridPane.getChildren().clear();
         continuationVbox.getChildren().clear();
         executeButton.setDisable(true);

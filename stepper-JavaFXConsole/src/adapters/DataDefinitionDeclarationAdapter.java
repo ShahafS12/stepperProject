@@ -1,6 +1,7 @@
 package adapters;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -13,7 +14,9 @@ import mta.course.java.stepper.step.api.DataNecessity;
 import java.io.IOException;
 
 public class DataDefinitionDeclarationAdapter extends TypeAdapter<DataDefinitionDeclaration> {
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
+            .create();
 
     @Override
     public void write(JsonWriter out, DataDefinitionDeclaration value) throws IOException {
