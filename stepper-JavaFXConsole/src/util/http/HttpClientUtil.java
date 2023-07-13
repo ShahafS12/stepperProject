@@ -1,9 +1,7 @@
 package util.http;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import okhttp3.*;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -41,5 +39,17 @@ public class HttpClientUtil {
         System.out.println("Shutting down HTTP CLIENT");
         HTTP_CLIENT.dispatcher().executorService().shutdown();
         HTTP_CLIENT.connectionPool().evictAll();
+    }
+
+    public static Response run(String finalUrl) {
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        try {
+            return HttpClientUtil.HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

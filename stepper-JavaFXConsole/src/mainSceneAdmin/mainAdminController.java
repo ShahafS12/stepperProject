@@ -101,44 +101,32 @@ public class mainAdminController implements HttpStatusUpdate
                 .build()
                 .toString();
         updateHttpLine("Getting flow definition from server for" + newValue);
-        HttpClientUtil.runAsync(finalUrl, new Callback(){
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        errorMessageProperty.set("Something went wrong: " + e.getMessage()
-                        ));
+        Response response = HttpClientUtil.run(finalUrl);
+        try {
+            if(response.code() != 200){
+                Platform.runLater(() -> {
+                    try {
+                        errorMessageProperty.set("Something went wrong: " + response.body().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                return null;
+            } else {
+                System.out.println("Got flow definition");
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                        .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                        .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
+                        .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                        .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                        .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
+                        .create();
+                return gson.fromJson(response.body().string(), FlowDefinitionImpl.class);
             }
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
-            {
-                String responseBody = response.body().string();
-                if(response.code() != 200){
-                    Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)
-                    );
-                }
-                else {
-                    //Platform.runLater(() -> {
-                        System.out.println("Got flow definition");//todo should this be a log?
-                        try {
-                            Gson gson = new GsonBuilder()
-                                    .registerTypeAdapter(Class.class, new ClassTypeAdapter())
-                                    .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
-                                    .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
-                                    .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
-                                    .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
-                                    .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
-                                    .create();
-                            FlowDefinitionImpl flow = gson.fromJson(responseBody, FlowDefinitionImpl.class);
-                            toReturn = flow;
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    //});
-                }
-            }
-        });
-        return toReturn;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void switchToStatisticsScene(ActionEvent event){
         if(menuVariables == null) {
