@@ -22,6 +22,7 @@ import static com.sun.deploy.ui.UIFactory.showErrorDialog;
 public class FlowManager
 {
     private static Set<FlowDefinition> flowsSet;
+    private static int uniqueFlowIdCounter = 1;
     //private Integer uniqueFlowExecutionIdCounter;//todo add all menuVariables and flowDefinition functions and variables
     //private Integer uniqueFlowIdCounter;
 
@@ -39,6 +40,12 @@ public class FlowManager
         {
             flowsSet.add(flowDefinition);//todo: check if it adds the same flow twice
         }
+    }
+    public int getUniqueFlowIdCounter() {
+        return uniqueFlowIdCounter;
+    }
+    public void upuniqueFlowIdCounter() {
+        uniqueFlowIdCounter++;
     }
     public void addFlow(File file){
         try {

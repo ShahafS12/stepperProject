@@ -4,16 +4,13 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mta.course.java.stepper.flow.definition.api.FlowDefinition;
-import users.UserManager;
+import mta.course.java.stepper.flow.manager.FlowManager;
 import utils.ServletUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
-import mta.course.java.stepper.flow.manager.FlowManager;
 
-public class FlowListServlet extends HttpServlet
+public class GetUniqueFlowExecutionIdCounterServlet extends HttpServlet
 {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     {
@@ -22,8 +19,8 @@ public class FlowListServlet extends HttpServlet
         {
             Gson gson = new Gson();
             FlowManager flowManager = ServletUtils.getFlowManager(getServletContext());
-            Set<String> flowList = flowManager.getFlowNames();
-            String json = gson.toJson(flowList);
+            int id = flowManager.getUniqueFlowIdCounter();
+            String json = gson.toJson(id);
             out.println(json);
             out.flush();
         } catch (IOException e) {

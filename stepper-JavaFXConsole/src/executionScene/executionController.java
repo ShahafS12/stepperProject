@@ -1,6 +1,9 @@
 package executionScene;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -20,10 +23,19 @@ import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+import util.http.HttpClientUtil;
 
+import java.io.IOException;
 import java.util.*;
 
 import java.util.concurrent.*;
+
+import static util.Constants.GET_FLOW_ID_UNIQUE_EXECUTION_ID;
 
 
 public class executionController {
@@ -57,6 +69,7 @@ public class executionController {
     private int currentFilledMandatoryInputs;
     private ScheduledFuture<?> currentExecutionUpdater;
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
     private int currentAmountOfMandatoryInputs;
     public AnchorPane getExecutionAnchorPane(){
         return executionAnchorPane;
@@ -319,7 +332,35 @@ public class executionController {
         pupulateCurrentExecutionSteps();
         continuationVbox.getChildren().clear();
         stepDetails.getChildren().clear();
-        int id = mainController.getMenuVariables().getUniqueFlowExecutionIdCounter();
+        final int[] uniqueExecutionId = new int[1];
+        String uniqueidURL = HttpUrl.parse(GET_FLOW_ID_UNIQUE_EXECUTION_ID)
+                .newBuilder()
+                .build()
+                .toString();
+        HttpClientUtil.runAsync(uniqueidURL, new Callback()
+        {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e)
+            {
+                System.out.println("Failed to get flow definition");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+            {
+                if (response.code() != 200) {
+                    String responseBody = response.body().string();
+                    Platform.runLater(() ->
+                            errorMessageProperty.set("Something went wrong: " + responseBody)//todo check how to print the error message to screen
+                    );
+                }
+                else {
+                    String responseBody = response.body().string();
+                    Gson gson = new Gson();
+                    uniqueExecutionId[0] = gson.fromJson(responseBody, Integer.class);
+                }
+            }
+        });
         // Create a Task to execute the executeFlowUI() method
         Timer timer = new Timer();
         int interval = 100; // Interval in milliseconds
@@ -355,17 +396,6 @@ public class executionController {
             mainController.refreshStatisticsScene();
 //            if(mainController.populateStepStatisticsTable().)
 //            mainController.populateStepStatisticsTable();
-            //show gif according to result
-            if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.SUCCESS){
-                mainController.showGifForDuration("mainSceneAdmin/giphy.gif", new Duration(2000));
-            }
-            else if(mainController.getMenuVariables().getStats().get(id).getFlowResult()== FlowExecutionResult.FAILURE){
-                mainController.showGifForDuration("mainSceneAdmin/complete-failure-failure.gif", new Duration(2000));
-            }
-            else{//warning
-                mainController.showGifForDuration("mainSceneAdmin/error-img.gif", new Duration(2000));
-                //TODO: add warning gif
-            }
         });
 
         // Set up the exception handler if an exception occurs during the task
