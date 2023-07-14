@@ -1,6 +1,10 @@
 package executionScene;
 
+import adapters.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -20,13 +24,14 @@ import mainSceneAdmin.mainAdminController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.flow.execution.FlowExecutionResult;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
+import mta.course.java.stepper.step.api.StepDefinition;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import netscape.javascript.JSObject;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
@@ -35,6 +40,7 @@ import java.util.*;
 
 import java.util.concurrent.*;
 
+import static util.Constants.EXECUTE_FLOW;
 import static util.Constants.GET_FLOW_ID_UNIQUE_EXECUTION_ID;
 
 
@@ -371,7 +377,36 @@ public class executionController {
                 if (currentExecutionUpdater != null && !currentExecutionUpdater.isDone()) {
                     currentExecutionUpdater.cancel(false);
                 }
-                mainController.getMenuVariables().executeFlow(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch);
+                List<Object> mandatoryInputsObject = new ArrayList<>();
+                List<Object> optionalInputsObject = new ArrayList<>();
+                for (Control control : mandatoryInputs) {
+                    mandatoryInputsObject.add(getControlContent(control));
+                }
+                for (Control control : optionalInputs) {
+                    optionalInputsObject.add(getControlContent(control));
+                }
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                        .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                        .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
+                        .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                        .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                        .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
+                        .create();
+                String mandatoryInputsObjectString = gson.toJson(mandatoryInputsObject);
+                String optionalInputsObjectString = gson.toJson(optionalInputsObject);
+                String outputsJson = gson.toJson(chosenFlow.getOutputs());
+                String executionDataJson = gson.toJson(executionData);
+                String[] jsonArray = {chosenFlow.getName(),mandatoryInputsObjectString, optionalInputsObjectString,
+                        outputsJson, executionDataJson};
+                String jsonString = gson.toJson(jsonArray);
+                RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonString);
+                Request request = new Request.Builder()
+                        .url(EXECUTE_FLOW)
+                        .post(body)
+                        .build();
+                Response response = HttpClientUtil.run(request);
+                //mainController.getMenuVariables().executeFlow(chosenFlow, mandatoryInputsObject, optionalInputsObject, outputs, executionData, latch);
                 try {
                     currentExecutionUpdater = executorService.scheduleAtFixedRate(() -> Platform.runLater(() -> {
                         pupulateCurrentExecutionSteps();
@@ -460,5 +495,17 @@ public class executionController {
                     this.continuationMap.put(value, inputs.get(key));
             }
         }
+    }
+    private Object getControlContent(Control c){
+        if(c instanceof TextField){
+            return ((TextField) c).getText();
+        }
+        else if (c instanceof Spinner<?>){
+            return ((Spinner<?>) c).getValue();
+        }
+        else if(c instanceof ChoiceBox<?>){
+            return ((ChoiceBox<?>) c).getValue().toString();
+        }
+        return  null;
     }
 }

@@ -133,7 +133,7 @@ public class MenuVariables
         return stepper.getMaxThreads();
     }
 
-    public void executeFlow(FlowDefinition chosenFlow, List<Control> mandatoryInputs, List<Control> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData, CountDownLatch latch)
+    public void executeFlow(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData, CountDownLatch latch)
     {
         executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch));
     }
@@ -142,16 +142,16 @@ public class MenuVariables
         executorService.shutdown();
     }
 
-    class MyRunnable implements Runnable
+    public class MyRunnable implements Runnable
     {
         private FlowDefinition chosenFlow;
-        private List<Control> mandatoryInputs;
-        private List<Control> optionalInputs;
+        private List<Object> mandatoryInputs;
+        private List<Object> optionalInputs;
         private List<InputWithStepName> outputs;
         private List<SingleStepExecutionData> executionData;
         private CountDownLatch latch;
 
-        public MyRunnable(FlowDefinition chosenFlow, List<Control> mandatoryInputs, List<Control> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData,
+        public MyRunnable(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData,
                           CountDownLatch latch) {
             this.chosenFlow = chosenFlow;
             this.mandatoryInputs = mandatoryInputs;
@@ -193,6 +193,18 @@ public class MenuVariables
             latch.countDown(); // finished the task
         }
 
+    }
+    private Object getControlContent(Control c){
+        if(c instanceof TextField){
+            return ((TextField) c).getText();
+        }
+        else if (c instanceof Spinner<?>){
+            return ((Spinner<?>) c).getValue();
+        }
+        else if(c instanceof ChoiceBox<?>){
+            return ((ChoiceBox<?>) c).getValue().toString();
+        }
+        return  null;
     }
 
 }

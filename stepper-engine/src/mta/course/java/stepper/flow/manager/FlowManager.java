@@ -2,31 +2,52 @@ package mta.course.java.stepper.flow.manager;
 
 import dataloader.LoadXMLFile;
 import javafx.scene.control.Alert;
+import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.execution.FlowExecution;
+import mta.course.java.stepper.flow.execution.runner.FLowExecutor;
 import mta.course.java.stepper.menu.MenuVariables;
+import mta.course.java.stepper.step.api.SingleStepExecutionData;
+import mta.course.java.stepper.step.api.StepExecutionStatistics;
+import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import mta.course.java.stepper.stepper.StepperDefinition;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.sun.deploy.ui.UIFactory.showErrorDialog;
 
 public class FlowManager
 {
     private static Set<FlowDefinition> flowsSet;
+    private static  Map<String,FlowExecution> flowExecutionMapFromFlowName;
+    private static Map<String, StepExecutionStatistics> stepExecutionStatisticsMap;
+    private static ExecutorService executorService;
     private static int uniqueFlowIdCounter = 1;
-    //private Integer uniqueFlowExecutionIdCounter;//todo add all menuVariables and flowDefinition functions and variables
-    //private Integer uniqueFlowIdCounter;
+    private static FlowExecutionStatistics currentStatsFlowExecuted;
+    private static Map<Integer, FlowExecutionStatistics> stats;
+    private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
 
-    public FlowManager() {flowsSet = new HashSet<>();}
+    public FlowManager() {
+        flowsSet = new HashSet<>();
+        flowExecutionMapFromFlowName = new HashMap<>();
+        executorService = null;
+        this.stepExecutionStatisticsMap = new HashMap<String, StepExecutionStatistics>();
+        this.currentStatsFlowExecuted = null;
+        this.stats = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());
+        this.flowExecutionsStatisticsMap = new HashMap<String, FlowExecutionsStatistics>();
+    }
+    public void setExecutorService(int maxThreads) {
+        this.executorService = Executors.newFixedThreadPool(maxThreads);
+    }
     public void addFlow(FlowDefinition flowDefinition)
     {
         flowsSet.add(flowDefinition);
@@ -36,6 +57,9 @@ public class FlowManager
         return flowsSet;
     }
     public void addFlows(StepperDefinition stepper){
+        if(flowsSet.size()==0){
+            setExecutorService(stepper.getMaxThreads());
+        }
         for (FlowDefinition flowDefinition : stepper.getFlows())
         {
             flowsSet.add(flowDefinition);//todo: check if it adds the same flow twice
@@ -51,6 +75,7 @@ public class FlowManager
         try {
             MenuVariables newMenuVariables = new MenuVariables();
             LoadXMLFile loadXMLFile = new LoadXMLFile();
+            Map<String,FlowExecution> newflowExecutionMapFromFlowName = new HashMap<>();
             StepperDefinition newStepper = (loadXMLFile.loadXMLFile(file));
             newMenuVariables.setStepper(newStepper);
             newMenuVariables.setExecutorService();
@@ -61,7 +86,8 @@ public class FlowManager
             for (int i = 0; i < newMenuVariables.getFlowNames().size(); i++) {
                 FlowExecution flowExecution = new FlowExecution(newMenuVariables.getFlowNames().get(i), newStepper.getFlowDefinition(newFlowNames.get(i)));
                 newMenuVariables.putFlowExecutionMap(newMenuVariables.getUniqueFlowIdCounter(), flowExecution);
-                newMenuVariables.putFlowExecutionMapFromFlowName(newMenuVariables.getFlowNames().get(i), flowExecution);
+                //newMenuVariables.putFlowExecutionMapFromFlowName(newMenuVariables.getFlowNames().get(i), flowExecution);
+                newflowExecutionMapFromFlowName.put(newMenuVariables.getFlowNames().get(i), flowExecution);
                 newMenuVariables.upuniqueFlowIdCounter();
             }
             for(String flowName: newMenuVariables.getFlowNames()){//check if the flow has a continuation to a flow that doesn't exist
@@ -101,6 +127,7 @@ public class FlowManager
                 }
             }
             addFlows(newStepper);
+            flowExecutionMapFromFlowName.putAll(newflowExecutionMapFromFlowName);
             //currentXMLLabel.setText(file.getAbsolutePath());
             //mainController.setMenuVariables(menuVariables);
             //mainController.setShowFlowComponentController();
@@ -112,6 +139,15 @@ public class FlowManager
             alert.setContentText("Error loading XML file");
             alert.showAndWait();
         }
+    }
+    public void addToFlowExecutionMapFromFlowName(Map<String, FlowExecution> flowExecutionMapFromFlowName) {
+        this.flowExecutionMapFromFlowName.putAll(flowExecutionMapFromFlowName);
+    }
+    public static Map<String,FlowExecution> getFlowExecutionMapFromFlowName() {
+        return flowExecutionMapFromFlowName;
+    }
+    public static FlowExecution getFlowExecutionFromFlowName(String flowName) {
+        return flowExecutionMapFromFlowName.get(flowName);
     }
 
 
@@ -135,4 +171,61 @@ public class FlowManager
         }
         return flowNames;
     }
+    public void executeFlow(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData)
+    {
+        executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData));
+    }
+    class MyRunnable implements Runnable
+    {
+        private FlowDefinition chosenFlow;
+        private List<Object> mandatoryInputs;
+        private List<Object> optionalInputs;
+        private List<InputWithStepName> outputs;
+        private List<SingleStepExecutionData> executionData;
+
+        public MyRunnable(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData) {
+            this.chosenFlow = chosenFlow;
+            this.mandatoryInputs = mandatoryInputs;
+            this.optionalInputs = optionalInputs;
+            this.outputs = outputs;
+            this.executionData = executionData;
+            //this.latch = latch;//TODO: check if this is needed
+        }
+        public synchronized Integer getUniqueFlowExecutionIdCounter() {
+            return uniqueFlowIdCounter;
+        }
+
+        @Override
+        public void run() {
+            int currentFlowExecutionIdCounter;
+
+            synchronized (this) {
+                currentFlowExecutionIdCounter = getUniqueFlowExecutionIdCounter();
+                upuniqueFlowIdCounter();
+            }
+            FLowExecutor fLowExecutor = new FLowExecutor();
+            FlowExecutionStatistics currentStats = fLowExecutor.executeFlowUI(flowExecutionMapFromFlowName.get(chosenFlow.getName()),
+                    mandatoryInputs, optionalInputs, outputs, executionData,
+                    stepExecutionStatisticsMap);
+
+            synchronized (this) {
+                currentStatsFlowExecuted = currentStats;
+                stats.put(currentFlowExecutionIdCounter, currentStats);
+            }
+
+            synchronized (this) {
+                if (flowExecutionsStatisticsMap.containsKey(chosenFlow.getName())) {
+                    flowExecutionsStatisticsMap.get(chosenFlow.getName()).addFlowExecutionStatistics(currentStats);
+                } else {
+                    FlowExecutionsStatistics flowExecutionsStatistics = new FlowExecutionsStatistics(chosenFlow.getName());
+                    flowExecutionsStatistics.addFlowExecutionStatistics(currentStats);
+                    flowExecutionsStatisticsMap.put(chosenFlow.getName(), flowExecutionsStatistics);
+                }
+            }
+
+            //latch.countDown(); // finished the task//TODO: check if this is needed
+        }
+
+    }
+
 }

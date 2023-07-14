@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class AddFlowServlet extends HttpServlet
@@ -82,6 +83,7 @@ public class AddFlowServlet extends HttpServlet
             }
             flowManager.addFlows(newStepper);
             //print data in flow manager to check if it was added
+            flowManager.addToFlowExecutionMapFromFlowName(newMenuVariables.getFlowExecutionMapFromFlowName());
             System.out.println("Flows in flow manager:");
             for(FlowDefinition flowDefinition: FlowManager.getFlows()){
                 System.out.println(flowDefinition.getName());

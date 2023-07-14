@@ -195,7 +195,7 @@ public class FLowExecutor {
             i++;
         }
     }
-    public FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Control> mandatoryInputsTXT, List<Control> optionalInputsTXT,
+    public FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Object> mandatoryInputsTXT, List<Object> optionalInputsTXT,
                                                  List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList,
                                                  Map<String, StepExecutionStatistics> stepExecutionStatisticsMap){
         List<InputWithStepName> mandatoryInputs = flowExecution.getFlowDefinition().getMandatoryInputs();
@@ -208,7 +208,7 @@ public class FLowExecutor {
         Map<String, DataDefinition> dataDefinitions = new HashMap<>();
         for (int i=0; i<mandatoryInputs.size(); i++){
             context.addStep(mandatoryInputs.get(i).getStepName() + "." + mandatoryInputs.get(i).getDataDefinitionDeclaration().getName(),
-                    getControlContent(mandatoryInputsTXT.get(i)),
+                    mandatoryInputsTXT.get(i),
                     mandatoryInputs.get(i).getDataDefinitionDeclaration().dataDefinition(),
                     flowExecution.getFlowDefinition().getFlowLevelAlias(mandatoryInputs.get(i).getStepName() + "." + mandatoryInputs.get(i).getDataDefinitionDeclaration().getName()),
                     flowExecution.getFlowDefinition().getFlowLevelCustomMapping(mandatoryInputs.get(i).getStepName() + "." + mandatoryInputs.get(i).getDataDefinitionDeclaration().getName())
@@ -216,7 +216,7 @@ public class FLowExecutor {
         }
         for (int i=0; i<optionalInputs.size(); i++){
             context.addStep(optionalInputs.get(i).getStepName() + "." + optionalInputs.get(i).getDataDefinitionDeclaration().getName(),
-                    getControlContent(optionalInputsTXT.get(i)),
+                    optionalInputsTXT.get(i),
                     optionalInputs.get(i).getDataDefinitionDeclaration().dataDefinition(),
                     flowExecution.getFlowDefinition().getFlowLevelAlias(optionalInputs.get(i).getStepName() + "." + optionalInputs.get(i).getDataDefinitionDeclaration().getName()),
                     flowExecution.getFlowDefinition().getFlowLevelCustomMapping(optionalInputs.get(i).getStepName() + "." + optionalInputs.get(i).getDataDefinitionDeclaration().getName())

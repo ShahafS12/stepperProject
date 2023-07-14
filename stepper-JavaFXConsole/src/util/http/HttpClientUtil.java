@@ -52,4 +52,11 @@ public class HttpClientUtil {
             throw new RuntimeException(e);
         }
     }
+    public static Response run(Request request) {
+        try {
+            return HttpClientUtil.HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
