@@ -21,6 +21,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import mainSceneAdmin.mainAdminController;
+import mainSceneClient.mainClientController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
@@ -69,6 +70,7 @@ public class executionController {
     private List<Control> optionalInputs;
     private List<InputWithStepName> outputs;
     private mainAdminController mainController;
+    private mainClientController mainClientController;
     private FlowDefinition chosenFlow;
     private List<SingleStepExecutionData> executionData;
     private Map<String, String> initialVal;
@@ -96,6 +98,9 @@ public class executionController {
     }
     public void setMainController(mainAdminController mainController){
         this.mainController = mainController;
+    }
+    public void setMainController(mainClientController mainController){
+        this.mainClientController = mainController;
     }
     private void handleStepSelection(String newValue)
     {
@@ -448,7 +453,8 @@ public class executionController {
             currentExecutionUpdater.cancel(false);
             pupulateCurrentExecutionSteps();
             populateContinuation();
-            mainController.refreshStatisticsScene();
+            if(mainController != null)
+                mainController.refreshStatisticsScene();
 //            if(mainController.populateStepStatisticsTable().)
 //            mainController.populateStepStatisticsTable();
         });

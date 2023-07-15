@@ -1,7 +1,13 @@
 package mainSceneClient;
 
+import adapters.*;
 import api.HttpStatusUpdate;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import executionScene.executionController;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,13 +16,22 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
+import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.menu.MenuVariables;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.StepDefinition;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
 import showFlowScene.ShowFlowController;
 import topClientScene.topClientController;
+import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static util.Constants.GET_FLOW_DEFINITION;
 
 public class mainClientController implements HttpStatusUpdate
 {
@@ -28,6 +43,7 @@ public class mainClientController implements HttpStatusUpdate
     private executionScene.executionController executionController;
     private MenuVariables menuVariables;
     private historyScene.historySceneController historySceneController;
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
     @FXML
     public void initialize()
     {
@@ -54,6 +70,25 @@ public class mainClientController implements HttpStatusUpdate
             }
         }
         try {
+            AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void switchToExecutionScene(ActionEvent event, FlowDefinition chosenFlow){
+        if(executionController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/executionScene/executionScene.fxml"));
+            try {
+                Parent executionRoot = loader.load();
+                executionController = loader.getController();
+                executionController.setMainController(this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            executionController.setChosenFlow(chosenFlow);
             AnchorPane view = executionController.getExecutionAnchorPane();
             mainBorder.setCenter(view);
         } catch (Exception e) {
@@ -118,7 +153,38 @@ public class mainClientController implements HttpStatusUpdate
     }
     public FlowDefinition getFlowDefinition(String newValue)
     {
-        return menuVariables.getStepper().getFlowDefinition(newValue);
+        String finalUrl = HttpUrl.parse(GET_FLOW_DEFINITION)
+                .newBuilder()
+                .addQueryParameter("flowName", newValue)
+                .build()
+                .toString();
+        updateHttpLine("Getting flow definition from server for" + newValue);
+        Response response = HttpClientUtil.run(finalUrl);
+        try {
+            if(response.code() != 200){
+                Platform.runLater(() -> {
+                    try {
+                        errorMessageProperty.set("Something went wrong: " + response.body().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                return null;
+            } else {
+                System.out.println("Got flow definition");
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                        .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                        .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
+                        .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                        .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                        .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
+                        .create();
+                return gson.fromJson(response.body().string(), FlowDefinitionImpl.class);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public MenuVariables getMenuVariables()
     {
