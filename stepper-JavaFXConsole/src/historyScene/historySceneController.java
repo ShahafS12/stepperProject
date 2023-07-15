@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import mainSceneAdmin.mainAdminController;
 import mainSceneClient.mainClientController;
+import mta.course.java.stepper.dd.api.DataDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
@@ -140,7 +141,7 @@ public class historySceneController {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Class.class, new ClassTypeAdapter())
                     .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
-                    .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                    .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
                     .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
                     .registerTypeAdapter(FlowDefinition.class, new FlowDefinitionAdapter())
                     .registerTypeAdapter(StepExecutionContext.class, new StepExecutionContextAdapter())

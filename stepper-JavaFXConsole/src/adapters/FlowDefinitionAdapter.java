@@ -3,6 +3,7 @@ package adapters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import mta.course.java.stepper.dd.api.DataDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
@@ -18,7 +19,7 @@ public class FlowDefinitionAdapter extends TypeAdapter<FlowDefinition> {
                 .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
                 .registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
                 .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
-                .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
                 .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
                 .create();
         return gson.fromJson(in, FlowDefinitionImpl.class);

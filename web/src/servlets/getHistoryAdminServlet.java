@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mta.course.java.stepper.dd.api.DataDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
@@ -33,10 +34,10 @@ public class getHistoryAdminServlet extends HttpServlet {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(Class.class, new ClassTypeAdapter())
                     .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
-                    .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                    .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
                     //.registerTypeAdapter(StepUsageDeclaration.class, new StepUsageDeclarationAdapter())
                     .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
-                    //.registerTypeAdapter(StepExecutionContext.class, new StepExecutionContextAdapter())
+                    .registerTypeAdapter(StepExecutionContext.class, new StepExecutionContextAdapter())
                     .create();
             String json = gson.toJson(flowManager.getStats(), type);
             try {

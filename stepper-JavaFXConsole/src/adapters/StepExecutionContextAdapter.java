@@ -19,6 +19,7 @@ public class StepExecutionContextAdapter extends TypeAdapter<StepExecutionContex
     private Gson gson = new GsonBuilder()
             .registerTypeAdapter(FlowDefinition.class, new FlowDefinitionAdapter())
             .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
+            .excludeFieldsWithoutExposeAnnotation()
             .create();
 
     @Override
