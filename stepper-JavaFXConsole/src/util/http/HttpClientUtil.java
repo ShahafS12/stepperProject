@@ -59,4 +59,8 @@ public class HttpClientUtil {
             throw new RuntimeException(e);
         }
     }
+    public static void runAsync(Request request, Callback callback) {
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+        call.enqueue(callback);
+    }
 }

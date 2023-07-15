@@ -22,7 +22,7 @@ public class UIRunnerAdmin extends Application
         javafx.scene.Parent root = fxmlLoader.load();
         mainAdminController mainController = fxmlLoader.getController();
         //topController.setModel(model);
-        javafx.scene.Scene scene = new javafx.scene.Scene(root, 700, 600);
+        javafx.scene.Scene scene = new javafx.scene.Scene(root, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.getIcons().add(new javafx.scene.image.Image("mainSceneAdmin/imagez.png"));
         primaryStage.show();

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="108.0" prefWidth="600.0" stylesheets="@topStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="topScene.topAdminController">
+<VBox prefHeight="108.0" prefWidth="718.0" stylesheets="@topStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="topScene.topAdminController">
    <children>
       <HBox fx:id="mostTopBox" alignment="CENTER_LEFT" prefHeight="109.0" prefWidth="600.0" spacing="15.0">
          <children>
@@ -24,19 +24,29 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="120.0" prefWidth="600.0" spacing="15.0">
          <children>
+            <Button fx:id="userManahementButton" mnemonicParsing="false" onAction="#switchToUserManagementScene" text="User Management">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@download.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="rolesManagerButton" mnemonicParsing="false" onAction="#switchToRolesManagerScene" text="Roles Management">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@download%20(1).png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             <Button fx:id="flowsDefButton" mnemonicParsing="false" onAction="#switchToShowFlowScene" prefHeight="32.0" prefWidth="145.0" text="Flows Definition">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@View-Icon-93s.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="flowsExecutionButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#switchToExecutionScene" text="Execute Flow">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@execute-icon-26.jpg" />
                      </image>
                   </ImageView>
                </graphic></Button>

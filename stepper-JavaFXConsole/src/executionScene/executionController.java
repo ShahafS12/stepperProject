@@ -21,6 +21,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import mainSceneAdmin.mainAdminController;
+import mainSceneClient.mainClientController;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
@@ -69,6 +70,7 @@ public class executionController {
     private List<Control> optionalInputs;
     private List<InputWithStepName> outputs;
     private mainAdminController mainController;
+    private mainClientController mainClientController;
     private FlowDefinition chosenFlow;
     private List<SingleStepExecutionData> executionData;
     private Map<String, String> initialVal;
@@ -96,6 +98,9 @@ public class executionController {
     }
     public void setMainController(mainAdminController mainController){
         this.mainController = mainController;
+    }
+    public void setMainController(mainClientController mainController){
+        this.mainClientController = mainController;
     }
     private void handleStepSelection(String newValue)
     {
@@ -420,12 +425,29 @@ public class executionController {
                         .url(EXECUTE_FLOW)
                         .post(body)
                         .build();
-                Response response = HttpClientUtil.run(request);
-                if (response.isSuccessful()) { // Check your condition here
-                    latch.countDown();
-                } else {
-                    throw new Exception("Request failed."); // Throw exception if the request fails
-                }
+                HttpClientUtil.runAsync(request, new Callback()
+                {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e)
+                    {
+                        try {
+                            throw new Exception("Request failed."); // Throw exception if the request fails
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+                    {
+                        latch.countDown();
+                    }
+                });
+//                if (response.isSuccessful()) { // Check your condition here
+//                    latch.countDown();
+//                } else {
+//                    throw new Exception("Request failed."); // Throw exception if the request fails
+//                }
                 try {
                     currentExecutionUpdater = executorService.scheduleAtFixedRate(() -> Platform.runLater(() -> {
                     pupulateCurrentExecutionSteps();
@@ -448,7 +470,8 @@ public class executionController {
             currentExecutionUpdater.cancel(false);
             pupulateCurrentExecutionSteps();
             populateContinuation();
-            mainController.refreshStatisticsScene();
+            if(mainController != null)
+                mainController.refreshStatisticsScene();
 //            if(mainController.populateStepStatisticsTable().)
 //            mainController.populateStepStatisticsTable();
         });

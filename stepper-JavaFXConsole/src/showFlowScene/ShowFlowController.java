@@ -88,8 +88,14 @@ public class ShowFlowController {
     void executeChosenFlow(ActionEvent event) {
         String chosenFlow = flowsList.getSelectionModel().getSelectedItem();
         if (chosenFlow != null) {
-            FlowDefinition flow = mainController.getFlowDefinition(chosenFlow);
-            mainController.switchToExecutionScene(event, flow);
+            if(mainController!=null) {
+                FlowDefinition flow = mainController.getFlowDefinition(chosenFlow);
+                mainController.switchToExecutionScene(event, flow);
+            }
+            else{
+                FlowDefinition flow = mainClientController.getFlowDefinition(chosenFlow);
+                mainClientController.switchToExecutionScene(event, flow);
+            }
         }
     }
     public FlowDefinition getChoosenFlow(){
