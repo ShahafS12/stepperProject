@@ -1,5 +1,9 @@
 package historyScene;
 
+import adapters.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -15,13 +19,26 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import mainSceneAdmin.mainAdminController;
 import mainSceneClient.mainClientController;
+import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowDefinitionImpl;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
+import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
+import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import javafx.scene.control.TableColumn;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import util.http.HttpClientUtil;
 
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+
+import static util.Constants.GET_FLOWS_ADMIN_HISTORY;
 
 public class historySceneController {
 
@@ -106,7 +123,36 @@ public class historySceneController {
     }
 
     public void setTableInHistory() {
-        Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats();
+        Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());;
+        String finalUrl = HttpUrl.parse(GET_FLOWS_ADMIN_HISTORY)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+        if (response.isSuccessful()) {
+                String responseString = null;
+                try {
+                    responseString = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                    .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                    .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
+                    .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                    .registerTypeAdapter(FlowDefinition.class, new FlowDefinitionAdapter())
+                    .registerTypeAdapter(StepExecutionContext.class, new StepExecutionContextAdapter())
+                    .create();
+
+            Type type = new TypeToken<Map<Integer, FlowExecutionStatistics>>(){}.getType();
+            Map<Integer, FlowExecutionStatistics> map = gson.fromJson(responseString, type);
+            if(map!=null)
+                flowExecutionsStatisticsMap.putAll(map);
+        }
+
+        //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats(); // TODO: get stats from flow manager
         ObservableMap<Integer, FlowExecutionStatistics> observableMap = FXCollections.observableMap(flowExecutionsStatisticsMap);
         ObservableList<FlowExecutionStatistics> rowData = FXCollections.observableArrayList();
 

@@ -34,7 +34,7 @@ public class FlowManager
     private static int uniqueFlowIdCounter = 1;
     private static FlowExecutionStatistics currentStatsFlowExecuted;
     private static Map<Integer, FlowExecutionStatistics> stats;
-    private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
+    private static Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private static List<SingleStepExecutionData> latestExecutionData;
 
     public FlowManager() {
@@ -54,6 +54,7 @@ public class FlowManager
     {
         flowsSet.add(flowDefinition);
     }
+    public Map<Integer, FlowExecutionStatistics> getStats() { return stats;}
     public static Set<FlowDefinition> getFlows()
     {
         return flowsSet;
