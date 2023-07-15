@@ -425,12 +425,29 @@ public class executionController {
                         .url(EXECUTE_FLOW)
                         .post(body)
                         .build();
-                Response response = HttpClientUtil.run(request);
-                if (response.isSuccessful()) { // Check your condition here
-                    latch.countDown();
-                } else {
-                    throw new Exception("Request failed."); // Throw exception if the request fails
-                }
+                HttpClientUtil.runAsync(request, new Callback()
+                {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e)
+                    {
+                        try {
+                            throw new Exception("Request failed."); // Throw exception if the request fails
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
+                    {
+                        latch.countDown();
+                    }
+                });
+//                if (response.isSuccessful()) { // Check your condition here
+//                    latch.countDown();
+//                } else {
+//                    throw new Exception("Request failed."); // Throw exception if the request fails
+//                }
                 try {
                     currentExecutionUpdater = executorService.scheduleAtFixedRate(() -> Platform.runLater(() -> {
                     pupulateCurrentExecutionSteps();

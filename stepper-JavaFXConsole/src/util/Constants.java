@@ -16,6 +16,7 @@ public class Constants
     public final static String MAIN_PAGE_CLIENT_FXML_RESOURCE_LOCATION = "/mainSceneClient/mainSceneClient.fxml";
     public final static String HISTORY_PAGE_FXML_RESOURCE_LOCATION = "/historyScene/historySceneBuilder.fxml";
     public final static String EXECUTION_PAGE_FXML_RESOURCE_LOCATION = "/executionScene/executionScene.fxml";
+    public final static String ROLES_MANAGEMENT_PAGE_FXML_RESOURCE_LOCATION = "/rolesManagementScene/rolesManagementScene.fxml";
     //public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/login/login.fxml";
     //public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/chat/client/component/chatroom/chat-room-main.fxml";
 

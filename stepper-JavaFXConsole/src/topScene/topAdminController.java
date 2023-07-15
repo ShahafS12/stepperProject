@@ -145,7 +145,11 @@ public class topAdminController
         mainController.switchToShowFlowScene( event);
     }
     @FXML
+    public void switchToRolesManagerScene(ActionEvent event) {mainController.switchToRolesManagerScene( event);}
+    @FXML
     public void switchToExecutionScene(ActionEvent event) { mainController.switchToExecutionScene(event);}
+    @FXML
+    public void switchToUserManagementScene(ActionEvent event) { mainController.switchToUserManagementScene(event); }
     @FXML
     public void switchToHistoryScene(ActionEvent event) { mainController.switchToHistoryScene(event); }
 

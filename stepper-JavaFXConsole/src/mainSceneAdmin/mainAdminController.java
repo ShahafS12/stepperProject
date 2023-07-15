@@ -29,6 +29,7 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import rolesManagementScene.rolesManagementController;
 import showFlowScene.ShowFlowController;
 import topScene.topAdminController;
 import StatisticsScene.statisticsController;
@@ -48,11 +49,15 @@ import static util.Constants.*;
 
 public class mainAdminController implements HttpStatusUpdate
 {
-    @FXML private topAdminController topComponentController;
-    @FXML private ShowFlowController ShowFlowComponentController;
+    @FXML
+    private topAdminController topComponentController;
+    @FXML
+    private ShowFlowController ShowFlowComponentController;
 
-    @FXML private BorderPane mainBorder;
+    @FXML
+    private BorderPane mainBorder;
     private statisticsController statisticsController;
+    private rolesManagementController rolesManagementController;
     private FlowDefinition toReturn;
     private executionController executionController;
     private MenuVariables menuVariables;
@@ -61,7 +66,8 @@ public class mainAdminController implements HttpStatusUpdate
     private boolean animationToggle = true;
 
     @FXML
-    public void initialize() {
+    public void initialize()
+    {
         if (topComponentController != null && ShowFlowComponentController != null) {
             topComponentController.setMainController(this);
             ShowFlowComponentController.setMainController(this);
@@ -69,16 +75,21 @@ public class mainAdminController implements HttpStatusUpdate
         }
         ShowFlowComponentController.autoUpdatesProperty().bind(topComponentController.autoUpdatesProperty());
     }
-    public void setActive(){
+
+    public void setActive()
+    {
         ShowFlowComponentController.startListRefresher();
     }
 
     @FXML
-    void loadStepperFromXml(ActionEvent event) {
+    void loadStepperFromXml(ActionEvent event)
+    {
         topComponentController.loadStepperFromXml(event);
         ShowFlowComponentController.setFlowsList(menuVariables.getFlowNames());
     }
-    public void setShowFlowComponentController(){
+
+    public void setShowFlowComponentController()
+    {
         ShowFlowComponentController.setFlowsList(menuVariables.getFlowNames());
     }
 
@@ -87,9 +98,10 @@ public class mainAdminController implements HttpStatusUpdate
         return menuVariables;
     }
 
-    public void setMenuVariables(MenuVariables variables){
+    public void setMenuVariables(MenuVariables variables)
+    {
         this.menuVariables = variables;
-        if(statisticsController != null)
+        if (statisticsController != null)
             statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
     }
 
@@ -103,7 +115,7 @@ public class mainAdminController implements HttpStatusUpdate
         updateHttpLine("Getting flow definition from server for" + newValue);
         Response response = HttpClientUtil.run(finalUrl);
         try {
-            if(response.code() != 200){
+            if (response.code() != 200) {
                 Platform.runLater(() -> {
                     try {
                         errorMessageProperty.set("Something went wrong: " + response.body().string());
@@ -128,15 +140,16 @@ public class mainAdminController implements HttpStatusUpdate
             throw new RuntimeException(e);
         }
     }
-    public void switchToStatisticsScene(ActionEvent event){
-        if(menuVariables == null) {
+
+    public void switchToStatisticsScene(ActionEvent event)
+    {
+        if (menuVariables == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
             alert.setHeaderText(null);
             alert.setContentText("Please load a stepper first!");
             alert.showAndWait();
-        }
-        else {
+        } else {
             if (statisticsController == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/StatisticsScene/StatisticsSceme.fxml"));
                 try {
@@ -159,11 +172,15 @@ public class mainAdminController implements HttpStatusUpdate
             }
         }
     }
-    public void refreshStatisticsScene(){
-        if(statisticsController != null)
+
+    public void refreshStatisticsScene()
+    {
+        if (statisticsController != null)
             statisticsController.refreshTables();
     }
-    public void switchToShowFlowScene(ActionEvent event){
+
+    public void switchToShowFlowScene(ActionEvent event)
+    {
         try {
             AnchorPane view = ShowFlowComponentController.getShowFlowAnchorPane();
             mainBorder.setCenter(view);
@@ -176,12 +193,15 @@ public class mainAdminController implements HttpStatusUpdate
     {
         this.statisticsController = statisticsController;
     }
+
     public void setExecutionController(executionController executionController)
     {
         this.executionController = executionController;
     }
-    public void switchToExecutionScene(ActionEvent event, FlowDefinition chosenFlow){
-        if(executionController == null) {
+
+    public void switchToExecutionScene(ActionEvent event, FlowDefinition chosenFlow)
+    {
+        if (executionController == null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/executionScene/executionScene.fxml"));
             try {
                 Parent executionRoot = loader.load();
@@ -199,37 +219,45 @@ public class mainAdminController implements HttpStatusUpdate
             e.printStackTrace();
         }
     }
-    public void refreshExecutionScene(){
-        if(executionController != null) {
+
+    public void refreshExecutionScene()
+    {
+        if (executionController != null) {
             executionController.refresh();
         }
     }
-    public boolean getAnimationToggle(){
+
+    public boolean getAnimationToggle()
+    {
         return this.animationToggle;
     }
-    public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String, List<String>> continuation){
+
+    public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String, List<String>> continuation)
+    {
         //don't need to check if executionController is null because it is not null when we get here
         try {
             executionController.setChosenFlow(chosenFlow, continuation);
             AnchorPane view = executionController.getExecutionAnchorPane();
             mainBorder.setCenter(view);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void setReRunFlow(ActionEvent event, FlowDefinition chosenFlow, Map<String, Object> userInputsMap){
+
+    public void setReRunFlow(ActionEvent event, FlowDefinition chosenFlow, Map<String, Object> userInputsMap)
+    {
         try {
             executionController.setReRunFlow(chosenFlow, userInputsMap);
             AnchorPane view = executionController.getExecutionAnchorPane();
             mainBorder.setCenter(view);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void switchToExecutionScene(ActionEvent event){
-        if(executionController == null) {
+
+    public void switchToExecutionScene(ActionEvent event)
+    {
+        if (executionController == null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(EXECUTION_PAGE_FXML_RESOURCE_LOCATION));
             try {
                 Parent executionRoot = loader.load();
@@ -245,8 +273,10 @@ public class mainAdminController implements HttpStatusUpdate
             e.printStackTrace();
         }
     }
-    public void showGifForDuration(String gifPath, Duration duration) {
-        if(!animationToggle)//if animation is off
+
+    public void showGifForDuration(String gifPath, Duration duration)
+    {
+        if (!animationToggle)//if animation is off
             return;
         Image gifImage = new Image(gifPath);
         ImageView gifImageView = new ImageView(gifImage);
@@ -275,18 +305,21 @@ public class mainAdminController implements HttpStatusUpdate
 
         gifTimeline.play();
     }
-    public void populateStepStatisticsTable(){
+
+    public void populateStepStatisticsTable()
+    {
         statisticsController.populateStepStatisticsTable();
     }
-    public void switchToHistoryScene(ActionEvent event){
-        if(menuVariables == null) {
+
+    public void switchToHistoryScene(ActionEvent event)
+    {
+        if (menuVariables == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
             alert.setHeaderText(null);
             alert.setContentText("Please load a stepper first!");
             alert.showAndWait();
-        }
-        else {
+        } else {
             if (historySceneController == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(HISTORY_PAGE_FXML_RESOURCE_LOCATION));
                 try {
@@ -308,7 +341,10 @@ public class mainAdminController implements HttpStatusUpdate
     }
 
 
-    public void setHistoryController(historyScene.historySceneController historySceneController) { this.historySceneController = historySceneController;}
+    public void setHistoryController(historyScene.historySceneController historySceneController)
+    {
+        this.historySceneController = historySceneController;
+    }
 
     public void handleAnimationsToggle(ActionEvent event)
     {
@@ -317,9 +353,9 @@ public class mainAdminController implements HttpStatusUpdate
 
     public void close()
     {
-        if(menuVariables != null)
+        if (menuVariables != null)
             menuVariables.shutdownExecutorService();
-        if(executionController != null)
+        if (executionController != null)
             executionController.shutdownExecutorService();
     }
 
@@ -327,5 +363,29 @@ public class mainAdminController implements HttpStatusUpdate
     {
         System.out.println("updateHttpLine");
         //todo - check if this is actually needed
+    }
+
+    public void switchToRolesManagerScene(ActionEvent event)
+    {
+        if (rolesManagementController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ROLES_MANAGEMENT_PAGE_FXML_RESOURCE_LOCATION));
+            try {
+                Parent executionRoot = loader.load();
+                rolesManagementController = loader.getController();
+                rolesManagementController.setMainController(this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            AnchorPane view = rolesManagementController.getRolesManagementAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void switchToUserManagementScene(ActionEvent event)
+    {
     }
 }
