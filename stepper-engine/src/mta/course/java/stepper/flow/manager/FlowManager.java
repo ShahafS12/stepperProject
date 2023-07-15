@@ -35,6 +35,7 @@ public class FlowManager
     private static FlowExecutionStatistics currentStatsFlowExecuted;
     private static Map<Integer, FlowExecutionStatistics> stats;
     private Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
+    private static List<SingleStepExecutionData> latestExecutionData;
 
     public FlowManager() {
         flowsSet = new HashSet<>();
@@ -44,6 +45,7 @@ public class FlowManager
         this.currentStatsFlowExecuted = null;
         this.stats = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());
         this.flowExecutionsStatisticsMap = new HashMap<String, FlowExecutionsStatistics>();
+        this.latestExecutionData = new ArrayList<>();
     }
     public void setExecutorService(int maxThreads) {
         this.executorService = Executors.newFixedThreadPool(maxThreads);
@@ -171,9 +173,13 @@ public class FlowManager
         }
         return flowNames;
     }
-    public void executeFlow(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData)
+    public List<SingleStepExecutionData> getLatestExecutionData() {
+        return latestExecutionData;
+    }
+    public void executeFlow(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs,
+                            List<SingleStepExecutionData> executionData, CountDownLatch latch)
     {
-        executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData));
+        executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch));
     }
     class MyRunnable implements Runnable
     {
@@ -182,14 +188,16 @@ public class FlowManager
         private List<Object> optionalInputs;
         private List<InputWithStepName> outputs;
         private List<SingleStepExecutionData> executionData;
-
-        public MyRunnable(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs, List<SingleStepExecutionData> executionData) {
+        private CountDownLatch latch;
+        public MyRunnable(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs,
+                          List<SingleStepExecutionData> executionData,CountDownLatch latch) {
             this.chosenFlow = chosenFlow;
             this.mandatoryInputs = mandatoryInputs;
             this.optionalInputs = optionalInputs;
             this.outputs = outputs;
             this.executionData = executionData;
-            //this.latch = latch;//TODO: check if this is needed
+            latestExecutionData = executionData;
+            this.latch = latch;//TODO: check if this is needed
         }
         public synchronized Integer getUniqueFlowExecutionIdCounter() {
             return uniqueFlowIdCounter;
@@ -223,7 +231,7 @@ public class FlowManager
                 }
             }
 
-            //latch.countDown(); // finished the task//TODO: check if this is needed
+            latch.countDown(); // finished the task//TODO: check if this is needed
         }
 
     }

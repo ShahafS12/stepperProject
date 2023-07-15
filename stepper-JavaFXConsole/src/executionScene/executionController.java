@@ -36,12 +36,12 @@ import org.jetbrains.annotations.NotNull;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 import java.util.concurrent.*;
 
-import static util.Constants.EXECUTE_FLOW;
-import static util.Constants.GET_FLOW_ID_UNIQUE_EXECUTION_ID;
+import static util.Constants.*;
 
 
 public class executionController {
@@ -320,6 +320,19 @@ public class executionController {
     }
     public synchronized void pupulateCurrentExecutionSteps(){
         currentExecutionSteps.getItems().clear();
+        String finalURL = HttpUrl.parse(GET_EXECUTION_DATA)
+                .newBuilder()
+                .build()
+                .toString();
+        Request request = new Request.Builder()
+                .url(finalURL)
+                .build();
+        Response response = HttpClientUtil.run(request);
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(SingleStepExecutionData.class, new SingleStepExecutionAdapter())
+                .create();
+        Type type = new TypeToken<List<SingleStepExecutionData>>() {}.getType();
+        executionData = gson.fromJson(response.body().charStream(), type);
         for(SingleStepExecutionData step : executionData){
             currentExecutionSteps.getItems().add(step.getStepName());
         }
@@ -334,8 +347,9 @@ public class executionController {
 
     @FXML
     public void executeFlow(ActionEvent event) {
+        currentExecutionSteps.getItems().clear();
         executionData = new ArrayList<>();
-        pupulateCurrentExecutionSteps();
+        //pupulateCurrentExecutionSteps();
         continuationVbox.getChildren().clear();
         stepDetails.getChildren().clear();
         final int[] uniqueExecutionId = new int[1];
@@ -393,6 +407,7 @@ public class executionController {
                         .registerTypeAdapter(DataDefinitionAdapter.class, new DataDefinitionAdapter())
                         .registerTypeAdapter(StepDefinition.class, new StepDefinitionAdapter())
                         .create();
+                executionData = new ArrayList<>();
                 String mandatoryInputsObjectString = gson.toJson(mandatoryInputsObject);
                 String optionalInputsObjectString = gson.toJson(optionalInputsObject);
                 String outputsJson = gson.toJson(chosenFlow.getOutputs());
@@ -406,10 +421,15 @@ public class executionController {
                         .post(body)
                         .build();
                 Response response = HttpClientUtil.run(request);
-                //mainController.getMenuVariables().executeFlow(chosenFlow, mandatoryInputsObject, optionalInputsObject, outputs, executionData, latch);
+                if (response.isSuccessful()) { // Check your condition here
+                    latch.countDown();
+                } else {
+                    throw new Exception("Request failed."); // Throw exception if the request fails
+                }
                 try {
                     currentExecutionUpdater = executorService.scheduleAtFixedRate(() -> Platform.runLater(() -> {
-                        pupulateCurrentExecutionSteps();
+                    pupulateCurrentExecutionSteps();
+                        //todo refresh statistics
                     }), 0, interval, TimeUnit.MILLISECONDS);
                     latch.await();
                 } catch (InterruptedException e) {

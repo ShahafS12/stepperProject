@@ -21,6 +21,7 @@ import utils.ServletUtils;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 public class ExecuteFlowServlet extends HttpServlet
@@ -51,7 +52,7 @@ public class ExecuteFlowServlet extends HttpServlet
             FlowDefinition chosenFlow = flowManager.getFlowDefinition(flowName);
             int uniqueFlowId = flowManager.getUniqueFlowIdCounter();//todo this might need to be synchronized
             for(StepUsageDeclaration stepUsageDeclaration : chosenFlow.getFlowSteps()){
-                if(stepUsageDeclaration.getStepName().equals("Spend Some Time")){
+                if(stepUsageDeclaration.getStepName().equals("Spend Some Time")){//fixing it comes as double from the client
                     for(int i = 0;i<mandatoryInputsList.size();i++){
                         if(mandatoryInputsList.get(i) instanceof Double){
                             mandatoryInputsList.set(i, ((Number) mandatoryInputsList.get(i)).intValue());
@@ -59,9 +60,22 @@ public class ExecuteFlowServlet extends HttpServlet
                     }
                 }
             }
-            flowManager.executeFlow(chosenFlow, mandatoryInputsList, optionalInputsList, outputsList, executionDataList);
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
+            try {
+                CountDownLatch latch = new CountDownLatch(1);
+                flowManager.executeFlow(chosenFlow, mandatoryInputsList, optionalInputsList, outputsList, executionDataList, latch);
+                latch.await();  // This will block until the latch count reaches zero
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().println(e.getMessage());
+            }
+            catch (Exception e){
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println(e.getMessage());
+            }
+    }
         catch (Exception e){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println(e.getMessage());

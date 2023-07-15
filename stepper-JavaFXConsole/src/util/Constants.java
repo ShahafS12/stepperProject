@@ -33,6 +33,7 @@ public class Constants
     public final static String EXECUTE_FLOW = FULL_SERVER_PATH + "/execute";
     public final static String GET_FLOW_DEFINITION = FULL_SERVER_PATH + "/getFlowDefinition";
     public final static String GET_FLOW_ID_UNIQUE_EXECUTION_ID = FULL_SERVER_PATH + "/UniqueFlowExecutionIdCounter";
+    public final static String GET_EXECUTION_DATA = FULL_SERVER_PATH + "/executionData";
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();
