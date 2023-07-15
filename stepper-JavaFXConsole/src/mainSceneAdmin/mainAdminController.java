@@ -279,14 +279,15 @@ public class mainAdminController implements HttpStatusUpdate
         statisticsController.populateStepStatisticsTable();
     }
     public void switchToHistoryScene(ActionEvent event){
-        if(menuVariables == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText(null);
-            alert.setContentText("Please load a stepper first!");
-            alert.showAndWait();
-        }
-        else {
+
+        String finalUrl = HttpUrl.parse(GET_FLOWS_ADMIN_HISTORY)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+
+        if (response.code() == 200) {
             if (historySceneController == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(HISTORY_PAGE_FXML_RESOURCE_LOCATION));
                 try {
@@ -305,6 +306,40 @@ public class mainAdminController implements HttpStatusUpdate
                 e.printStackTrace();
             }
         }
+        else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("Please load flows first!");
+                alert.showAndWait();
+            }
+
+//        if(menuVariables == null) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error Dialog");
+//            alert.setHeaderText(null);
+//            alert.setContentText("Please load a stepper first!");
+//            alert.showAndWait();
+//        }
+//        else {
+            /*if (historySceneController == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(HISTORY_PAGE_FXML_RESOURCE_LOCATION));
+                try {
+                    Parent executionRoot = loader.load();
+                    historySceneController = loader.getController();
+                    historySceneController.setMainController(this);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                AnchorPane view = historySceneController.getHistoryAnchorPane();
+                mainBorder.setCenter(view);
+                historySceneController.setTableInHistory();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+//        }
     }
 
 
