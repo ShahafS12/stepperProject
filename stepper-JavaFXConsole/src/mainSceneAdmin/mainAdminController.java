@@ -4,6 +4,7 @@ import adapters.*;
 import api.HttpStatusUpdate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -24,6 +25,7 @@ import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.menu.MenuVariables;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -141,28 +143,32 @@ public class mainAdminController implements HttpStatusUpdate
         }
     }
 
-    public void switchToStatisticsScene(ActionEvent event)
-    {
-        if (menuVariables == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText(null);
-            alert.setContentText("Please load a stepper first!");
-            alert.showAndWait();
-        } else {
+    public void switchToStatisticsScene(ActionEvent event) throws IOException {
+        String finalUrl = HttpUrl.parse(GET_FLOW_EXECUTIONS_STATISTICS)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+
+        if (response.code() == 200){
+            Gson gson = new GsonBuilder()
+                    .create();
+            Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap = gson.fromJson(response.body().string(), new TypeToken<Map<String, FlowExecutionsStatistics>>() {}.getType());
+
             if (statisticsController == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/StatisticsScene/StatisticsSceme.fxml"));
                 try {
                     Parent statisticsRoot = loader.load();
                     statisticsController = loader.getController();
                     statisticsController.setMainController(this);
-                    statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
-                    //statisticsController.setFlowExecutionsStatistics(menuVariables.get);
+                    statisticsController.setFlowExecutionsStatistics(flowExecutionsStatisticsMap);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
             try {
+                statisticsController.setFlowExecutionsStatistics(flowExecutionsStatisticsMap);
                 statisticsController.populateFlowStatisticsTable();
                 statisticsController.populateStepStatisticsTable();
                 AnchorPane view = statisticsController.getStatisticsAnchorPane();
@@ -171,6 +177,41 @@ public class mainAdminController implements HttpStatusUpdate
                 e.printStackTrace();
             }
         }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("Please load flows first!");
+            alert.showAndWait();
+        }
+//        if (menuVariables == null) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error Dialog");
+//            alert.setHeaderText(null);
+//            alert.setContentText("Please load a stepper first!");
+//            alert.showAndWait();
+//        } else {
+//            if (statisticsController == null) {
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("/StatisticsScene/StatisticsSceme.fxml"));
+//                try {
+//                    Parent statisticsRoot = loader.load();
+//                    statisticsController = loader.getController();
+//                    statisticsController.setMainController(this);
+//                    statisticsController.setFlowExecutionsStatistics(menuVariables.getFlowExecutionsStatisticsMap());
+//                    //statisticsController.setFlowExecutionsStatistics(menuVariables.get);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//            try {
+//                statisticsController.populateFlowStatisticsTable();
+//                statisticsController.populateStepStatisticsTable();
+//                AnchorPane view = statisticsController.getStatisticsAnchorPane();
+//                mainBorder.setCenter(view);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public void refreshStatisticsScene()
@@ -306,8 +347,7 @@ public class mainAdminController implements HttpStatusUpdate
         gifTimeline.play();
     }
 
-    public void populateStepStatisticsTable()
-    {
+    public void populateStepStatisticsTable() throws IOException {
         statisticsController.populateStepStatisticsTable();
     }
     public void switchToHistoryScene(ActionEvent event){

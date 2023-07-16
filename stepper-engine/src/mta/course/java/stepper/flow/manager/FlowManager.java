@@ -50,9 +50,15 @@ public class FlowManager
     public void setExecutorService(int maxThreads) {
         this.executorService = Executors.newFixedThreadPool(maxThreads);
     }
+    public Map<String, StepExecutionStatistics> getStepExecutionStatisticsMap() {
+        return stepExecutionStatisticsMap;
+    }
     public void addFlow(FlowDefinition flowDefinition)
     {
         flowsSet.add(flowDefinition);
+    }
+    public Map<String, FlowExecutionsStatistics> getFlowExecutionsStatisticsMap() {
+        return flowExecutionsStatisticsMap;
     }
     public Map<Integer, FlowExecutionStatistics> getStats() { return stats;}
     public static Set<FlowDefinition> getFlows()
