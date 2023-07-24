@@ -21,6 +21,10 @@
         <servlet-class>servlets.ExecuteFlowServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>GetRoleDefinitionServlet</servlet-name>
+        <servlet-class>servlets.GetRoleDefinitionServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>FlowListServlet</servlet-name>
         <servlet-class>servlets.FlowListServlet</servlet-class>
     </servlet>
@@ -32,6 +36,18 @@
         <servlet-name>getHistoryAdminServlet</servlet-name>
         <servlet-class>servlets.getHistoryAdminServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetRolesListServlet</servlet-name>
+        <servlet-class>servlets.GetRolesListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetRoleDefinitionServlet</servlet-name>
+        <url-pattern>/getRoleDefinition</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetRolesListServlet</servlet-name>
+        <url-pattern>/rolesList</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>getHistoryAdminServlet</servlet-name>
         <url-pattern>/getFlowsAdminHistory</url-pattern>

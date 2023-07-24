@@ -30,9 +30,11 @@ public class Constants
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/login";
     public final static String ADD_XML_PAGE = FULL_SERVER_PATH + "/addXML";
     public final static String FLOW_LIST = FULL_SERVER_PATH + "/flowList";
+    public final static String ROLES_LIST = FULL_SERVER_PATH + "/rolesList";
     public final static String LOGOUT = FULL_SERVER_PATH + "/logout";
     public final static String EXECUTE_FLOW = FULL_SERVER_PATH + "/execute";
     public final static String GET_FLOW_DEFINITION = FULL_SERVER_PATH + "/getFlowDefinition";
+    public final static String GET_ROLE_DEFINITION = FULL_SERVER_PATH + "/getRoleDefinition";
     public final static String GET_FLOW_ID_UNIQUE_EXECUTION_ID = FULL_SERVER_PATH + "/UniqueFlowExecutionIdCounter";
     public final static String GET_EXECUTION_DATA = FULL_SERVER_PATH + "/executionData";
     public final static String GET_FLOWS_ADMIN_HISTORY = FULL_SERVER_PATH + "/getFlowsAdminHistory";

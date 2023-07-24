@@ -153,7 +153,7 @@ public class ShowFlowController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e)
             {
-                System.out.println("Failed to get flow definition");
+                System.out.println("Failed to get flow definition");//todo should this be a log?
             }
 
             @Override
