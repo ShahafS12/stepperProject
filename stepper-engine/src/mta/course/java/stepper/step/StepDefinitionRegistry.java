@@ -9,10 +9,13 @@ import mta.course.java.stepper.step.impl.FilesContentExtractorStep.FilesContentE
 import mta.course.java.stepper.step.impl.FilesDeleterStep.FilesDeleterStep;
 import mta.course.java.stepper.step.impl.FilesRenamerStep.FilesRenamerStep;
 import mta.course.java.stepper.step.impl.HelloWorldStep;
+import mta.course.java.stepper.step.impl.HttpCallStep.HttpCallStep;
+import mta.course.java.stepper.step.impl.JsonDataExtractorStep.JsonDataExtractorStep;
 import mta.course.java.stepper.step.impl.PersonDetailsStep;
 import mta.course.java.stepper.step.impl.PropertiesExporterStep.PropertiesExporterStep;
 import mta.course.java.stepper.step.impl.SpendSomeTimeStep.SpendSomeTimeStep;
 import mta.course.java.stepper.step.impl.CollectFilesInFolderStep.CollectFilesInFolderStep;
+import mta.course.java.stepper.step.impl.ToJsonStep.ToJsonStep;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperStep;
 
 public enum StepDefinitionRegistry {
@@ -27,7 +30,10 @@ public enum StepDefinitionRegistry {
     FILES_RENAMER(new FilesRenamerStep()),
     PROPERTIES_EXPORTER(new PropertiesExporterStep()),
     ZIPPER(new ZipperStep()),
-    COMMAND_LINE(new CommandLineStep())
+    COMMAND_LINE(new CommandLineStep()),
+    TO_JSON(new ToJsonStep()),
+    HTTP_CALL(new HttpCallStep()),
+    JSON_DATA_EXTRACTOR(new JsonDataExtractorStep()),
     ;
 
     private final StepDefinition stepDefinition;

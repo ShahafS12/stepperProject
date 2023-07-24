@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static util.Constants.GET_FLOWS_ADMIN_HISTORY;
@@ -122,6 +123,9 @@ public class historySceneController {
     public void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
     }
+    public void setMainControllerClient (mainClientController mainControllerClient) {
+        this.mainControllerClient = mainControllerClient;
+    }
 
     public void setTableInHistory() {
         Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());;
@@ -151,6 +155,64 @@ public class historySceneController {
             Map<Integer, FlowExecutionStatistics> map = gson.fromJson(responseString, type);
             if(map!=null)
                 flowExecutionsStatisticsMap.putAll(map);
+        }
+
+        //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats(); // TODO: get stats from flow manager
+        ObservableMap<Integer, FlowExecutionStatistics> observableMap = FXCollections.observableMap(flowExecutionsStatisticsMap);
+        ObservableList<FlowExecutionStatistics> rowData = FXCollections.observableArrayList();
+
+        observableMap.addListener((MapChangeListener<Integer, FlowExecutionStatistics>) change -> {
+            if (change.wasAdded()) {
+                rowData.add(change.getValueAdded());
+            } else if (change.wasRemoved()) {
+                rowData.remove(change.getValueRemoved());
+            }
+        });
+
+        rowData.addAll(flowExecutionsStatisticsMap.values());
+        tableHistory.setItems(rowData);
+        flowNameCol.setCellValueFactory(new PropertyValueFactory<>("flowName"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+        resultCol.setCellValueFactory(new PropertyValueFactory<>("flowResult"));
+    }
+    public void setTableInHistoryClient(String executedUserName) {
+        Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());;
+        String finalUrl = HttpUrl.parse(GET_FLOWS_ADMIN_HISTORY)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+        if (response.isSuccessful()) {
+                String responseString = null;
+                try {
+                    responseString = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                    .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                    .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
+                    .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                    .registerTypeAdapter(FlowDefinition.class, new FlowDefinitionAdapter())
+                    .registerTypeAdapter(StepExecutionContext.class, new StepExecutionContextAdapter())
+                    .create();
+
+            Type type = new TypeToken<Map<Integer, FlowExecutionStatistics>>(){}.getType();
+            Map<Integer, FlowExecutionStatistics> map = gson.fromJson(responseString, type);
+            if(map!=null)
+                flowExecutionsStatisticsMap.putAll(map);
+        }
+
+        Iterator it = flowExecutionsStatisticsMap.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            FlowExecutionStatistics flowExecutionStatistics = (FlowExecutionStatistics) pair.getValue();
+            if (!flowExecutionStatistics.getExecutedUserName().equals(executedUserName)) {
+                it.remove();
+            }
         }
 
         //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats(); // TODO: get stats from flow manager

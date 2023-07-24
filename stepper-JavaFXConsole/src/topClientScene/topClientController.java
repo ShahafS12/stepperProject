@@ -78,4 +78,7 @@ public class topClientController {
     {
         this.mainClientController = mainSceneClientController;
     }
+    public String getClientName() {
+        return clientName.getText();
+    }
 }

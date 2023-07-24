@@ -48,6 +48,7 @@ public class ExecuteFlowServlet extends HttpServlet
 
             Type executionDataType = new TypeToken<List<SingleStepExecutionData>>(){}.getType();
             List<SingleStepExecutionData> executionDataList = gson.fromJson(data[4], executionDataType);
+            String userName = gson.fromJson(data[5], String.class);
             FlowManager flowManager = ServletUtils.getFlowManager(getServletContext());
             FlowDefinition chosenFlow = flowManager.getFlowDefinition(flowName);
             int uniqueFlowId = flowManager.getUniqueFlowIdCounter();//todo this might need to be synchronized
@@ -62,7 +63,7 @@ public class ExecuteFlowServlet extends HttpServlet
             }
             try {
                 CountDownLatch latch = new CountDownLatch(1);
-                flowManager.executeFlow(chosenFlow, mandatoryInputsList, optionalInputsList, outputsList, executionDataList, latch);
+                flowManager.executeFlow(chosenFlow, mandatoryInputsList, optionalInputsList, outputsList, executionDataList, latch, userName);
                 latch.await();  // This will block until the latch count reaches zero
                 response.setStatus(HttpServletResponse.SC_OK);
             }
