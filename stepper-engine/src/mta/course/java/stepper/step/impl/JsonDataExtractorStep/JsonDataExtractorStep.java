@@ -1,6 +1,7 @@
 package mta.course.java.stepper.step.impl.JsonDataExtractorStep;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.AbstractStepDefinition;
@@ -21,13 +22,15 @@ public class JsonDataExtractorStep extends AbstractStepDefinition {
     @Override
     public StepResult invoke(StepExecutionContext context) {
         String finalStepName = context.getStepAlias(this.name());
-        String json = context.getDataValue(context.getAlias(finalStepName + "." + "JSON", JsonElement.class), String.class);
+        JsonObject json = context.getDataValue(context.getAlias(finalStepName + "." + "JSON", JsonObject.class), JsonObject.class);
         String jsonPath = context.getDataValue(context.getAlias(finalStepName + "." + "JSON_PATH", String.class), String.class);
         try {
-            String value = JsonPath.read(json, jsonPath);
+            String value = JsonPath.read(json.toString(), jsonPath);
             String beforeStarting = "Extracting data:" + jsonPath + " Value:" + value;
             context.addLogLine(finalStepName, beforeStarting);
-            context.storeDataValue(context.getAlias(finalStepName+"."+"VALUE", String.class), value);
+            if (value != null) {
+                context.storeDataValue(context.getAlias(finalStepName+"."+"VALUE", String.class), value);
+            }
             return StepResult.SUCCESS;
         } catch (Exception e) {
             String beforeStarting = "No value found for json path: " + jsonPath;

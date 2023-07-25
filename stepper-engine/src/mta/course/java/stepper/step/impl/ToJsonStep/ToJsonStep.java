@@ -2,6 +2,7 @@ package mta.course.java.stepper.step.impl.ToJsonStep;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.AbstractStepDefinition;
@@ -24,10 +25,10 @@ public class ToJsonStep extends AbstractStepDefinition {
 
         try {
             Gson gson = new Gson();
-            String jsonString = gson.toJson(content);
+            JsonObject jsonString = gson.fromJson(content, JsonObject.class);
             String beforeStarting = "Content is JSON string. Converting it to JSON";
             context.addLogLine(finalStepName, beforeStarting);
-            context.storeDataValue(context.getAlias(finalStepName+"."+"JSON", JsonElement.class), jsonString);
+            context.storeDataValue(context.getAlias(finalStepName+"."+"JSON", JsonObject.class), jsonString);
             return StepResult.SUCCESS;
         } catch (Exception e) {
             String beforeStarting = "Content is not a valid JSON representation.";

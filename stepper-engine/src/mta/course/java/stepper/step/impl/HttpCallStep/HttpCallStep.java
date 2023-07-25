@@ -13,10 +13,10 @@ import java.io.IOException;
 
 public class HttpCallStep extends AbstractStepDefinition {
     public HttpCallStep(){
-        super("Http Call", false);
-        addInput(new DataDefinitionDeclarationImpl("RESOURCE", DataNecessity.MANDATORY, "Resource Name(include query parameters", DataDefinitionRegistry.STRING));
+        super("HTTP Call", false);
+        addInput(new DataDefinitionDeclarationImpl("RESOURCE", DataNecessity.MANDATORY, "Resource Name(include query parameters)", DataDefinitionRegistry.STRING));
         addInput(new DataDefinitionDeclarationImpl("ADDRESS", DataNecessity.MANDATORY, "Domain:Port", DataDefinitionRegistry.STRING));
-        addInput(new DataDefinitionDeclarationImpl("PROTOCOL", DataNecessity.MANDATORY, "protocol", DataDefinitionRegistry.Enumeration));
+        addInput(new DataDefinitionDeclarationImpl("PROTOCOL", DataNecessity.MANDATORY, "Protocol", DataDefinitionRegistry.Enumeration));
         addInput(new DataDefinitionDeclarationImpl("METHOD", DataNecessity.OPTIONAL, "Method", DataDefinitionRegistry.Enumeration)); //TODO : get, post, put, delete | default: get
         addInput(new DataDefinitionDeclarationImpl("BODY", DataNecessity.OPTIONAL, "Request body", DataDefinitionRegistry.JSON));
 
@@ -41,18 +41,20 @@ public class HttpCallStep extends AbstractStepDefinition {
 
         MediaType MEDIA_TYPE_JSON
                 = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body;
 
         String url = protocol + "://" + address + "/" + resource;
-        RequestBody body = RequestBody.create(MEDIA_TYPE_JSON, jsonBody);
 
         switch (method) {
             case "POST":
+                body = RequestBody.create(MEDIA_TYPE_JSON, jsonBody);
                 request = new Request.Builder()
                         .url(url)
                         .post(body)
                         .build();
                 break;
             case "PUT":
+                body = RequestBody.create(MEDIA_TYPE_JSON, jsonBody);
                 request = new Request.Builder()
                         .url(url)
                         .put(body)
@@ -75,8 +77,9 @@ public class HttpCallStep extends AbstractStepDefinition {
         try {
             Response response = client.newCall(request).execute();
             String afterResponse = "Response received. Status code: <" + response.code() + ">";
+            String responseBody = response.body().string();
             context.storeDataValue(context.getAlias(finalStepName + "." + "CODE", Integer.class), response.code());
-            context.storeDataValue(context.getAlias(finalStepName + "." + "RESPONSE_BODY", String.class), response.body().string());
+            context.storeDataValue(context.getAlias(finalStepName + "." + "RESPONSE_BODY", String.class), responseBody);
             context.addLogLine(finalStepName, afterResponse);
             context.addSummaryLine(finalStepName, afterResponse);
             return StepResult.SUCCESS;

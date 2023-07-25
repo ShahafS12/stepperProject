@@ -48,9 +48,15 @@ public class AddFlowServlet extends HttpServlet
             for(String flowName: newMenuVariables.getFlowNames()){
                 FlowDefinition flowDefinition = newStepper.getFlowDefinition(flowName);
                 for(Continuation continuation: flowDefinition.getContinuations()){
-                    if(!newMenuVariables.getFlowNames().contains(continuation.getTargetFlow())){
+                    if(! ( (newMenuVariables.getFlowNames().contains(continuation.getTargetFlow())) || flowManager.getFlowNames().contains(continuation.getTargetFlow()) )){
                         throw new Exception("Invalid XML file");
                     }
+
+                    boolean flag = false; // the target flow is in newMenuVariables but not in flowManager
+                    if (!newMenuVariables.getFlowNames().contains(continuation.getTargetFlow())){
+                        flag = true; // the target flow is in flowManager
+                    }
+
                     for(String sourceData: continuation.getContinuationMapping().keySet()){
                         Set<String> allFlowInputs = flowDefinition.getAllInputs().keySet();
                         Set<String> allFlowOutputs = flowDefinition.getAllOutputs().keySet();
@@ -65,14 +71,28 @@ public class AddFlowServlet extends HttpServlet
                             throw new Exception("Invalid XML file");
                         }
                         for(String targetData: continuation.getContinuationMapping().get(sourceData)){
-                            Set<String> allTargetFlowInputs = newStepper.getFlowDefinition(continuation.getTargetFlow()).getAllInputs().keySet();
-                            Set<String> allTargetFlowOutputs = newStepper.getFlowDefinition(continuation.getTargetFlow()).getAllOutputs().keySet();
                             Set<String> allTargetFlowInputsAndOutputsSplitted = new HashSet<>();
-                            for(String input: allTargetFlowInputs){
-                                allTargetFlowInputsAndOutputsSplitted.add(input.split("\\.")[1]);
+
+                            if (flag){
+                                Set<String> allTargetFlowInputs = flowManager.getFlowDefinition(continuation.getTargetFlow()).getAllInputs().keySet();
+                                Set<String> allTargetFlowOutputs = flowManager.getFlowDefinition(continuation.getTargetFlow()).getAllOutputs().keySet();
+
+                                for(String inputsFlowManager : flowManager.getFlowDefinition(continuation.getTargetFlow()).getAllInputs().keySet()){
+                                    allTargetFlowInputsAndOutputsSplitted.add(inputsFlowManager.split("\\.")[1]);
+                                }
+                                for(String outputsFlowManager : flowManager.getFlowDefinition(continuation.getTargetFlow()).getAllOutputs().keySet()){
+                                    allTargetFlowInputsAndOutputsSplitted.add(outputsFlowManager.split("\\.")[1]);
+                                }
                             }
-                            for(String output: allTargetFlowOutputs){
-                                allTargetFlowInputsAndOutputsSplitted.add(output.split("\\.")[1]);
+                            else{
+                                Set<String> allTargetFlowInputs = newStepper.getFlowDefinition(continuation.getTargetFlow()).getAllInputs().keySet();
+                                Set<String> allTargetFlowOutputs = newStepper.getFlowDefinition(continuation.getTargetFlow()).getAllOutputs().keySet();
+                                for(String input: allTargetFlowInputs){
+                                    allTargetFlowInputsAndOutputsSplitted.add(input.split("\\.")[1]);
+                                }
+                                for(String output: allTargetFlowOutputs){
+                                    allTargetFlowInputsAndOutputsSplitted.add(output.split("\\.")[1]);
+                                }
                             }
                             if(!allTargetFlowInputsAndOutputsSplitted.contains(targetData)){
                                 throw new Exception("Invalid XML file");
