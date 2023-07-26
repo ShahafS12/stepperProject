@@ -51,6 +51,8 @@
     <servlet-mapping>
         <servlet-name>GetExecutionsStatisticsServlet</servlet-name>
         <url-pattern>/getExecutionsStatistics</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>GetUsersListServlet</servlet-name>
         <servlet-class>servlets.GetUsersListServlet</servlet-class>
     </servlet>

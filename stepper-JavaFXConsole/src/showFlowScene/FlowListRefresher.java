@@ -53,13 +53,19 @@ public class FlowListRefresher extends TimerTask
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.code() != 200){
+                    httpRequestLoggerConsumer.accept("Users Request # " + finalRequestNumber + " | Ended with failure...");
+                    return;
+                }
                 String jsonArrayOfUsersNames = response.body().string();
                 httpRequestLoggerConsumer.accept("Users Request # " + finalRequestNumber + " | Response: " + jsonArrayOfUsersNames);
-                String[] usersNames = new Gson().fromJson(jsonArrayOfUsersNames, String[].class);
-                if(usersNames!=null){
-                    Platform.runLater(() -> {
-                        usersListConsumer.accept(Arrays.asList(usersNames));
-                    });
+                if(!jsonArrayOfUsersNames.equals("")){
+                    String[] usersNames = new Gson().fromJson(jsonArrayOfUsersNames, String[].class);
+                    if(usersNames!=null){
+                        Platform.runLater(() -> {
+                            usersListConsumer.accept(Arrays.asList(usersNames));
+                        });
+                    }
                 }
             }
         });
