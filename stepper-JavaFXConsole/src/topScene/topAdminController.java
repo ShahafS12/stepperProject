@@ -74,6 +74,10 @@ public class topAdminController
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose XML file");
         File file = fileChooser.showOpenDialog(LoadXMLButton.getScene().getWindow());
+        if (file == null) {
+            showErrorDialog("Error", "No file was chosen");
+            return;
+        }
         String finalUrl = HttpUrl.parse(ADD_XML_PAGE)
                 .newBuilder()
                 .addQueryParameter("xmlFile", file.getAbsolutePath())//todo check if this is the right way to send the file
@@ -85,6 +89,7 @@ public class topAdminController
                 Platform.runLater(() ->
                         errorMessageProperty.set("Something went wrong: " + e.getMessage()
                 ));
+                showErrorDialog("Error", "Something went wrong: " + e.getMessage());
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -92,14 +97,15 @@ public class topAdminController
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
                             errorMessageProperty.set("Something went wrong: " + responseBody)
+
                     );
+                    showErrorDialog("Error", "Something went wrong: " + responseBody);
                 }
                 else {
                     String responseBody = response.body().string();
                     //httpRequestLoggerConsumer.accept("Users Request # " + finalRequestNumber + " | Response: " + jsonArrayOfUsersNames);//todo this was at aviads code - check if needed
                     String[] flowNames = new Gson().fromJson(responseBody, String[].class);
                     //usersListConsumer.accept(Arrays.asList(usersNames));
-                    mainController.setActive();
                 }
             }
         });

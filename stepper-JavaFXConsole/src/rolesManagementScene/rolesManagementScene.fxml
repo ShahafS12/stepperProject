@@ -29,7 +29,7 @@
                      <children>
                         <ScrollPane AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                            <content>
-                              <VBox fx:id="chosenUserInfo">
+                              <VBox fx:id="chosenRoleInfo">
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>

@@ -1,8 +1,6 @@
 package users;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /*
 Adding and retrieving users is synchronized and in that manner - these actions are thread safe
@@ -41,6 +39,14 @@ public class UserManager {
     public synchronized Set<UserDefinition> getUsers() {
         return Collections.unmodifiableSet(usersSet);
     }
+    public synchronized List<String> getUsersNames(){
+        List<String> names = new ArrayList<>();
+        for(UserDefinition user : usersSet){
+            String username = user.getUsername();
+            names.add(user.getUsername());
+        }
+        return names;
+    }
 
     public boolean isUserExists(String username) {
         for(UserDefinition user : usersSet) {
@@ -50,4 +56,15 @@ public class UserManager {
         }
         return false;
     }
+
+    public void addRoleToUsers(List<String> usersAllowed, String roleName)
+    {
+        for(UserDefinition user : usersSet) {
+            if(usersAllowed.contains(user.getUsername())) {
+                user.addRole(roleName);
+            }
+        }
+    }
+
+
 }

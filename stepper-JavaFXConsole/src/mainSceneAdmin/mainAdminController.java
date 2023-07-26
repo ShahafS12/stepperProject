@@ -76,6 +76,7 @@ public class mainAdminController implements HttpStatusUpdate
             ShowFlowComponentController.setHttpStatusUpdate(this);
         }
         ShowFlowComponentController.autoUpdatesProperty().bind(topComponentController.autoUpdatesProperty());
+        setActive();
     }
 
     public void setActive()
@@ -448,6 +449,8 @@ public class mainAdminController implements HttpStatusUpdate
                 Parent executionRoot = loader.load();
                 rolesManagementController = loader.getController();
                 rolesManagementController.setMainController(this);
+                rolesManagementController.setHttpStatusUpdate(this);
+                rolesManagementController.startListRefresher();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

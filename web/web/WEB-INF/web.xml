@@ -21,6 +21,10 @@
         <servlet-class>servlets.ExecuteFlowServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>GetRoleDefinitionServlet</servlet-name>
+        <servlet-class>servlets.GetRoleDefinitionServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>FlowListServlet</servlet-name>
         <servlet-class>servlets.FlowListServlet</servlet-class>
     </servlet>
@@ -47,6 +51,32 @@
     <servlet-mapping>
         <servlet-name>GetExecutionsStatisticsServlet</servlet-name>
         <url-pattern>/getExecutionsStatistics</url-pattern>
+        <servlet-name>GetUsersListServlet</servlet-name>
+        <servlet-class>servlets.GetUsersListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetRolesListServlet</servlet-name>
+        <servlet-class>servlets.GetRolesListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateRoleServlet</servlet-name>
+        <servlet-class>servlets.CreateRoleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateRoleServlet</servlet-name>
+        <url-pattern>/createRole</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetRoleDefinitionServlet</servlet-name>
+        <url-pattern>/getRoleDefinition</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetUsersListServlet</servlet-name>
+        <url-pattern>/userList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetRolesListServlet</servlet-name>
+        <url-pattern>/rolesList</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>getHistoryAdminServlet</servlet-name>
