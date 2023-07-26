@@ -22,8 +22,8 @@ public class RoleManager
         }
         return names;
     }
-    public void addRole(String roleName, String roleDescription, List<String> flowsAllowed) {
-        RoleDefinition role = new RoleDefinitionImpl(roleName, roleDescription, flowsAllowed);
+    public void addRole(String roleName, String roleDescription, List<String> flowsAllowed, List<String> usersAssigned) {
+        RoleDefinition role = new RoleDefinitionImpl(roleName, roleDescription, flowsAllowed, usersAssigned);
         rolesSet.add(role);
     }
     public void removeRole(String roleName) {

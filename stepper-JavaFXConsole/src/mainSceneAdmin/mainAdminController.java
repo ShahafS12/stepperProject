@@ -74,7 +74,7 @@ public class mainAdminController implements HttpStatusUpdate
             ShowFlowComponentController.setHttpStatusUpdate(this);
         }
         ShowFlowComponentController.autoUpdatesProperty().bind(topComponentController.autoUpdatesProperty());
-
+        setActive();
     }
 
     public void setActive()

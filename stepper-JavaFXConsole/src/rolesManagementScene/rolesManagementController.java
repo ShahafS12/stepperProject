@@ -10,10 +10,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import mainSceneAdmin.mainAdminController;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -21,8 +25,10 @@ import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import roles.RoleDefinition;
+import roles.RoleDefinitionImpl;
 import util.http.HttpClientUtil;
 
+import javafx.scene.text.Text;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
@@ -76,7 +82,15 @@ public class rolesManagementController
 
     @FXML
     public void createNewRole(ActionEvent event) {
-        return;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/addRoleScene/addRoles.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root1));
+            stage.show();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setMainController(mainAdminController mainAdminController)
@@ -134,7 +148,7 @@ public class rolesManagementController
                             String roleDefinitionFromServer = response.body().string();
                             Gson gson = new GsonBuilder()
                                     .create();
-                            RoleDefinition role = gson.fromJson(roleDefinitionFromServer, RoleDefinition.class);
+                            RoleDefinitionImpl role = gson.fromJson(roleDefinitionFromServer, RoleDefinitionImpl.class);//todo need to create an adapter for role definition or to change it to impl
                             setChosenRoleData(role);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -146,7 +160,35 @@ public class rolesManagementController
     }
     public void setChosenRoleData(RoleDefinition role)
     {
-        //todo implement
+        if(role == null)
+        {
+            return;
+        }
+        if(chosenRoleInfo!=null) {
+            chosenRoleInfo.getChildren().clear();
+        }
+        Text roleName = new Text("Role name: ");
+        roleName.setStyle("-fx-font-weight: bold");
+        chosenRoleInfo.getChildren().add(roleName);
+        chosenRoleInfo.getChildren().add(new Text(role.getRoleName()));
+        Text description  = new Text("Description: ");
+        description.setStyle("-fx-font-weight: bold");
+        chosenRoleInfo.getChildren().add(description);
+        chosenRoleInfo.getChildren().add(new Text(role.getRoleDescription() + "\n"));
+        Text availableFlows = new Text("Available flows: ");
+        availableFlows.setStyle("-fx-font-weight: bold");
+        chosenRoleInfo.getChildren().add(availableFlows);
+        for(String flow : role.getFlowsAllowed())
+        {
+            chosenRoleInfo.getChildren().add(new Text(flow));
+        }
+        Text assignedUsers = new Text("Assigned users: ");
+        assignedUsers.setStyle("-fx-font-weight: bold");
+        chosenRoleInfo.getChildren().add(assignedUsers);
+        for(String user : role.getUsersAssigned())
+        {
+            chosenRoleInfo.getChildren().add(new Text(user));
+        }
     }
     public void startListRefresher(){
         listRefresher = new RolesListRefresher(
