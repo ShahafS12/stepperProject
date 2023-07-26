@@ -28,6 +28,11 @@ public class CreateRoleServlet extends HttpServlet
             return;
         }
         RoleManager roleManager = ServletUtils.getRoleManager(getServletContext());
+        if(roleManager.getRolesNames().contains(roleName)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("Role name already exists");
+            return;
+        }
         roleManager.addRole(roleName, roleDescription, flowsAllowed, usersAllowed);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         userManager.addRoleToUsers(usersAllowed, roleName);

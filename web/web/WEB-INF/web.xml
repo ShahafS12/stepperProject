@@ -61,12 +61,20 @@
         <servlet-class>servlets.GetRolesListServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>UpdateExistingRoleServlet</servlet-name>
+        <servlet-class>servlets.UpdateExistingRoleServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>CreateRoleServlet</servlet-name>
         <servlet-class>servlets.CreateRoleServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CreateRoleServlet</servlet-name>
         <url-pattern>/createRole</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateExistingRoleServlet</servlet-name>
+        <url-pattern>/updateRole</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetRoleDefinitionServlet</servlet-name>

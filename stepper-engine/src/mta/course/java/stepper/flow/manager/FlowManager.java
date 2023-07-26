@@ -14,6 +14,7 @@ import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
 import mta.course.java.stepper.stepper.StepperDefinition;
 import org.xml.sax.SAXException;
+import roles.RoleManager;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;

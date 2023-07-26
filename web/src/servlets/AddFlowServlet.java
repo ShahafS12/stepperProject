@@ -11,6 +11,7 @@ import mta.course.java.stepper.flow.execution.FlowExecution;
 import mta.course.java.stepper.flow.manager.FlowManager;
 import mta.course.java.stepper.menu.MenuVariables;
 import mta.course.java.stepper.stepper.StepperDefinition;
+import roles.RoleManager;
 import users.UserManager;
 import utils.ServletUtils;
 
@@ -104,6 +105,12 @@ public class AddFlowServlet extends HttpServlet
             flowManager.addFlows(newStepper);
             //print data in flow manager to check if it was added
             flowManager.addToFlowExecutionMapFromFlowName(newMenuVariables.getFlowExecutionMapFromFlowName());
+            RoleManager roleManager = ServletUtils.getRoleManager(getServletContext());
+            for(FlowDefinition flowDefinition: FlowManager.getFlows()){//add the new flows to default roles
+                roleManager.addFlowToRole("All Flows",flowDefinition.getName());
+                if(flowDefinition.isReadOnly())
+                    roleManager.addFlowToRole("Read Only",flowDefinition.getName());
+            }
             System.out.println("Flows in flow manager:");
             for(FlowDefinition flowDefinition: FlowManager.getFlows()){
                 System.out.println(flowDefinition.getName());

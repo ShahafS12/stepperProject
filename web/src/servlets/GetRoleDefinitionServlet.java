@@ -28,8 +28,10 @@ public class GetRoleDefinitionServlet  extends HttpServlet
             RoleManager roleManager = ServletUtils.getRoleManager(getServletContext());
             String json = gson.toJson(roleManager.getRole(roleName));
             out.println(json);
+            response.setStatus(HttpServletResponse.SC_OK);
             out.flush();
         } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw new RuntimeException(e);
         }
 
