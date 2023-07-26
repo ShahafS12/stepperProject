@@ -2,6 +2,7 @@ package mta.course.java.stepper.step.impl.JsonDataExtractorStep;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.jayway.jsonpath.PathNotFoundException;
 import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
 import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.AbstractStepDefinition;
@@ -25,16 +26,29 @@ public class JsonDataExtractorStep extends AbstractStepDefinition {
         JsonObject json = context.getDataValue(context.getAlias(finalStepName + "." + "JSON", JsonObject.class), JsonObject.class);
         String jsonPath = context.getDataValue(context.getAlias(finalStepName + "." + "JSON_PATH", String.class), String.class);
         try {
-            String value = JsonPath.read(json.toString(), jsonPath);
+            String value = "";
+            String[] separatedStrings = jsonPath.split("\\|");
+            for (String separatedString : separatedStrings) {
+                String tmp = JsonPath.read(json.toString(), separatedString);
+                if (value.equals(""))
+                    value = tmp;
+                else
+                    value = value + "," + tmp;
+            }
+            //String value = JsonPath.read(json.toString(), jsonPath);
             String beforeStarting = "Extracting data:" + jsonPath + " Value:" + value;
             context.addLogLine(finalStepName, beforeStarting);
-            if (value != null) {
-                context.storeDataValue(context.getAlias(finalStepName+"."+"VALUE", String.class), value);
-            }
+            context.storeDataValue(context.getAlias(finalStepName+"."+"VALUE", String.class), value);
+            return StepResult.SUCCESS;
+        } catch (PathNotFoundException e) {
+            String beforeStarting = "No value found for json path: " + jsonPath;
+            String value = "";
+            context.storeDataValue(context.getAlias(finalStepName+"."+"VALUE", String.class), value);
+            context.addLogLine(finalStepName, beforeStarting);
+            context.addSummaryLine(finalStepName, e.getMessage());
             return StepResult.SUCCESS;
         } catch (Exception e) {
-            String beforeStarting = "No value found for json path: " + jsonPath;
-            context.addLogLine(finalStepName, beforeStarting);
+            context.addLogLine(finalStepName, e.getMessage());
             context.addSummaryLine(finalStepName, e.getMessage());
             return StepResult.FAILURE;
         }
