@@ -39,7 +39,11 @@ public class Constants
     public final static String GET_FLOW_ID_UNIQUE_EXECUTION_ID = FULL_SERVER_PATH + "/UniqueFlowExecutionIdCounter";
     public final static String GET_EXECUTION_DATA = FULL_SERVER_PATH + "/executionData";
     public final static String GET_FLOWS_ADMIN_HISTORY = FULL_SERVER_PATH + "/getFlowsAdminHistory";
+    public final static String GET_FLOW_EXECUTIONS_STATISTICS = FULL_SERVER_PATH + "/getExecutionsStatistics";
+    public final static String GET_STEP_EXECUTION_STATISTICS = FULL_SERVER_PATH + "/getStepExecutionStatistics";
+
     public final static String CREATE_ROLE = FULL_SERVER_PATH + "/createRole";
+
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

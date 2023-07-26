@@ -143,7 +143,7 @@ public class topAdminController
         this.mainController = mainController;
     }
     @FXML
-    public void switchToStatisticsScene(ActionEvent event) {
+    public void switchToStatisticsScene(ActionEvent event) throws IOException {
         mainController.switchToStatisticsScene( event);
     }
     @FXML

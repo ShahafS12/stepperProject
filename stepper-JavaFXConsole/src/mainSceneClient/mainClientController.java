@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static util.Constants.GET_FLOW_DEFINITION;
+import static util.Constants.*;
 
 public class mainClientController implements HttpStatusUpdate
 {
@@ -58,6 +58,10 @@ public class mainClientController implements HttpStatusUpdate
     public void updateUserName(String userName)
     {
         topClientComponentController.setClientName(userName);
+    }
+    public String getUserName()
+    {
+        return topClientComponentController.getClientName();
     }
     public void switchToExecutionScene(ActionEvent event){
         if(executionController == null) {
@@ -96,20 +100,22 @@ public class mainClientController implements HttpStatusUpdate
         }
     }
     public void switchToHistoryScene(ActionEvent event){
-        if(menuVariables == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText(null);
-            alert.setContentText("Please load a stepper first!");
-            alert.showAndWait();
-        }
-        else {
+
+        String finalUrl = HttpUrl.parse(GET_FLOWS_ADMIN_HISTORY)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+
+        if (response.code() == 200) {
+
             if (historySceneController == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/historyScene/historySceneBuilder.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(HISTORY_PAGE_FXML_RESOURCE_LOCATION));
                 try {
                     Parent executionRoot = loader.load();
                     historySceneController = loader.getController();
-                    //historySceneController.setMainController(this);
+                    historySceneController.setMainControllerClient(this);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -117,11 +123,44 @@ public class mainClientController implements HttpStatusUpdate
             try {
                 AnchorPane view = historySceneController.getHistoryAnchorPane();
                 mainBorder.setCenter(view);
-                historySceneController.setTableInHistory();
+                historySceneController.setTableInHistoryClient(this.getUserName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText(null);
+            alert.setContentText("No flows available!");
+            alert.showAndWait();
+        }
+        //        if(menuVariables == null) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Error Dialog");
+//            alert.setHeaderText(null);
+//            alert.setContentText("Please load a stepper first!");
+//            alert.showAndWait();
+//        }
+//        else {
+//            if (historySceneController == null) {
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("/historyScene/historySceneBuilder.fxml"));
+//                try {
+//                    Parent executionRoot = loader.load();
+//                    historySceneController = loader.getController();
+//                    //historySceneController.setMainController(this);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//            try {
+//                AnchorPane view = historySceneController.getHistoryAnchorPane();
+//                mainBorder.setCenter(view);
+//                historySceneController.setTableInHistory();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
     public void switchToExecutionSceneWithContinuation(ActionEvent event, FlowDefinition chosenFlow, Map<String, List<String>> continuation){
         //don't need to check if executionController is null because it is not null when we get here

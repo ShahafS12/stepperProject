@@ -417,10 +417,19 @@ public class executionController {
                 String optionalInputsObjectString = gson.toJson(optionalInputsObject);
                 String outputsJson = gson.toJson(chosenFlow.getOutputs());
                 String executionDataJson = gson.toJson(executionData);
+
+                String userName;
+                if (mainClientController != null)
+                    userName = mainClientController.getUserName();
+                else
+                    userName = "Admin";
+
                 String[] jsonArray = {chosenFlow.getName(),mandatoryInputsObjectString, optionalInputsObjectString,
-                        outputsJson, executionDataJson};
+                        outputsJson, executionDataJson, userName};
                 String jsonString = gson.toJson(jsonArray);
                 RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonString);
+
+
                 Request request = new Request.Builder()
                         .url(EXECUTE_FLOW)
                         .post(body)

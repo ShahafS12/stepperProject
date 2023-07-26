@@ -26,11 +26,12 @@ public class FlowExecutionStatistics
     private Map<String,StepExecutionStatistics> stepExecutionStatisticsMap;
     private StepExecutionContext context;
     private List<SingleStepExecutionData> singleStepExecutionDataList;
+    private String executedUser;
 
 
     public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowExecutionResult FlowExecutionResult, double duration,FlowDefinition flow,
                                    StepExecutionContext context,Map<String, SingleStepExecutionData> singleStepExecutionDataMap,
-                                   Map<String,StepExecutionStatistics> stepExecutionStatisticsMap){
+                                   Map<String,StepExecutionStatistics> stepExecutionStatisticsMap, String executedUser){
         this.startTime = startTime;
         this.flowName = flowName;
         this.flowId = flowId;
@@ -42,11 +43,12 @@ public class FlowExecutionStatistics
         this.stepExecutionStatisticsMap = stepExecutionStatisticsMap;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         this.dateTime = dateFormat.format(this.startTime);
+        this.executedUser = executedUser;
         //TODO add details about free inputs and outputs
     }
     public FlowExecutionStatistics(Time startTime, String flowName, String flowId, FlowExecutionResult FlowExecutionResult, double duration,FlowDefinition flow,
                                    StepExecutionContext context,Map<String, SingleStepExecutionData> singleStepExecutionDataMap,
-                                   Map<String,StepExecutionStatistics> stepExecutionStatisticsMap, List<SingleStepExecutionData> singleStepExecutionDataList){
+                                   Map<String,StepExecutionStatistics> stepExecutionStatisticsMap, List<SingleStepExecutionData> singleStepExecutionDataList, String executedUser){
         this.startTime = startTime;
         this.flowName = flowName;
         this.flowId = flowId;
@@ -59,6 +61,7 @@ public class FlowExecutionStatistics
         this.singleStepExecutionDataList = singleStepExecutionDataList;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         this.dateTime = dateFormat.format(this.startTime);
+        this.executedUser = executedUser;
         //TODO add details about free inputs and outputs
     }
     public void printStatistics(){
@@ -164,5 +167,9 @@ public class FlowExecutionStatistics
                 userInputsMap.put(i,context.getDataValue(i, Object.class));
         }
         return userInputsMap;
+    }
+
+    public String getExecutedUserName() {
+        return executedUser;
     }
 }

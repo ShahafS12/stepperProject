@@ -1,5 +1,7 @@
 package StatisticsScene;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -17,8 +19,16 @@ import mainSceneAdmin.mainAdminController;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import mta.course.java.stepper.stepper.FlowExecutionsStatistics;
+import okhttp3.HttpUrl;
+import okhttp3.Response;
+import util.http.HttpClientUtil;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Map;
+
+import static util.Constants.GET_FLOW_EXECUTIONS_STATISTICS;
+import static util.Constants.GET_STEP_EXECUTION_STATISTICS;
 
 public class statisticsController {
     @FXML
@@ -103,9 +113,18 @@ public class statisticsController {
         StepStatisticsTable.refresh();
         flowsStatiticsTable.refresh();
     }
-    public void populateStepStatisticsTable(){
-        // Create an ObservableList to hold the data
-        ObservableMap<String, StepExecutionStatistics> observableMap = FXCollections.observableMap(mainController.getMenuVariables().getStepExecutionStatisticsMap());
+    public void populateStepStatisticsTable() throws IOException {
+        // Create an ObservableList to hold the
+        String finalUrl = HttpUrl.parse(GET_STEP_EXECUTION_STATISTICS)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+        Type type = new TypeToken<Map<String, StepExecutionStatistics>>(){}.getType();
+        Map<String, StepExecutionStatistics> stepExecutionStatisticsMap = new Gson().fromJson(response.body().string(), type);
+
+        ObservableMap<String, StepExecutionStatistics> observableMap = FXCollections.observableMap(stepExecutionStatisticsMap);
         ObservableList<StepExecutionStatistics> rowData = FXCollections.observableArrayList();
         // Add a listener to the observableMap
         observableMap.addListener((MapChangeListener<String, StepExecutionStatistics>) change -> {
@@ -116,7 +135,7 @@ public class statisticsController {
             }
         });
         // Set the data to the table
-        rowData.addAll(mainController.getMenuVariables().getStepExecutionStatisticsMap().values());
+        rowData.addAll(stepExecutionStatisticsMap.values());
         StepStatisticsTable.setItems(rowData);
         // Set the cell value factory to the table columns
         StepExecutionCounterCol.setCellValueFactory(new PropertyValueFactory<>("countHowManyTimesExecution"));

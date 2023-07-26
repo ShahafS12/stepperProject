@@ -50,9 +50,15 @@ public class FlowManager
     public void setExecutorService(int maxThreads) {
         this.executorService = Executors.newFixedThreadPool(maxThreads);
     }
+    public Map<String, StepExecutionStatistics> getStepExecutionStatisticsMap() {
+        return stepExecutionStatisticsMap;
+    }
     public void addFlow(FlowDefinition flowDefinition)
     {
         flowsSet.add(flowDefinition);
+    }
+    public Map<String, FlowExecutionsStatistics> getFlowExecutionsStatisticsMap() {
+        return flowExecutionsStatisticsMap;
     }
     public Map<Integer, FlowExecutionStatistics> getStats() { return stats;}
     public static Set<FlowDefinition> getFlows()
@@ -154,6 +160,7 @@ public class FlowManager
     }
 
 
+
     public static FlowDefinition getFlowDefinition(String flowName)
     {
         for (FlowDefinition flowDefinition : flowsSet)
@@ -178,9 +185,9 @@ public class FlowManager
         return latestExecutionData;
     }
     public void executeFlow(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs,
-                            List<SingleStepExecutionData> executionData, CountDownLatch latch)
+                            List<SingleStepExecutionData> executionData, CountDownLatch latch, String userName)
     {
-        executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch));
+        executorService.execute(new MyRunnable(chosenFlow, mandatoryInputs, optionalInputs, outputs, executionData, latch, userName));
     }
     class MyRunnable implements Runnable
     {
@@ -190,8 +197,9 @@ public class FlowManager
         private List<InputWithStepName> outputs;
         private List<SingleStepExecutionData> executionData;
         private CountDownLatch latch;
+        private String userName;
         public MyRunnable(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs,
-                          List<SingleStepExecutionData> executionData,CountDownLatch latch) {
+                          List<SingleStepExecutionData> executionData,CountDownLatch latch, String userName) {
             this.chosenFlow = chosenFlow;
             this.mandatoryInputs = mandatoryInputs;
             this.optionalInputs = optionalInputs;
@@ -199,6 +207,7 @@ public class FlowManager
             this.executionData = executionData;
             latestExecutionData = executionData;
             this.latch = latch;//TODO: check if this is needed
+            this.userName = userName;
         }
         public synchronized Integer getUniqueFlowExecutionIdCounter() {
             return uniqueFlowIdCounter;
@@ -212,10 +221,11 @@ public class FlowManager
                 currentFlowExecutionIdCounter = getUniqueFlowExecutionIdCounter();
                 upuniqueFlowIdCounter();
             }
+            String user;
             FLowExecutor fLowExecutor = new FLowExecutor();
             FlowExecutionStatistics currentStats = fLowExecutor.executeFlowUI(flowExecutionMapFromFlowName.get(chosenFlow.getName()),
                     mandatoryInputs, optionalInputs, outputs, executionData,
-                    stepExecutionStatisticsMap);
+                    stepExecutionStatisticsMap, userName);
 
             synchronized (this) {
                 currentStatsFlowExecuted = currentStats;

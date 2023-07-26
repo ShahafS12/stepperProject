@@ -37,6 +37,20 @@
         <servlet-class>servlets.getHistoryAdminServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>GetExecutionsStatisticsServlet</servlet-name>
+        <servlet-class>servlets.GetExecutionsStatisticsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetStepExecutionStatisticsServlet</servlet-name>
+        <servlet-class>servlets.GetStepExecutionStatisticsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetStepExecutionStatisticsServlet</servlet-name>
+        <url-pattern>/getStepExecutionStatistics</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetExecutionsStatisticsServlet</servlet-name>
+        <url-pattern>/getExecutionsStatistics</url-pattern>
         <servlet-name>GetUsersListServlet</servlet-name>
         <servlet-class>servlets.GetUsersListServlet</servlet-class>
     </servlet>
