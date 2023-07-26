@@ -54,4 +54,6 @@ public interface FlowDefinition {
     List<Continuation> getContinuations();
 
     Map<String, String> getInitialValues();
+
+    Map<String, String> getFlowLevelAliasMap();
 }

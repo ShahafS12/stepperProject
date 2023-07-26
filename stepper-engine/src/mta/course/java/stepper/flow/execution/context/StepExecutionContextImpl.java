@@ -1,8 +1,13 @@
 package mta.course.java.stepper.flow.execution.context;
 
+import mta.course.java.stepper.dd.api.AbstractDataDefinition;
 import mta.course.java.stepper.dd.api.DataDefinition;
+import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
+import mta.course.java.stepper.dd.impl.string.StringDataDefinition;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
+import mta.course.java.stepper.step.api.DataDefinitionDeclarationImpl;
+import mta.course.java.stepper.step.api.DataNecessity;
 
 import java.sql.Time;
 import java.time.Instant;
@@ -225,6 +230,38 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     public Object dataValueReturn(String key) {
         return dataValues.get(key);
     }
+
+    @Override
+    public void addFlowLevelAlias(String key, String alias, Class<?> theExpectedDataType) {
+        if (!FlowLevelAliases.containsKey(key)) {
+            FlowLevelAliases.put(key, alias);
+            DataDefinitionDeclarationImpl dd = new DataDefinitionDeclarationImpl(alias, DataNecessity.NA, "" ,getDataDefinitionRegistry(theExpectedDataType));
+            dataDefinitions.put(alias,dd.dataDefinition());
+        }
+    }
+
+    @Override
+    public DataDefinitionRegistry getDataDefinitionRegistry(Class<?> theExpectedDataType) {
+        if (theExpectedDataType.getName().equals("java.lang.String"))
+            return DataDefinitionRegistry.STRING;
+        else if (theExpectedDataType.getName().equals("java.lang.Double"))
+            return DataDefinitionRegistry.DOUBLE;
+        else if (theExpectedDataType.getName().equals("java.lang.Relation"))
+            return DataDefinitionRegistry.RELATION;
+        else if (theExpectedDataType.getName().equals("java.lang.List"))
+            return DataDefinitionRegistry.LIST;
+        else if (theExpectedDataType.getName().equals("java.lang.Map"))
+            return DataDefinitionRegistry.MAP;
+        else if (theExpectedDataType.getName().equals("java.lang.Number"))
+            return DataDefinitionRegistry.Number;
+        else if (theExpectedDataType.getName().equals("com.google.gson.JsonObject"))
+            return DataDefinitionRegistry.JSON;
+        else if (theExpectedDataType.getName().equals("java.lang.Enum"))
+            return DataDefinitionRegistry.Enumeration;
+    return null;
+    }
+
+
 
     @Override
     public String getCustomMapping(String key)

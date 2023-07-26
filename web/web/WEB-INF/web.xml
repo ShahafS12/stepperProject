@@ -64,6 +64,14 @@
         <servlet-name>CreateRoleServlet</servlet-name>
         <servlet-class>servlets.CreateRoleServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ExampleJsonServlet</servlet-name>
+        <servlet-class>servlets.ExampleJsonServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExampleJsonServlet</servlet-name>
+        <url-pattern>/exampleJson</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateRoleServlet</servlet-name>
         <url-pattern>/createRole</url-pattern>

@@ -225,7 +225,7 @@ public class FlowManager
             FLowExecutor fLowExecutor = new FLowExecutor();
             FlowExecutionStatistics currentStats = fLowExecutor.executeFlowUI(flowExecutionMapFromFlowName.get(chosenFlow.getName()),
                     mandatoryInputs, optionalInputs, outputs, executionData,
-                    stepExecutionStatisticsMap, userName);
+                    stepExecutionStatisticsMap, userName, chosenFlow.getFlowLevelAliasMap(), chosenFlow.getAllInputs());
 
             synchronized (this) {
                 currentStatsFlowExecuted = currentStats;

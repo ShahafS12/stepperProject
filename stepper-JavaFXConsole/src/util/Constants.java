@@ -43,6 +43,7 @@ public class Constants
     public final static String GET_STEP_EXECUTION_STATISTICS = FULL_SERVER_PATH + "/getStepExecutionStatistics";
 
     public final static String CREATE_ROLE = FULL_SERVER_PATH + "/createRole";
+    public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
 
 
     // GSON instance

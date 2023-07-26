@@ -28,7 +28,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
     private final Map<String, String> flowLevelAlias;
     private final Map<String, String> customMapping;
     private final Map<String, String> AutoMappingMap;
-    private final  List<Continuation> ContinuationList;
+    private final List<Continuation> ContinuationList;
     private final List<InputWithStepName> mandatoryInputs;
     private final List<InputWithStepName> optionalInputs;
     private final List<InputWithStepName> outputs;
@@ -169,9 +169,11 @@ public class FlowDefinitionImpl implements FlowDefinition {
         }
         initializeOutputs();
     }
+
     public Map<String, String> getInitialValues() {
         return innitialDataValues;
     }
+
 
     private void initializeOutputs() {
         for (StepUsageDeclaration step : steps) {
@@ -481,9 +483,14 @@ public class FlowDefinitionImpl implements FlowDefinition {
     public boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
+
     @Override
     public List<Continuation> getContinuations() {
         return ContinuationList;
     }
-}
 
+    @Override
+    public Map<String, String> getFlowLevelAliasMap() {
+        return flowLevelAlias;
+    }
+}
