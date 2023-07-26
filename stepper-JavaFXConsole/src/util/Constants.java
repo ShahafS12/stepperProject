@@ -41,8 +41,8 @@ public class Constants
     public final static String GET_FLOWS_ADMIN_HISTORY = FULL_SERVER_PATH + "/getFlowsAdminHistory";
     public final static String GET_FLOW_EXECUTIONS_STATISTICS = FULL_SERVER_PATH + "/getExecutionsStatistics";
     public final static String GET_STEP_EXECUTION_STATISTICS = FULL_SERVER_PATH + "/getStepExecutionStatistics";
+
     public final static String CREATE_ROLE = FULL_SERVER_PATH + "/createRole";
-    public final static String UPDATE_ROLE = FULL_SERVER_PATH + "/updateRole";
     public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
 
 
