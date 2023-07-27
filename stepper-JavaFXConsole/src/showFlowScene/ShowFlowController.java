@@ -111,7 +111,7 @@ public class ShowFlowController {
     public void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
         //remove the execute button
-        executeButton.setVisible(false);
+        //executeButton.setVisible(false);//TODO: uncomment
     }
 
     public void setFlowsList(List<String> flowsNames) {
@@ -141,7 +141,8 @@ public class ShowFlowController {
             }
 
             //Add the flows to the list
-            Set<RoleDefinitionImpl> rolls = userImpl.getRoles();
+            if (userImpl != null) {
+                Set<RoleDefinitionImpl> rolls = userImpl.getRoles();
                 for (RoleDefinitionImpl roll : rolls) {
                     List<String> flowsAllowed = roll.getFlowsAllowed();
                     for (String flowName : flowsAllowed) {
@@ -151,6 +152,7 @@ public class ShowFlowController {
                     }
 
                 }
+            }
         }
         else {
             flowsList.getItems().addAll(flowsNames);
@@ -183,8 +185,11 @@ public class ShowFlowController {
 
     private void handleFlowSelection(String newValue)
     {
+        if(lastSelectedFlow!=null && !lastSelectedFlow.equals(newValue)){
+            chosenFlowData.getChildren().clear();
+            this.stepDetailsButtonClicked = -1;
+        }
         lastSelectedFlow = newValue;
-        stepDetailsButtonClicked = -1;
         String finalUrl = HttpUrl.parse(GET_FLOW_DEFINITION)
                 .newBuilder()
                 .addQueryParameter("flowName", newValue)

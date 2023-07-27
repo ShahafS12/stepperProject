@@ -4,6 +4,7 @@ import adapters.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -336,8 +337,21 @@ public class executionController {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(SingleStepExecutionData.class, new SingleStepExecutionAdapter())
                 .create();
-        Type type = new TypeToken<List<SingleStepExecutionData>>() {}.getType();
-        executionData = gson.fromJson(response.body().charStream(), type);
+        Type listType = new TypeToken<List<SingleStepExecutionData>>() {}.getType();
+        Type singleObjectType = new TypeToken<SingleStepExecutionData>() {}.getType();
+
+        try {
+            executionData = gson.fromJson(response.body().charStream(), listType);
+        } catch (JsonSyntaxException e) {
+            try {
+                SingleStepExecutionData singleObject = gson.fromJson(response.body().charStream(), singleObjectType);
+                executionData = new ArrayList<>();
+                executionData.add(singleObject);
+            } catch (JsonSyntaxException f) {
+                System.err.println("Failed to parse execution data: " + f.getMessage());
+            }
+        }
+
         for(SingleStepExecutionData step : executionData){
             currentExecutionSteps.getItems().add(step.getStepName());
         }
