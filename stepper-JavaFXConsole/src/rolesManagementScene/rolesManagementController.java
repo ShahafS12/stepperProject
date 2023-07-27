@@ -181,7 +181,7 @@ public class rolesManagementController
     }
     public void setChosenRoleData(RoleDefinition role)
     {
-        if(this.roleDefinition!=null && this.roleDefinition.getRoleName()!=role.getRoleName())
+        if(this.roleDefinition!=null && !this.roleDefinition.getRoleName().equals(role.getRoleName()) )
         {
             firstTime = true;
         }

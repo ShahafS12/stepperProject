@@ -17,8 +17,7 @@ public class Constants
     public final static String HISTORY_PAGE_FXML_RESOURCE_LOCATION = "/historyScene/historySceneBuilder.fxml";
     public final static String EXECUTION_PAGE_FXML_RESOURCE_LOCATION = "/executionScene/executionScene.fxml";
     public final static String ROLES_MANAGEMENT_PAGE_FXML_RESOURCE_LOCATION = "/rolesManagementScene/rolesManagementScene.fxml";
-    //public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/login/login.fxml";
-    //public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/chat/client/component/chatroom/chat-room-main.fxml";
+    public final static String USERS_MANAGEMENT_PAGE_FXML_RESOURCE_LOCATION = "/userManagementScene/userManagementUpdated.fxml";
 
     // Server resources locations
 
@@ -43,11 +42,9 @@ public class Constants
     public final static String GET_STEP_EXECUTION_STATISTICS = FULL_SERVER_PATH + "/getStepExecutionStatistics";
     public final static String CREATE_ROLE = FULL_SERVER_PATH + "/createRole";
     public final static String UPDATE_ROLE = FULL_SERVER_PATH + "/updateRole";
-    public final static String GET_USER = FULL_SERVER_PATH + "/getUser";
+    public final static String  UPDATE_USER = FULL_SERVER_PATH + "/updateUser";
     public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
-
     public final static String GET_USER = FULL_SERVER_PATH + "/getUser";
-    public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
 
 
 

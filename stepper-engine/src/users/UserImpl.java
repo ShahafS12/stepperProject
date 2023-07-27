@@ -27,6 +27,7 @@ public class UserImpl implements UserDefinition
         this.username = username;
         this.isAdmin = isAdmin;
         executionsCount = 0;
+
         roles = new HashSet<RoleDefinitionImpl>();
     }
     public String getUsername()

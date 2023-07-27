@@ -81,4 +81,17 @@ public class UserManager {
     }
 
 
+    public void updateUser(String userName, List<String> selectedRoles, boolean isManager)
+    {
+        UserDefinition user = getUser(userName);
+        if(user != null) {
+            user.setRoles(new HashSet<>(selectedRoles));
+            if(isManager) {
+                user.addRole("Manager");
+            }
+            else {
+                user.removeRole("Manager");
+            }
+        }
+    }
 }
