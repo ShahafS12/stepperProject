@@ -197,6 +197,27 @@ public class userManagementController {
         else {
             managerRadioButton.setSelected(false);
         }
+        managerRadioButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                selectedManager = true;
+            } else {
+                selectedManager = false;
+            }
+        });
+        chosenUserInfo.getChildren().add(managerRadioButton);
+        if(user.isManager())
+        {
+            Text assigned = new Text("ASSIGNED");
+            assigned.setStyle("-fx-font-weight: bold; -fx-fill: green");
+            chosenUserInfo.getChildren().add(assigned);
+            chosenUserInfo.getChildren().add(new Text("\n"));
+        }
+        else {
+            Text notAssigned = new Text("NOT ASSIGNED");
+            notAssigned.setStyle("-fx-font-weight: bold; -fx-fill: red");
+            chosenUserInfo.getChildren().add(notAssigned);
+            chosenUserInfo.getChildren().add(new Text("\n"));
+        }
         firstTime = false;
     }
     public void setHttpStatusUpdate(HttpStatusUpdate httpStatusUpdate)

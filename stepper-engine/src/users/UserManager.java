@@ -85,7 +85,7 @@ public class UserManager {
     {
         UserDefinition user = getUser(userName);
         if(user != null) {
-            user.setRoles(new HashSet<>(selectedRoles));
+            user.setRoles(new HashSet<>());
             if(isManager) {
                 user.addRole("Manager");
             }
