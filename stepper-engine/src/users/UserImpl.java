@@ -77,7 +77,21 @@ public class UserImpl implements UserDefinition
         this.isManager = isManager;
     }
 
+    @Override
+    public RoleDefinitionImpl getRole(String roleName) {
+        for (RoleDefinitionImpl role : roles)
+        {
+            if (role.getRoleName().equals(roleName))
+            {
+                return role;
+            }
+        }
+        return null;
+    }
+
     public boolean isManager() {
         return isManager;
     }
+
+
 }

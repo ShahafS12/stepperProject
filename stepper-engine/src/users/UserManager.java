@@ -2,6 +2,7 @@ package users;
 
 import roles.RoleDefinition;
 import roles.RoleDefinitionImpl;
+import roles.RoleManager;
 
 import java.util.*;
 
@@ -81,16 +82,30 @@ public class UserManager {
     }
 
 
-    public void updateUser(String userName, List<String> selectedRoles, boolean isManager)
+    public void updateUser(String userName, List<String> selectedRoles, boolean isManager, RoleManager roleManager)
     {
         UserDefinition user = getUser(userName);
+        Set<RoleDefinition> roles = roleManager.getRoles();
         if(user != null) {
-            user.setRoles(new HashSet<>(selectedRoles));
+            for (String role : selectedRoles) {
+                RoleDefinitionImpl roleInUser = user.getRole(role);
+                if (roleInUser == null){
+                    RoleDefinitionImpl newRole = (RoleDefinitionImpl) roleManager.getRole(role);
+                    newRole.addUserAssigned(user.getUsername());
+                    user.addRole(newRole);
+                }
+            }
+            for (RoleDefinitionImpl role : user.getRoles()){
+                if (!selectedRoles.contains(role.getRoleName())){
+                    role.removeUserAssigned(user.getUsername());
+                    user.removeRole(role.getRoleName());
+                }
+            }
             if(isManager) {
-                user.addRole("Manager");
+                user.setManager(true);
             }
             else {
-                user.removeRole("Manager");
+                user.setManager(false);
             }
         }
     }

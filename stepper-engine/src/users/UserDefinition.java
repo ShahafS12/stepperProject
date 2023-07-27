@@ -25,4 +25,6 @@ public interface UserDefinition {
 
     void setManager(boolean isManager);
 
+    RoleDefinitionImpl getRole(String roleName);
+
 }

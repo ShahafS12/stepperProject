@@ -13,8 +13,8 @@ public class RoleManager
         rolesSet.add(new RoleDefinitionImpl("All Flows", "All the roles in the system", new ArrayList<>()));
         rolesSet.add(new RoleDefinitionImpl("Read Only", "Read only access", new ArrayList<>()));
     }
-    public List<RoleDefinition> getRoles() {
-        return (List<RoleDefinition>) rolesSet;
+    public Set<RoleDefinition> getRoles() {
+        return rolesSet;
     }
     public List<String> getRolesNames(){
         List<String> names = new ArrayList<>();
