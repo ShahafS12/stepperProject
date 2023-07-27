@@ -32,17 +32,15 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import roles.RoleDefinitionImpl;
+import users.UserImpl;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-import static util.Constants.GET_FLOW_DEFINITION;
-import static util.Constants.REFRESH_RATE;
+import static util.Constants.*;
 
 public class ShowFlowController {
     private mainAdminController mainController;
@@ -115,7 +113,46 @@ public class ShowFlowController {
 
     public void setFlowsList(List<String> flowsNames) {
         flowsList.getItems().clear();
-        flowsList.getItems().addAll(flowsNames);
+
+        //Get the UserImpl and check his rolls to see what flows he can see
+        String finalUrl = "";
+        if (mainClientController != null) {
+            finalUrl = HttpUrl.parse(GET_USER)
+                    .newBuilder()
+                    .addQueryParameter("userName", mainClientController.getUserName())
+                    .build()
+                    .toString();
+
+
+            Response response = HttpClientUtil.run(finalUrl);
+            UserImpl userImpl = null;
+            if (response.isSuccessful()) {
+                String responseString = null;
+                try {
+                    responseString = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Gson gson = new GsonBuilder().create();
+                userImpl = gson.fromJson(responseString, UserImpl.class);
+            }
+
+            //Add the flows to the list
+            Set<RoleDefinitionImpl> rolls = userImpl.getRoles();
+                for (RoleDefinitionImpl roll : rolls) {
+                    List<String> flowsAllowed = roll.getFlowsAllowed();
+                    for (String flowName : flowsAllowed) {
+                        if (!flowsList.getItems().contains(flowName)) {
+                            flowsList.getItems().add(flowName);
+                        }
+                    }
+
+                }
+        }
+        else {
+            flowsList.getItems().addAll(flowsNames);
+        }
+
         flowsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 handleFlowSelection(newValue);

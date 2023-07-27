@@ -1,5 +1,8 @@
 package users;
 
+import roles.RoleDefinition;
+import roles.RoleDefinitionImpl;
+
 import java.util.*;
 
 /*
@@ -17,6 +20,9 @@ public class UserManager {
     }
 
 
+    public Set<UserDefinition> getUsersSet(){
+        return usersSet;
+    }
     public synchronized void addUser(String username) {
         UserDefinition user = new UserImpl(username, false);
         usersSet.add(user);
@@ -65,11 +71,11 @@ public class UserManager {
         return null;
     }
 
-    public void addRoleToUsers(List<String> usersAllowed, String roleName)
+    public void addRoleToUsers(List<String> usersAllowed, RoleDefinitionImpl role)
     {
         for(UserDefinition user : usersSet) {
             if(usersAllowed.contains(user.getUsername())) {
-                user.addRole(roleName);
+                user.addRole(role);
             }
         }
     }

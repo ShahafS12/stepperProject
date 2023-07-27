@@ -30,6 +30,7 @@ import mta.course.java.stepper.step.api.StepExecutionStatistics;
 import javafx.scene.control.TableColumn;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
+import users.UserImpl;
 import util.http.HttpClientUtil;
 
 
@@ -41,6 +42,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static util.Constants.GET_FLOWS_ADMIN_HISTORY;
+import static util.Constants.GET_USER;
 
 public class historySceneController {
 
@@ -205,9 +207,31 @@ public class historySceneController {
                 flowExecutionsStatisticsMap.putAll(map);
         }
 
+
         Iterator it = flowExecutionsStatisticsMap.entrySet().iterator();
 
-        while (it.hasNext()) {
+        String finalUrl2 = HttpUrl.parse(GET_USER)
+                .newBuilder()
+                .addQueryParameter("userName", executedUserName)
+                .build()
+                .toString();
+
+        Response response2 = HttpClientUtil.run(finalUrl);
+        UserImpl userImpl = null;
+        if (response2.isSuccessful()){
+            String responseString2 = null;
+            try {
+                responseString2 = response2.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Gson gson = new GsonBuilder().create();
+            userImpl = gson.fromJson(responseString2, UserImpl.class);
+        }
+
+        // if the user is manager he can see all the flows
+
+        while (it.hasNext() &&  !userImpl.isManager()) {
             Map.Entry pair = (Map.Entry)it.next();
             FlowExecutionStatistics flowExecutionStatistics = (FlowExecutionStatistics) pair.getValue();
             if (!flowExecutionStatistics.getExecutedUserName().equals(executedUserName)) {
