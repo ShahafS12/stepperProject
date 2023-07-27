@@ -8,5 +8,7 @@ public interface RoleDefinition
     String getRoleDescription();
     List<String> getFlowsAllowed();
     List<String> getUsersAssigned();
+    void setFlowsAllowed(List<String> flowsAllowed);
 
+    void setUsersAssigned(List<String> usersAllowed);
 }

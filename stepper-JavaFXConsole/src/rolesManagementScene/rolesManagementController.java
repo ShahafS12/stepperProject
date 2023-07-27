@@ -15,14 +15,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mainSceneAdmin.mainAdminController;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import roles.RoleDefinition;
 import roles.RoleDefinitionImpl;
@@ -30,12 +28,9 @@ import util.http.HttpClientUtil;
 
 import javafx.scene.text.Text;
 import java.io.IOException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-import static util.Constants.GET_ROLE_DEFINITION;
-import static util.Constants.REFRESH_RATE;
+import static util.Constants.*;
 
 public class rolesManagementController
 {
@@ -60,11 +55,15 @@ public class rolesManagementController
     private final BooleanProperty autoUpdate;
     private TimerTask listRefresher;
     private HttpStatusUpdate httpStatusUpdate;
+    private Set<String> selectedUsers = new HashSet<>();
+    private Set<String> selectedFlows = new HashSet<>();
+    private RoleDefinition roleDefinition;
+    private boolean firstTime = true;
 
     public void initialize(){
         if(availableRolesListView != null) {
             availableRolesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null) {
+                if (newValue != null&& !newValue.equals(oldValue)) {
                     handleRoleSelection(newValue);
                 }
             });
@@ -77,7 +76,29 @@ public class rolesManagementController
 
     @FXML
     public void SaveRoles(ActionEvent event) {
-        return;
+        Gson gson = new Gson();
+        if(this.roleDefinition!=null)
+        {
+            String[] jsonArray = {roleDefinition.getRoleName(),gson.toJson(selectedFlows),gson.toJson(selectedUsers)};
+            String json = gson.toJson(jsonArray);
+            RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+            Request request = new Request.Builder()
+                    .url(UPDATE_ROLE)
+                    .post(body)
+                    .build();
+            Response response = HttpClientUtil.run(request);
+            if(response.code() == 200)
+            {
+                errorMessageProperty.setValue("Role updated successfully");
+                errorMessageProperty.setValue("");
+            }
+            else
+            {
+                errorMessageProperty.setValue("Error updating role");
+            }
+            this.firstTime = true;//to refresh the list properly
+        }
+
     }
 
     @FXML
@@ -107,7 +128,7 @@ public class rolesManagementController
         availableRolesListView.getItems().clear();
         availableRolesListView.getItems().addAll(rolesList);
         availableRolesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) {
+            if(newValue != null&& !newValue.equals(oldValue)) {
                 handleRoleSelection(newValue);
             }
         });
@@ -148,7 +169,7 @@ public class rolesManagementController
                             String roleDefinitionFromServer = response.body().string();
                             Gson gson = new GsonBuilder()
                                     .create();
-                            RoleDefinitionImpl role = gson.fromJson(roleDefinitionFromServer, RoleDefinitionImpl.class);//todo need to create an adapter for role definition or to change it to impl
+                            RoleDefinitionImpl role = gson.fromJson(roleDefinitionFromServer, RoleDefinitionImpl.class);
                             setChosenRoleData(role);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -160,6 +181,11 @@ public class rolesManagementController
     }
     public void setChosenRoleData(RoleDefinition role)
     {
+        if(this.roleDefinition!=null && this.roleDefinition.getRoleName()!=role.getRoleName())
+        {
+            firstTime = true;
+        }
+        this.roleDefinition =  role;
         if(role == null)
         {
             return;
@@ -175,20 +201,100 @@ public class rolesManagementController
         description.setStyle("-fx-font-weight: bold");
         chosenRoleInfo.getChildren().add(description);
         chosenRoleInfo.getChildren().add(new Text(role.getRoleDescription() + "\n"));
-        Text availableFlows = new Text("Available flows: ");
-        availableFlows.setStyle("-fx-font-weight: bold");
-        chosenRoleInfo.getChildren().add(availableFlows);
-        for(String flow : role.getFlowsAllowed())
+        Text availableRolesToAssign = new Text("Available roles to assign: ");
+        availableRolesToAssign.setStyle("-fx-font-weight: bold");
+        chosenRoleInfo.getChildren().add(availableRolesToAssign);
+        String flowsToAssignUrl = HttpUrl.parse(FLOW_LIST)
+                .newBuilder()
+                .build()
+                .toString();
+        Response flowsResponse = HttpClientUtil.run(flowsToAssignUrl);
+        Gson gson = new Gson();
+        List<String> flowsList = gson.fromJson(flowsResponse.body().charStream(), List.class);
+        for(String flow : flowsList)
         {
-            chosenRoleInfo.getChildren().add(new Text(flow));
+
+            RadioButton radioButton = new RadioButton(flow);
+            if((role.getFlowsAllowed().contains(flow)&&firstTime) || selectedFlows.contains(flow))
+            {
+                //mark the radio button as selected
+                radioButton.setSelected(true);
+                selectedFlows.add(flow);
+            }
+            else {
+                radioButton.setSelected(false);
+            }
+            radioButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    selectedFlows.add(flow);
+                } else {
+                    selectedFlows.remove(flow);
+                }
+            });
+            if(role.getRoleName().equals("All Flows")||role.getRoleName().equals("Read Only"))
+            {
+                chosenRoleInfo.getChildren().add(new Text(flow));
+            }
+            else
+                chosenRoleInfo.getChildren().add(radioButton);
+            if(role.getFlowsAllowed().contains(flow))
+            {
+                Text assigned = new Text("ASSIGNED");
+                assigned.setStyle("-fx-font-weight: bold; -fx-fill: green");
+                chosenRoleInfo.getChildren().add(assigned);
+                chosenRoleInfo.getChildren().add(new Text("\n"));
+            }
+            else {
+                Text notAssigned = new Text("NOT ASSIGNED");
+                notAssigned.setStyle("-fx-font-weight: bold; -fx-fill: red");
+                chosenRoleInfo.getChildren().add(notAssigned);
+                chosenRoleInfo.getChildren().add(new Text("\n"));
+            }
         }
-        Text assignedUsers = new Text("Assigned users: ");
-        assignedUsers.setStyle("-fx-font-weight: bold");
-        chosenRoleInfo.getChildren().add(assignedUsers);
-        for(String user : role.getUsersAssigned())
+        Text availableUsersToAssign = new Text("Available users to assign: ");
+        availableUsersToAssign.setStyle("-fx-font-weight: bold");
+        chosenRoleInfo.getChildren().add(availableUsersToAssign);
+        String usersToAssignUrl = HttpUrl.parse(USER_LIST)
+                .newBuilder()
+                .build()
+                .toString();
+        Response usersResponse = HttpClientUtil.run(usersToAssignUrl);
+        List<String> usersList = gson.fromJson(usersResponse.body().charStream(), List.class);
+        for(String user : usersList)
         {
-            chosenRoleInfo.getChildren().add(new Text(user));
+            RadioButton radioButton = new RadioButton(user);
+            if((role.getUsersAssigned().contains(user)&&firstTime) || selectedUsers.contains(user))
+            {
+                //mark the radio button as selected
+                radioButton.setSelected(true);
+                selectedUsers.add(user);
+            }
+            else {
+                radioButton.setSelected(false);
+            }
+            radioButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    selectedUsers.add(user);
+                } else {
+                    selectedUsers.remove(user);
+                }
+            });
+            chosenRoleInfo.getChildren().add(radioButton);
+            if(role.getUsersAssigned().contains(user))
+            {
+                Text assigned = new Text("ASSIGNED");
+                assigned.setStyle("-fx-font-weight: bold; -fx-fill: green");
+                chosenRoleInfo.getChildren().add(assigned);
+                chosenRoleInfo.getChildren().add(new Text("\n"));
+            }
+            else {
+                Text notAssigned = new Text("NOT ASSIGNED");
+                notAssigned.setStyle("-fx-font-weight: bold; -fx-fill: red");
+                chosenRoleInfo.getChildren().add(notAssigned);
+                chosenRoleInfo.getChildren().add(new Text("\n"));
+            }
         }
+        firstTime = false;
     }
     public void startListRefresher(){
         listRefresher = new RolesListRefresher(

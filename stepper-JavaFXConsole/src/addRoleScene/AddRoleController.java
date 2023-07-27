@@ -2,13 +2,12 @@ package addRoleScene;
 
 
 import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,7 @@ import util.http.HttpClientUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static util.Constants.*;
 
@@ -29,10 +29,10 @@ public class AddRoleController
     private TextField roleDescriptionField;
 
     @FXML
-    private ComboBox<String> assignedUsersBox;
+    private VBox assignedUsersBox;
 
     @FXML
-    private ComboBox<String> assignedFlowsBox;
+    private VBox assignedFlowsBox;
 
     @FXML
     private Button createRoleButton;
@@ -40,8 +40,8 @@ public class AddRoleController
     private List<String> flowsList;
     public AddRoleController()
     {
-        assignedUsersBox = new ComboBox<>();
-        assignedFlowsBox = new ComboBox<>();
+        assignedUsersBox = new VBox();
+        assignedFlowsBox = new VBox();
         String userListURL = HttpUrl.parse(USER_LIST)
                 .newBuilder()
                 .build()
@@ -82,12 +82,12 @@ public class AddRoleController
         //populate the users combo box using the usersList
         for(String user : usersList)
         {
-            assignedUsersBox.getItems().add(user);
+            assignedUsersBox.getChildren().add(new RadioButton(user));
         }
         //populate the flows combo box using the flowsList
         for(String flow : flowsList)
         {
-            assignedFlowsBox.getItems().add(flow);
+            assignedFlowsBox.getChildren().add(new RadioButton(flow));
         }
     }
     @FXML
@@ -95,8 +95,16 @@ public class AddRoleController
     {
         String roleName = roleNameField.getText();
         String roleDescription = roleDescriptionField.getText();
-        List<String> flowsAllowed = assignedFlowsBox.getItems();
-        List<String> usersAllowed = assignedUsersBox.getItems();
+        List<String> flowsAllowed = assignedFlowsBox.getChildren().stream()
+                .map(node -> (RadioButton) node)
+                .filter(RadioButton::isSelected)
+                .map(RadioButton::getText)
+                .collect(Collectors.toList());
+        List<String> usersAllowed = assignedUsersBox.getChildren().stream()
+                .map(node -> (RadioButton) node)
+                .filter(RadioButton::isSelected)
+                .map(RadioButton::getText)
+                .collect(Collectors.toList());
         Gson gson = new Gson();
         String[] jsonArray = {roleName, roleDescription, gson.toJson(flowsAllowed), gson.toJson(usersAllowed)};
         String json = gson.toJson(jsonArray);
@@ -127,11 +135,17 @@ public class AddRoleController
                 }
                 else
                 {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Role creation failed.");
-                    alert.showAndWait();
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(null);
+                        try {
+                            alert.setContentText("Role creation failed " + response.body().string() + " " + response.code());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        alert.showAndWait();
+                    });
                 }
 
             }

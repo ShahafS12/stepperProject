@@ -10,7 +10,8 @@ public class RoleManager
     private static Set<RoleDefinition> rolesSet;
     public RoleManager() {
         rolesSet = new HashSet<>();
-        rolesSet.add(new RoleDefinitionImpl("admin", "admin", null));
+        rolesSet.add(new RoleDefinitionImpl("All Flows", "All the roles in the system", new ArrayList<>()));
+        rolesSet.add(new RoleDefinitionImpl("Read Only", "Read only access", new ArrayList<>()));
     }
     public List<RoleDefinition> getRoles() {
         return (List<RoleDefinition>) rolesSet;
@@ -44,5 +45,22 @@ public class RoleManager
             }
         }
         return null;
+    }
+    public void addFlowToRole(String roleName, String flowName) {
+        for(RoleDefinition role : rolesSet) {
+            if(role.getRoleName().equals(roleName)) {
+                role.getFlowsAllowed().add(flowName);
+            }
+        }
+    }
+
+    public void updateRole(String roleName, List<String> flowsAllowed, List<String> usersAllowed)
+    {
+        for(RoleDefinition role : rolesSet) {
+            if(role.getRoleName().equals(roleName)) {
+                role.setFlowsAllowed(flowsAllowed);
+                role.setUsersAssigned(usersAllowed);
+            }
+        }
     }
 }
