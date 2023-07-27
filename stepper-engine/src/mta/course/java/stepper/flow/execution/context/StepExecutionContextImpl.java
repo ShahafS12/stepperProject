@@ -39,6 +39,18 @@ public class StepExecutionContextImpl implements StepExecutionContext {
         flowFreeInputs = new HashMap<>();
         flowDef = flowDefinition;
     }
+    public StepExecutionContextImpl(){
+        dataValues = new HashMap<>();
+        dataDefinitions = new HashMap<>();
+        logs = new HashMap<>();
+        summaryLines = new HashMap<>();
+        FlowLevelAliases = new HashMap<>();
+        CustomMapping = new HashMap<>();
+        AutoMappingMap = new HashMap<>();
+        stepAliases = new HashMap<>();
+        flowFreeInputs = new HashMap<>();
+        flowDef = null;
+    }
 
     @Override
     public void addLogLine(String key, String log) {

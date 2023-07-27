@@ -170,7 +170,12 @@ public class userManagementController {
             }
             else
                 chosenUserInfo.getChildren().add(radioButton);
-            if(user.getRoles().contains(role))
+            Set<String> userRoles = new HashSet<>();
+            for(RoleDefinitionImpl roleDefinition : user.getRoles())
+            {
+                userRoles.add(roleDefinition.getRoleName());
+            }
+            if(userRoles.contains(role))
             {
                 Text assigned = new Text("ASSIGNED");
                 assigned.setStyle("-fx-font-weight: bold; -fx-fill: green");

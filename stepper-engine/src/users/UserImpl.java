@@ -3,9 +3,7 @@ package users;
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import roles.RoleDefinitionImpl;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class UserImpl implements UserDefinition
 {
@@ -41,6 +39,15 @@ public class UserImpl implements UserDefinition
     public Set<RoleDefinitionImpl> getRoles()
     {
         return roles;
+    }
+    public List<String> getRolesNames()
+    {
+        List<String> rolesNames = new ArrayList<>();
+        for (RoleDefinitionImpl role : roles)
+        {
+            rolesNames.add(role.getRoleName());
+        }
+        return rolesNames;
     }
     public void setRoles(Set<RoleDefinitionImpl> roles)
     {

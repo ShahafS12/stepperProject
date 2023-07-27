@@ -51,14 +51,17 @@ public class mainClientController implements HttpStatusUpdate
         if(topClientComponentController != null && ShowFlowComponentController != null)
         {
             topClientComponentController.setMainSceneClientController(this);
+            topClientComponentController.setHttpStatusUpdate(this);
             ShowFlowComponentController.setMainSceneClientController(this);
             ShowFlowComponentController.setHttpStatusUpdate(this);
+
         }
-        setActive();
+
     }
     public void updateUserName(String userName)
     {
         topClientComponentController.setClientName(userName);
+        setActive();
     }
     public String getUserName()
     {
@@ -239,6 +242,7 @@ public class mainClientController implements HttpStatusUpdate
     }
     public void setActive(){
         ShowFlowComponentController.startListRefresher();
+        topClientComponentController.StartTopRefresher();
     }
 
     public void close()
