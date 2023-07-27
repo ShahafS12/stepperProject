@@ -22,7 +22,8 @@ public class UpdateExistingUserServlet extends HttpServlet
             List<String> selectedRoles = gson.fromJson(data[1], List.class);
             boolean isManager = gson.fromJson(data[2], boolean.class);
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            userManager.updateUser(userName, selectedRoles, isManager);
+            RoleManager roleManager = ServletUtils.getRoleManager(getServletContext());
+            userManager.updateUser(userName, selectedRoles, isManager, roleManager);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

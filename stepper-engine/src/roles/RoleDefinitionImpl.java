@@ -50,4 +50,11 @@ public class RoleDefinitionImpl implements RoleDefinition
         this.usersAssigned = usersAssigned;
     }
 
+    public void addUserAssigned(String username) {
+        usersAssigned.add(username);
+    }
+
+    public void removeUserAssigned(String username) {
+        usersAssigned.remove(username);
+    }
 }
