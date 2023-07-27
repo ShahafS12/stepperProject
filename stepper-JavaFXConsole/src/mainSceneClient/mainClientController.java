@@ -47,6 +47,7 @@ public class mainClientController implements HttpStatusUpdate
     @FXML
     public void initialize()
     {
+        topClientComponentController.setIsManager(false); // default NO manager
         if(topClientComponentController != null && ShowFlowComponentController != null)
         {
             topClientComponentController.setMainSceneClientController(this);

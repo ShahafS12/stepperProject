@@ -1,5 +1,6 @@
 package roles;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,4 +49,5 @@ public class RoleDefinitionImpl implements RoleDefinition
     public void setUsersAssigned(List<String> usersAssigned) {
         this.usersAssigned = usersAssigned;
     }
+
 }

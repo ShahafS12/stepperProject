@@ -49,8 +49,11 @@ public class topClientController {
     public void setClientName(String clientName) {
         this.clientName.setText(clientName);
     }
-    public void setIsManager(String isManager) {
-        this.isManager.setText(isManager);
+    public void setIsManager(boolean isManager) {
+        if (isManager)
+            this.isManager.setText("Yes");
+        else
+            this.isManager.setText("No");
     }
     public void setAssignedRoles(String assignedRoles) {
         this.assignedRoles.setText(assignedRoles);

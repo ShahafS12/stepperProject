@@ -46,6 +46,10 @@ public class Constants
     public final static String GET_USER = FULL_SERVER_PATH + "/getUser";
     public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
 
+    public final static String GET_USER = FULL_SERVER_PATH + "/getUser";
+    public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
+
+
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

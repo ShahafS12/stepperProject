@@ -69,7 +69,7 @@ public class loginServlet extends HttpServlet
             }
         } else {
             //user is already logged in
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
         }
     }
 }

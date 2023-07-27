@@ -1,7 +1,9 @@
 package users;
 
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
+import roles.RoleDefinitionImpl;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,10 +11,11 @@ public class UserImpl implements UserDefinition
 {
     private final String username;
     private final boolean isAdmin;
-    private Set<String> roles;
+    private boolean isManager  = false;
+    private Set<RoleDefinitionImpl> roles;
     private Map<Integer, FlowExecutionStatistics> executionHistory;
     private int executionsCount;
-    public UserImpl(String username, boolean isAdmin, Set<String> roles)
+    public UserImpl(String username, boolean isAdmin, Set<RoleDefinitionImpl> roles)
     {
         this.username = username;
         this.isAdmin = isAdmin;
@@ -24,6 +27,7 @@ public class UserImpl implements UserDefinition
         this.username = username;
         this.isAdmin = isAdmin;
         executionsCount = 0;
+        roles = new HashSet<RoleDefinitionImpl>();
     }
     public String getUsername()
     {
@@ -33,21 +37,29 @@ public class UserImpl implements UserDefinition
     {
         return isAdmin;
     }
-    public Set<String> getRoles()
+    public Set<RoleDefinitionImpl> getRoles()
     {
         return roles;
     }
-    public void setRoles(Set<String> roles)
+    public void setRoles(Set<RoleDefinitionImpl> roles)
     {
         this.roles = roles;
     }
-    public void addRole(String role)
+    public void addRole(RoleDefinitionImpl role)
     {
         roles.add(role);
     }
     public void removeRole(String role)
     {
-        roles.remove(role);
+        for (RoleDefinitionImpl roleDefinition : roles)
+        {
+            if (roleDefinition.getRoleName().equals(role))
+            {
+                roles.remove(roleDefinition);
+                return;
+            }
+        }
+
     }
     public Map<Integer, FlowExecutionStatistics> getExecutionHistory()
     {
@@ -57,5 +69,14 @@ public class UserImpl implements UserDefinition
     {
         executionHistory.put(executionsCount, statistics);
         executionsCount++;
+    }
+
+    @Override
+    public void setManager(boolean isManager) {
+        this.isManager = isManager;
+    }
+
+    public boolean isManager() {
+        return isManager;
     }
 }

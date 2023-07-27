@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import roles.RoleDefinition;
+import roles.RoleDefinitionImpl;
 import roles.RoleManager;
 import users.UserManager;
 import utils.ServletUtils;
@@ -33,9 +35,10 @@ public class CreateRoleServlet extends HttpServlet
             response.getWriter().println("Role name already exists");
             return;
         }
-        roleManager.addRole(roleName, roleDescription, flowsAllowed, usersAllowed);
+        RoleDefinitionImpl role = new RoleDefinitionImpl(roleName, roleDescription, flowsAllowed, usersAllowed);
+        roleManager.addRole(role);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        userManager.addRoleToUsers(usersAllowed, roleName);
+        userManager.addRoleToUsers(usersAllowed, role);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

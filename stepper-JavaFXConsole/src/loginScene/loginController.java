@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -66,10 +67,14 @@ public class loginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException
             {
                 if (response.code() != 200) {
-                    String responseBody = response.body().string();
-                    Platform.runLater(() ->
-                            errorMessageProperty.set("Something went wrong: " + responseBody)//todo check how to print the error message to screen
-                    );
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        String title = "Login failed";
+                        alert.setTitle(title);
+                        alert.setHeaderText(null);
+                        alert.setContentText("User already exists");
+                        alert.showAndWait();
+                    });
                 } else {
                     Platform.runLater(() -> {
                                 System.out.println("Login successful");
