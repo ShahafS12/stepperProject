@@ -2,6 +2,7 @@ package users;
 
 import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class UserImpl implements UserDefinition
         this.username = username;
         this.isAdmin = isAdmin;
         executionsCount = 0;
+        this.roles = new HashSet<>();
     }
     public String getUsername()
     {
@@ -57,5 +59,10 @@ public class UserImpl implements UserDefinition
     {
         executionHistory.put(executionsCount, statistics);
         executionsCount++;
+    }
+
+    public boolean isManager()
+    {
+        return roles.contains("Manager");
     }
 }

@@ -37,6 +37,7 @@ import topScene.topAdminController;
 import StatisticsScene.statisticsController;
 import executionScene.executionController;
 import historyScene.historySceneController;
+import userManagementScene.userManagementController;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class mainAdminController implements HttpStatusUpdate
     private BorderPane mainBorder;
     private statisticsController statisticsController;
     private rolesManagementController rolesManagementController;
+    private userManagementController userManagementController;
     private FlowDefinition toReturn;
     private executionController executionController;
     private MenuVariables menuVariables;
@@ -465,5 +467,23 @@ public class mainAdminController implements HttpStatusUpdate
 
     public void switchToUserManagementScene(ActionEvent event)
     {
+        if(userManagementController == null){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(USERS_MANAGEMENT_PAGE_FXML_RESOURCE_LOCATION));
+            try {
+                Parent executionRoot = loader.load();
+                userManagementController = loader.getController();
+                userManagementController.setMainController(this);
+                userManagementController.setHttpStatusUpdate(this);
+                userManagementController.startListRefresher();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try{
+            AnchorPane view = userManagementController.getUserManagementAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
