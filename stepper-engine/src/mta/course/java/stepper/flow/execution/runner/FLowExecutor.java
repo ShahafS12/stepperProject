@@ -197,7 +197,8 @@ public class FLowExecutor {
     }
     public FlowExecutionStatistics executeFlowUI(FlowExecution flowExecution, List<Object> mandatoryInputsTXT, List<Object> optionalInputsTXT,
                                                  List<InputWithStepName> outputs,List<SingleStepExecutionData> singleStepExecutionDataList,
-                                                 Map<String, StepExecutionStatistics> stepExecutionStatisticsMap, String executedUser){
+                                                 Map<String, StepExecutionStatistics> stepExecutionStatisticsMap, String executedUser, Map<String, String> flowLevelAliasingMap,
+                                                 Map<String, Class<?>> allInputs){
         List<InputWithStepName> mandatoryInputs = flowExecution.getFlowDefinition().getMandatoryInputs();
         List<InputWithStepName> optionalInputs = flowExecution.getFlowDefinition().getOptionalInputs();
         Instant executionStartTimeInstant = Instant.now();
@@ -232,6 +233,10 @@ public class FLowExecutor {
         }
         for(StepUsageDeclaration step : flowExecution.getFlowDefinition().getFlowSteps()){
             context.addStepAlias(step.getStepName(), step.getFinalStepName(), step.skipIfFail());
+        }
+        for (String key : flowLevelAliasingMap.keySet()){
+            String value = flowLevelAliasingMap.get(key);
+            context.addFlowLevelAlias(key, value, allInputs.get(value));
         }
         // start actual execution
         try {

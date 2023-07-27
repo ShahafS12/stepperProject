@@ -173,7 +173,7 @@ public class MenuVariables
             FLowExecutor fLowExecutor = new FLowExecutor();
             FlowExecutionStatistics currentStats = fLowExecutor.executeFlowUI(flowExecutionMapFromFlowName.get(chosenFlow.getName()),
                     mandatoryInputs, optionalInputs, outputs, executionData,
-                    stepExecutionStatisticsMap, "");
+                    stepExecutionStatisticsMap, "", chosenFlow.getFlowLevelAliasMap(), chosenFlow.getAllInputs());
 
             synchronized (this) {
                 currentStatsFlowExecuted = currentStats;

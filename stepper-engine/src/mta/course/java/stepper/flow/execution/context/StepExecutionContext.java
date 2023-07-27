@@ -1,6 +1,7 @@
 package mta.course.java.stepper.flow.execution.context;
 
 import mta.course.java.stepper.dd.api.DataDefinition;
+import mta.course.java.stepper.dd.impl.DataDefinitionRegistry;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,6 +22,9 @@ public interface StepExecutionContext {
     public String getCustomMapping(String key);
     public String getStepAlias(String key);
     Object dataValueReturn (String key);
+
+    void addFlowLevelAlias(String key, String alias, Class<?> theExpectedDataType);
+    public DataDefinitionRegistry getDataDefinitionRegistry(Class<?> theExpectedDataType);
 
 
     /*
