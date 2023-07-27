@@ -56,6 +56,14 @@ public class UserManager {
         }
         return false;
     }
+    public UserDefinition getUser(String username) {
+        for(UserDefinition user : usersSet) {
+            if(user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
 
     public void addRoleToUsers(List<String> usersAllowed, String roleName)
     {
