@@ -72,9 +72,17 @@
         <servlet-name>ExampleJsonServlet</servlet-name>
         <servlet-class>servlets.ExampleJsonServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetUserServlet</servlet-name>
+        <servlet-class>servlets.GetUserServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ExampleJsonServlet</servlet-name>
         <url-pattern>/exampleJson</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetUserServlet</servlet-name>
+        <url-pattern>/getUser</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateRoleServlet</servlet-name>
