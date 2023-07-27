@@ -539,8 +539,8 @@ public class executionController {
             buttons[i].setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    FlowDefinition flow = mainController.getFlowDefinition(continuation.getTargetFlow());
-                    mainController.switchToExecutionSceneWithContinuation(event, flow, continuation.getContinuationMapping());
+                    FlowDefinition flow = mainClientController.getFlowDefinition(continuation.getTargetFlow());
+                    mainClientController.switchToExecutionSceneWithContinuation(event, flow, continuation.getContinuationMapping());
                 }
             });
             continuationVbox.getChildren().add(buttons[i]);
@@ -549,7 +549,7 @@ public class executionController {
     }
     public void fillContinuationMap(Map<String, List<String>> continuationMapping){//todo: this should be done in the engine
         this.continuationMap = new HashMap<>();
-        Map<String,Object> inputs = mainController.getMenuVariables().getCurrentStatsFlowExecuted().getUserInputsMap();
+        Map<String,Object> inputs = mainClientController.getMenuVariables().getCurrentStatsFlowExecuted().getUserInputsMap();
         for(String key : inputs.keySet()){
             this.continuationMap.put(key, inputs.get(key));
         }

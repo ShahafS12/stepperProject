@@ -80,24 +80,20 @@ public class topAdminController
         }
         String finalUrl = HttpUrl.parse(ADD_XML_PAGE)
                 .newBuilder()
-                .addQueryParameter("xmlFile", file.getAbsolutePath())//todo check if this is the right way to send the file
+                .addQueryParameter("xmlFile", file.getAbsolutePath())
                 .build().toString();
         updateHttpStatusLine("New load request is launched for: " + finalUrl);
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        errorMessageProperty.set("Something went wrong: " + e.getMessage()
-
-                ));
-
+                Platform.runLater(() -> showErrorDialog("Error", "Invalid XML file"));
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.code() != 200){
                     String responseBody = response.body().string();
                     Platform.runLater(() ->
-                            showErrorDialog("Error", "Something went wrong: " + responseBody)
+                            showErrorDialog("Error",  responseBody)
                     );
 
                 }

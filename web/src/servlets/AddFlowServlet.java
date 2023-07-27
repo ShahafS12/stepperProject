@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class AddFlowServlet extends HttpServlet
 {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)//todo should it be doPost?
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException//todo should it be doPost?
     {
         String filePath = request.getParameter("xmlFile");
         File file = new File(filePath);
@@ -117,7 +117,8 @@ public class AddFlowServlet extends HttpServlet
             }
         } catch (Exception e) {
             System.out.println("Invalid XML file");
-            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(e.getMessage());
         }
     }
 }
