@@ -64,6 +64,7 @@ public class ShowFlowController {
     private Stage stage;
     private HttpStatusUpdate httpStatusUpdate;
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
+    private int stepDetailsButtonClicked = -1;
 
     public ShowFlowController()
     {
@@ -109,6 +110,8 @@ public class ShowFlowController {
     }
     public void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
+        //remove the execute button
+        executeButton.setVisible(false);
     }
 
     public void setFlowsList(List<String> flowsNames) {
@@ -181,6 +184,7 @@ public class ShowFlowController {
     private void handleFlowSelection(String newValue)
     {
         lastSelectedFlow = newValue;
+        stepDetailsButtonClicked = -1;
         String finalUrl = HttpUrl.parse(GET_FLOW_DEFINITION)
                 .newBuilder()
                 .addQueryParameter("flowName", newValue)
@@ -283,7 +287,9 @@ public class ShowFlowController {
                 chosenFlowData.getChildren().add(new Text(step.getStepName()));
             hBoxes[i] = new HBox();
             buttons[i] = new Button("Show Step Details" + "\n");
+            int finalI = i;
             buttons[i].setOnAction(event -> {
+                stepDetailsButtonClicked = finalI;
                 chosenFlowData.getChildren().clear();
                 chosenFlowData.getChildren().add(new Text(step.getStepName() + "," + step.getFinalStepName()));
                 chosenFlowData.getChildren().add(new Text("\n" + "Inputs (Name, Necessity/Connected to output):" + "\n"));
@@ -350,6 +356,8 @@ public class ShowFlowController {
             chosenFlowData.getChildren().add(hBoxes[i]);
             chosenFlowData.getChildren().add(new Text("\n"));
         }
+        if(stepDetailsButtonClicked!=-1)
+            buttons[stepDetailsButtonClicked].fire();
     }
     public void setHttpStatusUpdate(HttpStatusUpdate httpStatusUpdate) {
         this.httpStatusUpdate = httpStatusUpdate;
