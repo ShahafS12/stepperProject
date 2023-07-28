@@ -34,9 +34,11 @@ public class FlowManager
     private static ExecutorService executorService;
     private static int uniqueFlowIdCounter = 1;
     private static FlowExecutionStatistics currentStatsFlowExecuted;
+    private Map<String, FlowExecutionStatistics> mapUserToCurrentStatsFlowExecuted;
     private static Map<Integer, FlowExecutionStatistics> stats;
     private static Map<String, FlowExecutionsStatistics> flowExecutionsStatisticsMap;
     private static List<SingleStepExecutionData> latestExecutionData;
+    private Map <String, List<SingleStepExecutionData>> mapUserToLatestExecutionData;
 
     public FlowManager() {
         flowsSet = new HashSet<>();
@@ -47,6 +49,8 @@ public class FlowManager
         this.stats = Collections.synchronizedMap(new HashMap<Integer, FlowExecutionStatistics>());
         this.flowExecutionsStatisticsMap = new HashMap<String, FlowExecutionsStatistics>();
         this.latestExecutionData = new ArrayList<>();
+        this.mapUserToCurrentStatsFlowExecuted = new HashMap<>();
+        this.mapUserToLatestExecutionData = new HashMap<>();
     }
     public void setExecutorService(int maxThreads) {
         this.executorService = Executors.newFixedThreadPool(maxThreads);
@@ -60,6 +64,9 @@ public class FlowManager
     }
     public Map<String, FlowExecutionsStatistics> getFlowExecutionsStatisticsMap() {
         return flowExecutionsStatisticsMap;
+    }
+    public FlowExecutionStatistics getCurrentStatsFlowExecuted(String userName) {
+        return mapUserToCurrentStatsFlowExecuted.get(userName);
     }
     public Map<Integer, FlowExecutionStatistics> getStats() { return stats;}
     public static Set<FlowDefinition> getFlows()
@@ -182,8 +189,8 @@ public class FlowManager
         }
         return flowNames;
     }
-    public List<SingleStepExecutionData> getLatestExecutionData() {
-        return latestExecutionData;
+    public List<SingleStepExecutionData> getLatestExecutionData(String userName) {
+        return mapUserToLatestExecutionData.get(userName);
     }
     public void executeFlow(FlowDefinition chosenFlow, List<Object> mandatoryInputs, List<Object> optionalInputs, List<InputWithStepName> outputs,
                             List<SingleStepExecutionData> executionData, CountDownLatch latch, String userName)
@@ -209,6 +216,9 @@ public class FlowManager
             latestExecutionData = executionData;
             this.latch = latch;
             this.userName = userName;
+            synchronized (this) {
+                mapUserToLatestExecutionData.put(userName, executionData);
+            }
         }
         public synchronized Integer getUniqueFlowExecutionIdCounter() {
             return uniqueFlowIdCounter;
@@ -230,6 +240,7 @@ public class FlowManager
 
             synchronized (this) {
                 currentStatsFlowExecuted = currentStats;
+                mapUserToCurrentStatsFlowExecuted.put(userName, currentStats); // user executed -> currentStats
                 stats.put(currentFlowExecutionIdCounter, currentStats);
             }
 

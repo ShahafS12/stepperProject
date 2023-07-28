@@ -84,9 +84,17 @@
         <servlet-name>DeleteRoleServlet</servlet-name>
         <servlet-class>servlets.DeleteRoleServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetCurrentStatsFlowExeServlet</servlet-name>
+        <servlet-class>servlets.GetCurrentStatsFlowExeServlet</servlet-class>
+    </servlet>
 
 
 
+    <servlet-mapping>
+        <servlet-name>GetCurrentStatsFlowExeServlet</servlet-name>
+        <url-pattern>/getCurrentStatsFlowExe</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DeleteRoleServlet</servlet-name>
         <url-pattern>/deleteRole</url-pattern>

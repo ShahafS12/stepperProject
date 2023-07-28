@@ -19,7 +19,8 @@ public class GetExecutionDataServlet extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response){
         response.setContentType("application/json");
         FlowManager flowManager = ServletUtils.getFlowManager(getServletContext());
-        List<SingleStepExecutionData> executionData = flowManager.getLatestExecutionData();
+        String userName = request.getParameter("userName");
+        List<SingleStepExecutionData> executionData = flowManager.getLatestExecutionData(userName);
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(SingleStepExecutionData.class, new SingleStepExecutionAdapter())
                 .create();
