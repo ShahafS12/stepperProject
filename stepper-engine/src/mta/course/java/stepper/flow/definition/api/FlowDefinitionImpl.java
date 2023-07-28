@@ -37,7 +37,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
 
     private boolean readonly;
 
-    public FlowDefinitionImpl(String name, String description) {//TODO delete this after we are sure we don't need it
+    public FlowDefinitionImpl(String name, String description) {
         this.name = name;
         this.description = description;
         mandatoryInputs = new ArrayList<>();

@@ -159,7 +159,7 @@ public class historySceneController {
                 flowExecutionsStatisticsMap.putAll(map);
         }
 
-        //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats(); // TODO: get stats from flow manager
+        //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats();
         ObservableMap<Integer, FlowExecutionStatistics> observableMap = FXCollections.observableMap(flowExecutionsStatisticsMap);
         ObservableList<FlowExecutionStatistics> rowData = FXCollections.observableArrayList();
 
