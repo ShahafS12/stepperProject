@@ -11,4 +11,6 @@ public interface RoleDefinition
     void setFlowsAllowed(List<String> flowsAllowed);
 
     void setUsersAssigned(List<String> usersAllowed);
+
+    public void addUserAssigned(String username);
 }

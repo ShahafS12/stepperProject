@@ -216,7 +216,7 @@ public class historySceneController {
                 .build()
                 .toString();
 
-        Response response2 = HttpClientUtil.run(finalUrl);
+        Response response2 = HttpClientUtil.run(finalUrl2);
         UserImpl userImpl = null;
         if (response2.isSuccessful()){
             String responseString2 = null;
@@ -239,7 +239,7 @@ public class historySceneController {
             }
         }
 
-        //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats(); // TODO: get stats from flow manager
+        //Map<Integer, FlowExecutionStatistics> flowExecutionsStatisticsMap = mainController.getMenuVariables().getStats();
         ObservableMap<Integer, FlowExecutionStatistics> observableMap = FXCollections.observableMap(flowExecutionsStatisticsMap);
         ObservableList<FlowExecutionStatistics> rowData = FXCollections.observableArrayList();
 

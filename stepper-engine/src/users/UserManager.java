@@ -103,6 +103,9 @@ public class UserManager {
             }
             if(isManager) {
                 user.setManager(true);
+                RoleDefinition roleAllFlows = roleManager.getRole("All Flows");
+                roleManager.getRole("All Flows").addUserAssigned(user.getUsername());
+                user.addRole((RoleDefinitionImpl) roleAllFlows);
             }
             else {
                 user.setManager(false);
