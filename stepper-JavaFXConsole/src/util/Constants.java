@@ -45,6 +45,7 @@ public class Constants
     public final static String  UPDATE_USER = FULL_SERVER_PATH + "/updateUser";
     public final static String EXAMPLE_JSON = FULL_SERVER_PATH + "/exampleJson";
     public final static String GET_USER = FULL_SERVER_PATH + "/getUser";
+    public final static String DELETE_ROLE = FULL_SERVER_PATH + "/deleteRole";
 
 
 

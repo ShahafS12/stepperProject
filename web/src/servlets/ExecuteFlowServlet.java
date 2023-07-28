@@ -81,7 +81,7 @@ public class ExecuteFlowServlet extends HttpServlet
         catch (Exception e){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println(e.getMessage());
-        }
+        }//todo add to web xml
     }
 }
 

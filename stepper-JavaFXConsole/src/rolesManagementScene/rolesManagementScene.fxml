@@ -36,9 +36,17 @@
                               </VBox>
                            </content>
                         </ScrollPane>
-                        <FlowPane alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="82.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="298.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="345.0">
+                        <FlowPane alignment="BOTTOM_RIGHT" layoutX="201.0" prefHeight="25.0" prefWidth="150.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="201.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="345.0">
                            <children>
-                              <Button fx:id="SaveButton" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" graphicTextGap="2.0" mnemonicParsing="false" onAction="#SaveRoles" text="Save" />
+                              <Button fx:id="SaveButton" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" graphicTextGap="2.0" mnemonicParsing="false" onAction="#SaveRoles" text="Save">
+                                 <FlowPane.margin>
+                                    <Insets right="15.0" />
+                                 </FlowPane.margin></Button>
+                              <Button fx:id="deleteRoleButton" mnemonicParsing="false" onAction="#deleteRole" text="delete role">
+                                 <FlowPane.margin>
+                                    <Insets right="15.0" />
+                                 </FlowPane.margin>
+                              </Button>
                            </children>
                         </FlowPane>
                      </children>
