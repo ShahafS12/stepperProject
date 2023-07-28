@@ -54,7 +54,7 @@ public class ExecuteFlowServlet extends HttpServlet
             int uniqueFlowId = flowManager.getUniqueFlowIdCounter();//todo this might need to be synchronized
             for(StepUsageDeclaration stepUsageDeclaration : chosenFlow.getFlowSteps()){
                 if(stepUsageDeclaration.getStepName().equals("Spend Some Time")
-                ){//fixing it comes as double from the client
+                || stepUsageDeclaration.getStepName().equals("Files Content Extractor")){//fixing it comes as double from the client
                     for(int i = 0;i<mandatoryInputsList.size();i++){
                         if(mandatoryInputsList.get(i) instanceof Double){
                             mandatoryInputsList.set(i, ((Number) mandatoryInputsList.get(i)).intValue());

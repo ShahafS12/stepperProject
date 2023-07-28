@@ -60,7 +60,7 @@
 			</ST-CustomMappings>		
 			<ST-InitialInputValues>
 				<ST-InitialInputValue input-name="PROTOCOL" initial-value="http"/>
-			</ST-InitialInputValues>			
+			</ST-InitialInputValues>
 		</ST-Flow>
 	</ST-Flows>
 </ST-Stepper>

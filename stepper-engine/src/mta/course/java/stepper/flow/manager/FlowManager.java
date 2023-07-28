@@ -207,7 +207,7 @@ public class FlowManager
             this.outputs = outputs;
             this.executionData = executionData;
             latestExecutionData = executionData;
-            this.latch = latch;//TODO: check if this is needed
+            this.latch = latch;
             this.userName = userName;
         }
         public synchronized Integer getUniqueFlowExecutionIdCounter() {
@@ -243,7 +243,7 @@ public class FlowManager
                 }
             }
 
-            latch.countDown(); // finished the task//TODO: check if this is needed
+            latch.countDown(); // finished the task
         }
 
     }

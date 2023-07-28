@@ -31,6 +31,8 @@ import mta.course.java.stepper.flow.execution.FlowExecutionResult;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepDefinition;
+import mta.course.java.stepper.step.impl.HttpCallStep.MethodEnum;
+import mta.course.java.stepper.step.impl.HttpCallStep.ProtocolEnum;
 import mta.course.java.stepper.step.impl.ZipperStep.ZipperEnumerator;
 import netscape.javascript.JSObject;
 import okhttp3.*;
@@ -197,21 +199,35 @@ public class executionController {
             }
             //ENUM
             else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class) {
-                //TODO: allow other enums that are not zip (check what is the type by step name)
-                if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
-                    TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
-                    textField.setEditable(false);
-                    mandatoryInputs.add(textField);
-                    currentFilledMandatoryInputs++;
+                if (input.getDataDefinitionDeclaration().userString().equals("Operation type")) {
+                    if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                        TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                        textField.setEditable(false);
+                        mandatoryInputs.add(textField);
+                        currentFilledMandatoryInputs++;
+                    } else if (continuationMap.containsKey(inputWithStepName)) {
+                        ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(ZipperEnumerator.values()));
+                        choiceBox.getSelectionModel().select(ZipperEnumerator.valueOf(continuationMap.get(inputWithStepName).toString()));
+                        mandatoryInputs.add(choiceBox);
+                        currentFilledMandatoryInputs++;
+                    } else {
+                        mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
+                    }
                 }
-                else if(continuationMap.containsKey(inputWithStepName)){
-                    ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(ZipperEnumerator.values()));
-                    choiceBox.getSelectionModel().select(ZipperEnumerator.valueOf(continuationMap.get(inputWithStepName).toString()));
-                    mandatoryInputs.add(choiceBox);
-                    currentFilledMandatoryInputs++;
-                }
-                else {
-                    mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ZipperEnumerator.values())));
+                if (input.getDataDefinitionDeclaration().userString().equals("Protocol")) {
+                    if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                        TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                        textField.setEditable(false);
+                        mandatoryInputs.add(textField);
+                        currentFilledMandatoryInputs++;
+                    } else if (continuationMap.containsKey(inputWithStepName)) {
+                        ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(ProtocolEnum.values()));
+                        choiceBox.getSelectionModel().select(ProtocolEnum.valueOf(continuationMap.get(inputWithStepName).toString()));
+                        mandatoryInputs.add(choiceBox);
+                        currentFilledMandatoryInputs++;
+                    } else {
+                        mandatoryInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(ProtocolEnum.values())));
+                    }
                 }
             }
             //TEXT
@@ -291,8 +307,21 @@ public class executionController {
                 } else {
                     optionalInputs.add(new javafx.scene.control.Spinner<Integer>(0, 100, 0, 1));
                 }
-            }
-            else {//TEXT
+            } else if (input.getDataDefinitionDeclaration().dataDefinition().getType()==Enum.class) {
+                if (input.getDataDefinitionDeclaration().userString().equals("Method")) {
+                    if (initialVal.get(input.getDataDefinitionDeclaration().getName()) != null) {
+                        TextField textField = new TextField(initialVal.get(input.getDataDefinitionDeclaration().getName()));
+                        textField.setEditable(false);
+                        optionalInputs.add(textField);
+                    } else if (continuationMap.containsKey(inputWithStepName)) {
+                        ChoiceBox choiceBox = new ChoiceBox(FXCollections.observableArrayList(MethodEnum.values()));
+                        choiceBox.getSelectionModel().select(MethodEnum.valueOf(continuationMap.get(inputWithStepName).toString()));
+                        optionalInputs.add(choiceBox);
+                    } else {
+                        optionalInputs.add(new javafx.scene.control.ChoiceBox<>(FXCollections.observableArrayList(MethodEnum.values())));
+                    }
+                }
+            } else {//TEXT
                 if(continuationMap.containsKey(inputWithStepName)){
                     TextField textField = new TextField(continuationMap.get(inputWithStepName).toString());
                     textField.setEditable(true);

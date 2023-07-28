@@ -86,7 +86,7 @@ public class topAdminController
         HttpClientUtil.runAsync(finalUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> showErrorDialog("Error", "Invalid XML file"));
+                Platform.runLater(() -> showErrorDialog("Error", "Invalid XML file" + e.getMessage()));
             }
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
