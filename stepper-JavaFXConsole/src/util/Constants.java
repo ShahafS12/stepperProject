@@ -47,6 +47,8 @@ public class Constants
     public final static String GET_USER = FULL_SERVER_PATH + "/getUser";
     public final static String DELETE_ROLE = FULL_SERVER_PATH + "/deleteRole";
 
+    public final static String GET_CURRENT_STATS = FULL_SERVER_PATH + "/getCurrentStatsFlowExe";
+
 
 
     // GSON instance

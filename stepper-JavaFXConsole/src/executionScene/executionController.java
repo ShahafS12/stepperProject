@@ -23,11 +23,14 @@ import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import mainSceneAdmin.mainAdminController;
 import mainSceneClient.mainClientController;
+import mta.course.java.stepper.dd.api.DataDefinition;
 import mta.course.java.stepper.flow.InputWithStepName;
 import mta.course.java.stepper.flow.definition.api.Continuation;
 import mta.course.java.stepper.flow.definition.api.FlowDefinition;
+import mta.course.java.stepper.flow.definition.api.FlowExecutionStatistics;
 import mta.course.java.stepper.flow.definition.api.StepUsageDeclaration;
 import mta.course.java.stepper.flow.execution.FlowExecutionResult;
+import mta.course.java.stepper.flow.execution.context.StepExecutionContext;
 import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.SingleStepExecutionData;
 import mta.course.java.stepper.step.api.StepDefinition;
@@ -357,6 +360,7 @@ public class executionController {
         currentExecutionSteps.getItems().clear();
         String finalURL = HttpUrl.parse(GET_EXECUTION_DATA)
                 .newBuilder()
+                .addQueryParameter("userName", mainClientController.getUserName())
                 .build()
                 .toString();
         Request request = new Request.Builder()
@@ -576,9 +580,38 @@ public class executionController {
             i++;
         }
     }
-    public void fillContinuationMap(Map<String, List<String>> continuationMapping){//todo: this should be done in the engine
+    public void fillContinuationMap(Map<String, List<String>> continuationMapping){
         this.continuationMap = new HashMap<>();
-        Map<String,Object> inputs = mainClientController.getMenuVariables().getCurrentStatsFlowExecuted().getUserInputsMap();
+
+        // Request for the current execution statistics by sending user name
+        String finalUrl = HttpUrl.parse(GET_CURRENT_STATS)
+                .newBuilder()
+                .addQueryParameter("userName", mainClientController.getUserName())
+                .build()
+                .toString();
+
+        Response response = HttpClientUtil.run(finalUrl);
+        FlowExecutionStatistics currentStats = null;
+        if (response.isSuccessful()) {
+            String responseString = null;
+            try {
+                responseString = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Class.class, new ClassTypeAdapter())
+                    .registerTypeAdapterFactory(new ClassTypeAdapterFactory())
+                    .registerTypeAdapter(DataDefinition.class, new DataDefinitionAdapter())
+                    .registerTypeAdapter(DataDefinitionDeclaration.class, new DataDefinitionDeclarationAdapter())
+                    .registerTypeAdapter(FlowDefinition.class, new FlowDefinitionAdapter())
+                    .registerTypeAdapter(StepExecutionContext.class, new StepExecutionContextAdapter())
+                    .create();
+
+            currentStats = gson.fromJson(responseString, FlowExecutionStatistics.class);
+        }
+        Map<String, Object> inputs = currentStats.getUserInputsMap();
+        //Map<String,Object> inputs = mainClientController.getMenuVariables().getCurrentStatsFlowExecuted().getUserInputsMap();
         for(String key : inputs.keySet()){
             this.continuationMap.put(key, inputs.get(key));
         }

@@ -12,9 +12,9 @@ public class HttpClientUtil {
             new OkHttpClient.Builder()
                     .cookieJar(simpleCookieManager)
                     .followRedirects(false)
-                    .readTimeout(30, TimeUnit.MINUTES)
-                    .connectTimeout(10, TimeUnit.MINUTES)//todo change when submitting
-                    .writeTimeout(10, TimeUnit.MINUTES)
+//                    .readTimeout(30, TimeUnit.MINUTES)
+//                    .connectTimeout(10, TimeUnit.MINUTES)
+//                    .writeTimeout(10, TimeUnit.MINUTES)
                     .build();
 
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
