@@ -53,7 +53,8 @@ public class ExecuteFlowServlet extends HttpServlet
             FlowDefinition chosenFlow = flowManager.getFlowDefinition(flowName);
             int uniqueFlowId = flowManager.getUniqueFlowIdCounter();//todo this might need to be synchronized
             for(StepUsageDeclaration stepUsageDeclaration : chosenFlow.getFlowSteps()){
-                if(stepUsageDeclaration.getStepName().equals("Spend Some Time")){//fixing it comes as double from the client
+                if(stepUsageDeclaration.getStepName().equals("Spend Some Time")
+                ){//fixing it comes as double from the client
                     for(int i = 0;i<mandatoryInputsList.size();i++){
                         if(mandatoryInputsList.get(i) instanceof Double){
                             mandatoryInputsList.set(i, ((Number) mandatoryInputsList.get(i)).intValue());
@@ -80,7 +81,7 @@ public class ExecuteFlowServlet extends HttpServlet
         catch (Exception e){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().println(e.getMessage());
-        }
+        }//todo add to web xml
     }
 }
 

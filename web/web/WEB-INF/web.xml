@@ -80,9 +80,17 @@
         <servlet-name>UpdateExistingUserServlet</servlet-name>
         <servlet-class>servlets.UpdateExistingUserServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteRoleServlet</servlet-name>
+        <servlet-class>servlets.DeleteRoleServlet</servlet-class>
+    </servlet>
 
 
 
+    <servlet-mapping>
+        <servlet-name>DeleteRoleServlet</servlet-name>
+        <url-pattern>/deleteRole</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ExampleJsonServlet</servlet-name>
         <url-pattern>/exampleJson</url-pattern>

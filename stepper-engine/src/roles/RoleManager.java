@@ -27,7 +27,12 @@ public class RoleManager
         rolesSet.add(role);
     }
     public void removeRole(String roleName) {
-        rolesSet.remove(roleName);
+        for (RoleDefinition role : rolesSet) {
+            if (role.getRoleName().equals(roleName)) {
+                rolesSet.remove(role);
+                break;
+            }
+        }
     }
     public RoleDefinition getRole(String roleName) {
         for(RoleDefinition role : rolesSet) {

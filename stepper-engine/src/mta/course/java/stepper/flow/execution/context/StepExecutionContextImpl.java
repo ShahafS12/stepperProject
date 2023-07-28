@@ -9,22 +9,24 @@ import mta.course.java.stepper.step.api.DataDefinitionDeclaration;
 import mta.course.java.stepper.step.api.DataDefinitionDeclarationImpl;
 import mta.course.java.stepper.step.api.DataNecessity;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.time.Instant;
 import java.util.*;
 
-public class StepExecutionContextImpl implements StepExecutionContext {
+public class StepExecutionContextImpl implements StepExecutionContext, Serializable
+{
 
-    private final Map<String, Object> dataValues;
-    private final Map<String,DataDefinition> dataDefinitions;
-    private final Map<String, ArrayList<String>> logs;
-    private final Map<String, String> summaryLines;
-    private final Map<String, String> FlowLevelAliases;
-    private final Map<String, String> CustomMapping;
-    private final Map<AutoMapping,Object> AutoMappingMap;
-    private final Map<String, Queue<stepAliasing>> stepAliases;
+    private Map<String, Object> dataValues;
+    private Map<String,DataDefinition> dataDefinitions;
+    private Map<String, ArrayList<String>> logs;
+    private Map<String, String> summaryLines;
+    private Map<String, String> FlowLevelAliases;
+    private Map<String, String> CustomMapping;
+    private Map<AutoMapping,Object> AutoMappingMap;
+    private Map<String, Queue<stepAliasing>> stepAliases;
     private final Map<String,String> flowFreeInputs;
-    private final FlowDefinition flowDef;
+    private FlowDefinition flowDef;
 
 
     public StepExecutionContextImpl(FlowDefinition flowDefinition) {
@@ -73,6 +75,12 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     @Override
     public ArrayList<String> getLogs(String key) {
         return logs.get(key);
+    }
+
+    @Override
+    public Map<String, ArrayList<String>> getLogs()
+    {
+        return logs;
     }
 
     @Override
@@ -273,6 +281,47 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     return null;
     }
 
+    @Override
+    public Map<String, DataDefinition> getDataDefinitions()
+    {
+        return dataDefinitions;
+    }
+
+    @Override
+    public Map<String, String> getSummaryLines()
+    {
+        return summaryLines ;
+    }
+
+    @Override
+    public Map<String, String> getFlowLevelAliasing()
+    {
+        return FlowLevelAliases;
+    }
+
+    @Override
+    public Map<String, String> getCostumeMapping()
+    {
+        return CustomMapping;
+    }
+
+    @Override
+    public Map<AutoMapping, Object> getAutoMapping()
+    {
+        return AutoMappingMap;
+    }
+
+    @Override
+    public Map<String, Queue<stepAliasing>> getStepLevelAliasing()
+    {
+        return stepAliases;
+    }
+
+    @Override
+    public FlowDefinition getFlowDefinition()
+    {
+        return flowDef;
+    }
 
 
     @Override
@@ -286,4 +335,48 @@ public class StepExecutionContextImpl implements StepExecutionContext {
     }
 
 
+    public void setDataValuesMap(Map<String, Object> o)
+    {
+        dataValues = o;
+    }
+
+    public void setDataDefinitions(Map<String, DataDefinition> o)
+    {
+        dataDefinitions = o;
+    }
+
+    public void setLogs(Map<String, ArrayList<String>> o)
+    {
+        logs = o;
+    }
+
+    public void setSummaryLines(Map<String, String> o)
+    {
+        summaryLines = o;
+    }
+
+    public void setFlowLevelAliasing(Map<String, String> o)
+    {
+        FlowLevelAliases = o;
+    }
+
+    public void setCostumeMapping(Map<String, String> o)
+    {
+        CustomMapping = o;
+    }
+
+    public void setAutoMapping(Map<AutoMapping,Object> o)
+    {
+        AutoMappingMap = o;
+    }
+
+    public void setStepLevelAliasing(Map<String, Queue<stepAliasing>> o)
+    {
+        stepAliases = o;
+    }
+
+    public void setFlowDefinition(FlowDefinition o)
+    {
+        flowDef =  o;
+    }
 }

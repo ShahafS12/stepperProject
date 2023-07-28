@@ -114,7 +114,7 @@ public class historySceneController {
     void returnFlowAgain(ActionEvent event) {
         if(currentFlow!=null) {
             Map<String, Object> userInputsMap = currentFlow.getUserInputsMap();
-            mainController.setReRunFlow(event, currentFlow.getFlow(), userInputsMap);
+            mainControllerClient.setReRunFlow(event, currentFlow.getFlow(), userInputsMap);
         }
     }
 
@@ -123,7 +123,9 @@ public class historySceneController {
     }
 
     public void setMainController(mainAdminController mainController) {
+
         this.mainController = mainController;
+        this.returnFlowButton.setVisible(false);
     }
     public void setMainControllerClient (mainClientController mainControllerClient) {
         this.mainControllerClient = mainControllerClient;

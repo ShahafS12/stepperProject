@@ -262,4 +262,15 @@ public class mainClientController implements HttpStatusUpdate
         System.out.println("updateHttpLine");
         //todo - check if this is actually needed
     }
+
+    public void setReRunFlow(ActionEvent event, FlowDefinition chosenFlow, Map<String, Object> userInputsMap)
+    {
+        try {
+            executionController.setReRunFlow(chosenFlow, userInputsMap);
+            AnchorPane view = executionController.getExecutionAnchorPane();
+            mainBorder.setCenter(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

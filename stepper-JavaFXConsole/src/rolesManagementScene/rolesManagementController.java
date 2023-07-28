@@ -39,6 +39,8 @@ public class rolesManagementController
 
     @FXML
     private Button newRoleButton;
+    @FXML
+    private Button deleteRoleButton;
 
     @FXML
     private ListView<String> availableRolesListView;
@@ -72,6 +74,31 @@ public class rolesManagementController
     public rolesManagementController()
     {
         autoUpdate = new SimpleBooleanProperty();;
+    }
+    @FXML
+    void deleteRole(ActionEvent event) {
+        if(this.roleDefinition!=null)
+        {
+            String finalUrl = HttpUrl.parse(DELETE_ROLE)
+                   .newBuilder()
+                   .addQueryParameter("roleName", roleDefinition.getRoleName())
+                   .build()
+                   .toString();
+            Request request = new Request.Builder()
+                    .url(finalUrl)
+                    .delete()
+                    .build();
+            Response response = HttpClientUtil.run(request);
+            if(response.code() == 200)
+            {
+                errorMessageProperty.setValue("Role deleted successfully");
+                errorMessageProperty.setValue("");
+            }
+            else
+            {
+                errorMessageProperty.setValue("Error deleting role");
+            }
+        }
     }
 
     @FXML

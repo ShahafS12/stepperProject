@@ -163,7 +163,7 @@ public class ShowFlowController {
                 handleFlowSelection(newValue);
             }
         });
-        if(lastSelectedFlow!=null){
+        if(lastSelectedFlow!=null&&stepDetailsButtonClicked==-1){
             flowsList.getSelectionModel().select(lastSelectedFlow);
         }
     }
