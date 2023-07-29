@@ -111,7 +111,7 @@ public class ShowFlowController {
     public void setMainController(mainAdminController mainController) {
         this.mainController = mainController;
         //remove the execute button
-        //executeButton.setVisible(false);//TODO: uncomment
+        executeButton.setVisible(false);
     }
 
     public void setFlowsList(List<String> flowsNames) {

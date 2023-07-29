@@ -7,23 +7,23 @@ import java.util.function.Consumer;
 
 public class HttpClientUtil {
 
-    private final static SimpleCookieManager simpleCookieManager = new SimpleCookieManager();
+    //private final static SimpleCookieManager simpleCookieManager = new SimpleCookieManager();
     private final static OkHttpClient HTTP_CLIENT =
             new OkHttpClient.Builder()
-                    .cookieJar(simpleCookieManager)
+                   // .cookieJar(simpleCookieManager)
                     .followRedirects(false)
 //                    .readTimeout(30, TimeUnit.MINUTES)
 //                    .connectTimeout(10, TimeUnit.MINUTES)
 //                    .writeTimeout(10, TimeUnit.MINUTES)
                     .build();
 
-    public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
-        simpleCookieManager.setLogData(logConsumer);
-    }
+//    public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
+//        simpleCookieManager.setLogData(logConsumer);
+//    }
 
-    public static void removeCookiesOf(String domain) {
-        simpleCookieManager.removeCookiesOf(domain);
-    }
+//    public static void removeCookiesOf(String domain) {
+//        simpleCookieManager.removeCookiesOf(domain);
+//    }
 
     public static void runAsync(String finalUrl, Callback callback) {
         Request request = new Request.Builder()
