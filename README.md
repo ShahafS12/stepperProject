@@ -7,7 +7,7 @@ The system is developed in Java. It includes practice with multithread concerns,
 The application was developed in 3 parts:
 1. Developed a console application where users could "talk" with our system by series of menus and available operations.
 2. Developed a desktop application (via JavaFX architecture) which included a graphic UI on JavaFX components. Each interaction with user were based on different buttons and controllers.
-3. Developed a web application (**this part is mainly covered in this readme, other parts won't be supported here**) which allowed users to dynamically register to system and suggested various operations - issue new stock/buy & sell stocks/deposit cash to system and more.
+3. Developed a web application (**this part is mainly covered in this readme, other parts won't be supported here**) which allowed users to dynamically register to system and suggested various operations - execute flows, view their execution history, roles and more.
 # On a Personal Note
 This project was one of the first time I experienced working in client/server structure, developing a web application and implementing HTTP requests & responses. The project summarized all the subjects that were taught about java & web development. Working on a project from 0 was challenging yet very awarding especially when parts started to connect and form a complete system.
 # Screenshots
